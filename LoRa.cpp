@@ -98,9 +98,9 @@ int LoRaClass::begin(long frequency)
     pinMode(_reset, OUTPUT);
     // perform reset
     digitalWrite(_reset, LOW);
-    delay(100);
+    delay(10);
     digitalWrite(_reset, HIGH);
-    delay(100);
+    delay(10);
   }
 
   // start SPI
