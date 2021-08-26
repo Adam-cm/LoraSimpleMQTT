@@ -88,7 +88,7 @@ int main () {
       while (LoRa.available()) {
         message = message + ((char)LoRa.read());
       };
-      string rssi = "\"RSSI\":\"" + String(LoRa.packetRssi()) + "\"";
+      string rssi = "\"RSSI\":\"" + string(LoRa.packetRssi()) + "\"";
       string jsonString = message;
       jsonString.replace("xxx", rssi);
     
@@ -96,13 +96,12 @@ int main () {
       string count = jsonString.substring(ii + 8, ii + 11);
       counter = count.toInt();
       // Same Message Received
-      if (counter - lastCounter == 0) Serial.println("Repetition");
+      if (counter - lastCounter == 0) print("Repetition");
       lastCounter = counter;
 
       // Finished recieving send Ack
       sendAck(message);
-      Serial.print("Message Recieved and Acknowledged: ");
-      Serial.println(jsonString);
+      print("Message Recieved and Acknowledged: %s",jsonString);
 
       string value1 = jsonString.substring(8, 11);  // Vcc or heighth
       string value2 = jsonString.substring(23, 26); //counter
