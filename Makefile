@@ -4,11 +4,11 @@
 LoraSimpleMQTT: main.o LoRa.o base64.o
 	g++ main.o LoRa.o base64.o -o LoraSimpleMQTT
 
-main.o: main.cpp LoRa.h
+main.o: main.cpp
 	g++ -c main.cpp
 	
 LoRa.o: LoRa.c LoRa.h
-	g++ -c LoRa.c
+	g++ -c LoRa.cpp
 	
 base64.o: base64.c base64.h
 	g++ -c base64.c
