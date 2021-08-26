@@ -99,7 +99,7 @@ int main () {
         while (LoRa.available()) {
           message = message + ((char)LoRa.read());
         }
-      printf("Message: %s\n",message.c_str());
+      //printf("Message: %s\n",message.c_str());
 
       string pktrssi = to_string(LoRa.packetRssi());
       string rssi = ("\"RSSI\":\"" + pktrssi + "\"");
@@ -108,20 +108,20 @@ int main () {
       replace(jsonString, "xxx", rssi);
 
       printf("Message: %s\n",jsonString.c_str());
-      /*
-      int ii = jsonString.indexOf("Count", 1);
-      string count = jsonString.substring(ii + 8, ii + 11);
-      counter = count.toInt();
+      
+      //int ii = jsonString.indexOf("Count", 1);
+      //string count = jsonString.substring(ii + 8, ii + 11);
+      //counter = count.toInt();
       // Same Message Received
-      if (counter - lastCounter == 0) print("Repetition");
-      lastCounter = counter;
+      //if (counter - lastCounter == 0) print("Repetition");
+      //lastCounter = counter;
 
       // Finished recieving send Ack
       sendAck(message);
-      print("Message Recieved and Acknowledged: %s",jsonString);
+      printf("Message Recieved and Acknowledged: %s\n",jsonString.c_str());
 
-      string value1 = jsonString.substring(8, 11);  // Vcc or heighth
-      string value2 = jsonString.substring(23, 26); //counter*/
+      //string value1 = jsonString.substring(8, 11);  // Vcc or heighth
+      //string value2 = jsonString.substring(23, 26); //counter*/
     }
   }
     return (0);
@@ -129,14 +129,14 @@ int main () {
 }
 
 void sendAck(string message) {
-  //int check = 0;
+  int check = 0;
   // Calculate Check Sum
-  //for (int i = 0; i < message.length(); i++) {
-  //  check += message[i];
-  //}
-  //LoRa.beginPacket();
-  //LoRa.print(string(check));  // Send Check Sum
-  //LoRa.endPacket();
+  for (int i = 0; i < message.length(); i++) {
+    check += message[i];
+  }
+  LoRa.beginPacket();
+  LoRa.print(to_string(check));  // Send Check Sum
+  LoRa.endPacket();
   //Serial.print(message);
   //Serial.print(" ");
   //Serial.print("Ack Sent: ");
