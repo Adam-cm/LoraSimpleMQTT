@@ -72,7 +72,7 @@ void sendAck(string message) {
   
   string checksum = to_string(check);
 
-  printf("\nCheck sum reply: %s\n",checksum);
+  printf("\nCheck sum reply: %c\n",checksum.c_str);
 
   LoRa.beginPacket();
   
