@@ -133,7 +133,9 @@ int main () {
       string count = jsonString.substr(ii + 8, ii + 11);
       counter = stoi(count);
       // Same Message Received
-      if (counter - lastCounter == 0) print("Repetition");
+      if (counter - lastCounter == 0){
+        printf("Repetition");
+      } 
       lastCounter = counter;
 
       // Finished recieving send Ack
