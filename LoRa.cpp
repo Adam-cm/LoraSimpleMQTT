@@ -553,7 +553,7 @@ void LoRaClass::setLdoFlag()
 
   uint8_t config3 = readRegister(REG_MODEM_CONFIG_3);
   //bitWrite(config3, 3, ldoOn);
-  config3 = config3 ^ (ldoOn << 3 )
+  config3 = config3 ^ (ldoOn << 3 );
   writeRegister(REG_MODEM_CONFIG_3, config3);
 }
 
