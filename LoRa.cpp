@@ -302,7 +302,7 @@ size_t LoRaClass::write(uint8_t byte)
   return write(&byte, sizeof(byte));
 }
 
-size_t LoRaClass::write(const uint8_t *buffer, size_t size)
+size_t LoRaClass::write(const char *buffer, size_t size)
 {
   int currentLength = readRegister(REG_PAYLOAD_LENGTH);
 
