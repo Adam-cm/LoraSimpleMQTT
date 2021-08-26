@@ -6,6 +6,12 @@
         "initializer_list": "cpp",
         "xstring": "cpp",
         "xutility": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "istream": "cpp",
+        "memory": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp",
+        "system_error": "cpp"
     }
 }

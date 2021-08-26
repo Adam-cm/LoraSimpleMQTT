@@ -49,7 +49,7 @@ public:
 
   // from Print
   virtual size_t write(uint8_t byte);
-  virtual size_t write(const uint8_t *buffer, size_t size);
+  virtual size_t write(const char *buffer, size_t size);
 
   // from Stream
   virtual int available();
