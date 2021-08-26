@@ -4,6 +4,7 @@
 #ifndef LORA_H
 #define LORA_H
 
+#include "platform/Stream.h"
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
