@@ -113,14 +113,14 @@ int main () {
 }
 
 void sendAck(string message) {
-  int check = 0;
+  //int check = 0;
   // Calculate Check Sum
-  for (int i = 0; i < message.length(); i++) {
-    check += message[i];
-  }
-  LoRa.beginPacket();
-  LoRa.print(String(check));  // Send Check Sum
-  LoRa.endPacket();
+  //for (int i = 0; i < message.length(); i++) {
+  //  check += message[i];
+  //}
+  //LoRa.beginPacket();
+  //LoRa.print(string(check));  // Send Check Sum
+  //LoRa.endPacket();
   //Serial.print(message);
   //Serial.print(" ");
   //Serial.print("Ack Sent: ");
