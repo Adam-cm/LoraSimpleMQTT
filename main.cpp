@@ -84,7 +84,7 @@ int main () {
       int packetSize = LoRa.parsePacket();
       if (packetSize) {
         // received a packet
-        print("Packet Received\n");
+        printf("Packet Received\n");
       /*  string message = "";        // Clear message string
       while (LoRa.available()) {
         message = message + ((char)LoRa.read());
