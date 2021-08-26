@@ -112,6 +112,11 @@ int main () {
       if (packetSize) {
         // received a packet
         printf("Packet Received\n");
+        string message = "";        // Clear message string
+        while (LoRa.available()) {
+          message = message + ((char)LoRa.read());
+        }
+        printf("Message Stored");
       }
     }
 
