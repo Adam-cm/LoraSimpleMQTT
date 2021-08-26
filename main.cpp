@@ -72,7 +72,7 @@ void sendAck(string message) {
   
   char buf[sizeof(check)];
 
-  sprintf(buf,"d",sizeof(check));
+  sprintf(buf,"%d",sizeof(check));
   
   LoRa.beginPacket();
   
