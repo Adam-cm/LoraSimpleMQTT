@@ -70,13 +70,13 @@ void sendAck(string message) {
     check += message[i];
   }
   
-  char buf[sizeof(check)];
+  string checksum = to_string(check);
 
-  sprintf(buf,"%d",sizeof(check));
-  printf("\nCheck sum reply: %i\n",check);
+  printf("\nCheck sum reply: %s\n",buf);
+
   LoRa.beginPacket();
   
-  LoRa.write(buf[0]);  // Send Check Sum
+  LoRa.write('A');  // Send Check Sum
 
   LoRa.endPacket();
   //Serial.print(message);
