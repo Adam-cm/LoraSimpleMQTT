@@ -93,7 +93,7 @@ int main () {
         }
       printf("Message: %s\n",message.c_str());
 
-      string pktrssi = LoRa.packetRssi();
+      string pktrssi = to_string(LoRa.packetRssi());
       string rssi = ("\"RSSI\":\"" + pktrssi + "\"");
       string jsonString = message;
       jsonString.replace("xxx", rssi);
