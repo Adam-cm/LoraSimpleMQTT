@@ -20,7 +20,6 @@
 #include <cstdlib>
 #include <sys/time.h>
 #include <cstring>
-#include <string>
 #include <sys/ioctl.h>
 #include <net/if.h>
 
@@ -89,12 +88,12 @@ int main () {
       while (LoRa.available()) {
         message = message + ((char)LoRa.read());
       };
-      String rssi = "\"RSSI\":\"" + String(LoRa.packetRssi()) + "\"";
-      String jsonString = message;
+      string rssi = "\"RSSI\":\"" + String(LoRa.packetRssi()) + "\"";
+      string jsonString = message;
       jsonString.replace("xxx", rssi);
     
       int ii = jsonString.indexOf("Count", 1);
-      String count = jsonString.substring(ii + 8, ii + 11);
+      string count = jsonString.substring(ii + 8, ii + 11);
       counter = count.toInt();
       // Same Message Received
       if (counter - lastCounter == 0) Serial.println("Repetition");
@@ -105,8 +104,8 @@ int main () {
       Serial.print("Message Recieved and Acknowledged: ");
       Serial.println(jsonString);
 
-      String value1 = jsonString.substring(8, 11);  // Vcc or heighth
-      String value2 = jsonString.substring(23, 26); //counter
+      string value1 = jsonString.substring(8, 11);  // Vcc or heighth
+      string value2 = jsonString.substring(23, 26); //counter
     };
   };
     return (0);
