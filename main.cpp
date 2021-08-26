@@ -84,7 +84,8 @@ int main () {
       int packetSize = LoRa.parsePacket();
       if (packetSize) {
         // received a packet
-        string message = "";        // Clear message string
+        print("Packet Received\n");
+      /*  string message = "";        // Clear message string
       while (LoRa.available()) {
         message = message + ((char)LoRa.read());
       };
@@ -104,14 +105,14 @@ int main () {
       print("Message Recieved and Acknowledged: %s",jsonString);
 
       string value1 = jsonString.substring(8, 11);  // Vcc or heighth
-      string value2 = jsonString.substring(23, 26); //counter
+      string value2 = jsonString.substring(23, 26); //counter*/
     };
   };
     return (0);
 
 }
 
-void sendAck(String message) {
+void sendAck(string message) {
   int check = 0;
   // Calculate Check Sum
   for (int i = 0; i < message.length(); i++) {
