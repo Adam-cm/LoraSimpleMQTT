@@ -88,7 +88,7 @@ int main () {
         String message = "";        // Clear message string
       while (LoRa.available()) {
         message = message + ((char)LoRa.read());
-      }
+      };
       String rssi = "\"RSSI\":\"" + String(LoRa.packetRssi()) + "\"";
       String jsonString = message;
       jsonString.replace("xxx", rssi);
@@ -107,7 +107,7 @@ int main () {
 
       String value1 = jsonString.substring(8, 11);  // Vcc or heighth
       String value2 = jsonString.substring(23, 26); //counter
-    }
+    };
   };
     return (0);
 
