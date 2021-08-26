@@ -70,7 +70,7 @@ void sendAck(string message) {
     check += message[i];
   }
   
-  string checksum = check;
+  string checksum = to_string(check);
 
   printf("\nCheck sum reply: %s\n",checksum);
 
