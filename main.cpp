@@ -82,7 +82,7 @@ int main () {
     while(1){
       // try to parse packet
       int packetSize = LoRa.parsePacket();
-     printf("Waiting to Receive pakcets: %i\n",packetSize);
+      //printf("Waiting to Receive pakcets: %i\n",packetSize);
 
       if (packetSize) {
         // received a packet
