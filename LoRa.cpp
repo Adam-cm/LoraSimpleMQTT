@@ -297,7 +297,7 @@ int LoRaClass::rssi()
   return (readRegister(REG_RSSI_VALUE) - (_frequency < RF_MID_BAND_THRESHOLD ? RSSI_OFFSET_LF_PORT : RSSI_OFFSET_HF_PORT));
 }
 
-size_t LoRaClass::write(uint8_t byte)
+size_t LoRaClass::write(char byte)
 {
   return write(&byte, sizeof(byte));
 }

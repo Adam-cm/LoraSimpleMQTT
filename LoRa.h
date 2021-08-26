@@ -48,7 +48,7 @@ public:
   int rssi();
 
   // from Print
-  virtual size_t write(uint8_t byte);
+  virtual size_t write(char byte);
   virtual size_t write(const char *buffer, size_t size);
 
   // from Stream
