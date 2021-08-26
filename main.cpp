@@ -70,7 +70,7 @@ void sendAck(string message) {
     check += message[i];
   }
   LoRa.beginPacket();
-  LoRa.write('a');  // Send Check Sum
+  LoRa.write(check);  // Send Check Sum
   LoRa.endPacket();
   //Serial.print(message);
   //Serial.print(" ");
@@ -122,7 +122,7 @@ int main () {
       //jsonString.replace("xxx", rssi);
       replace(jsonString, "xxx", rssi);
 
-      printf("Message: %s\n",jsonString.c_str());
+      //printf("Message: %s\n",jsonString.c_str());
       
       //int ii = jsonString.indexOf("Count", 1);
       //string count = jsonString.substring(ii + 8, ii + 11);
