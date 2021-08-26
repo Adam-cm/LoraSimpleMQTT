@@ -76,13 +76,13 @@ int main () {
     //printf("LoRa Started");
     printf("Frequency %li\n", freq);
     printf("Bandwidth %li\n",bw);
-    printf("SF: %i\n=========\n", SF);
+    printf("SF: %i\n=================\n", SF);
     //System Configured
 
     while(1){
       // try to parse packet
       int packetSize = LoRa.parsePacket();
-      //printf("Waiting to Receive pakcets:\n");
+     printf("Waiting to Receive pakcets: %i\n",packetSize);
 
       if (packetSize) {
         // received a packet
