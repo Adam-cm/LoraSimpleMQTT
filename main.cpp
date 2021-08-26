@@ -108,6 +108,14 @@ int main () {
     //System Configured
 
     while(1){
+      int packetSize = LoRa.parsePacket();
+      if (packetSize) {
+        // received a packet
+        printf("Packet Received\n");
+      }
+    }
+
+    while(1){
       // try to parse packet
       int packetSize = LoRa.parsePacket();
       //printf("Waiting to Receive pakcets: %i\n",packetSize);
@@ -143,8 +151,7 @@ int main () {
       printf("Message Recieved and Acknowledged: %s\n",jsonString.c_str());
       //string value1 = jsonString.substring(8, 11);  // Vcc or heighth
       //string value2 = jsonString.substring(23, 26); //counter*/
+      }
     }
-  }
-
-return (0);
+  return (0);
 }

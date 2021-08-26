@@ -83,7 +83,7 @@ LoRaClass::LoRaClass() :
   _onTxDone(NULL)
 {
   // overide Stream timeout value
-  setTimeout(0);
+  // setTimeout(0);
 }
 
 int LoRaClass::begin(long frequency)
@@ -96,12 +96,11 @@ int LoRaClass::begin(long frequency)
 
   if (_reset != -1) {
     pinMode(_reset, OUTPUT);
-
     // perform reset
     digitalWrite(_reset, LOW);
-    delay(10);
+    delay(100);
     digitalWrite(_reset, HIGH);
-    delay(10);
+    delay(100);
   }
 
   // start SPI
