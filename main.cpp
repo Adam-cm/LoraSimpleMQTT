@@ -22,6 +22,7 @@
 #include <cstring>
 #include <sys/ioctl.h>
 #include <net/if.h>
+#include <sstream>
 
 using namespace std;
 
