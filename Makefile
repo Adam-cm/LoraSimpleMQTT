@@ -1,20 +1,16 @@
 # LoRaSimpleMQTT
 # Single Channel LoRaWAN Gateway
 
-CC=g++
-CFLAGS=-c -Wall
-LIBS=-lwiringPi -lLoRa
-
-all: LoraSimpleMQTT
-
-LoraSimpleMQTT: base64.o main.o
-	$(CC) main.o base64.o $(LIBS) -o LoraSimpleMQTT
+LoraSimpleMQTT: main.o LoRa.o base64.o
+	g++ main.o LoRa.o base64.o -o LoraSimpleMQTT
 
 main.o: main.cpp
-	$(CC) $(CFLAGS) main.cpp
-
-base64.o: base64.c
-	$(CC) $(CFLAGS) base64.c
-
+	g++ -c main.cpp
+	
+LoRa.o: LoRa.c LoRa.h
+	g++ -c LoRa.c
+	
+base64.o: base64.c base64.h
+	g++ -c base64.c
 clean:
-	rm *.o LoraSimpleMQTT	
+	rm *.o LoraSimpleMQTT
