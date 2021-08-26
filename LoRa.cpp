@@ -643,7 +643,7 @@ void LoRaClass::setGain(uint8_t gain)
   }
 }
 
-byte LoRaClass::random()
+uint8_t LoRaClass::random()
 {
   return readRegister(REG_RSSI_WIDEBAND);
 }
