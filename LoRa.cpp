@@ -83,27 +83,11 @@ LoRaClass::LoRaClass() :
   _onTxDone(NULL)
 {
   // overide Stream timeout value
-  //setTimeout(0);
+  setTimeout(0);
 }
 
 int LoRaClass::begin(long frequency)
 {
-#if defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310)
-  pinMode(LORA_IRQ_DUMB, OUTPUT);
-  digitalWrite(LORA_IRQ_DUMB, LOW);
-
-  // Hardware reset
-  pinMode(LORA_BOOT0, OUTPUT);
-  digitalWrite(LORA_BOOT0, LOW);
-
-  pinMode(LORA_RESET, OUTPUT);
-  digitalWrite(LORA_RESET, HIGH);
-  delay(200);
-  digitalWrite(LORA_RESET, LOW);
-  delay(200);
-  digitalWrite(LORA_RESET, HIGH);
-  delay(50);
-#endif
 
   // setup pins
   pinMode(_ss, OUTPUT);
