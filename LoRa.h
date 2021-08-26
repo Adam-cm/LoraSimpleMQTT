@@ -4,7 +4,6 @@
 #ifndef LORA_H
 #define LORA_H
 
-#include "Stream.h"
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
@@ -31,7 +30,7 @@
 #define PA_OUTPUT_RFO_PIN          0
 #define PA_OUTPUT_PA_BOOST_PIN     1
 
-class LoRaClass : : public Stream {
+class LoRaClass : public Stream {
 public:
   LoRaClass();
 
