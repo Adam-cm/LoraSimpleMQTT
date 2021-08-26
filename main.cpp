@@ -115,6 +115,7 @@ int main () {
         string message = "";        // Clear message string
         while (LoRa.available()) {
           //message = message + ((char)LoRa.read());
+          LoRa.read();
         }
         printf("Message Stored\n");
       }
