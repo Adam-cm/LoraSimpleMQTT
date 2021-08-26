@@ -383,7 +383,7 @@ void LoRaClass::onTxDone(void(*callback)())
     //SPI.usingInterrupt(digitalPinToInterrupt(_dio0));
 #endif
     //attachInterrupt(digitalPinToInterrupt(_dio0), LoRaClass::onDio0Rise, RISING);
-    wiringPiISR(0, INT_EDGE_RISING, LoRaClass::onDio0Rise)
+    wiringPiISR(0, INT_EDGE_RISING, LoRaClass::onDio0Rise);
   } else {
     //detachInterrupt(digitalPinToInterrupt(_dio0));
     pinMode(_dio0, OUTPUT);
@@ -553,7 +553,7 @@ void LoRaClass::setLdoFlag()
 
   uint8_t config3 = readRegister(REG_MODEM_CONFIG_3);
   //bitWrite(config3, 3, ldoOn);
-  config = config3 ^ (ldoOn << 3 )
+  config3 = config3 ^ (ldoOn << 3 )
   writeRegister(REG_MODEM_CONFIG_3, config3);
 }
 
@@ -704,12 +704,12 @@ uint8_t LoRaClass::readRegister(uint8_t address)
   unsigned char spibuf[2];
 
   //selectreceiver();
-  digitalWrite(ssPin, LOW);
+  digitalWrite(_ss, LOW);
   spibuf[0] = address & 0x7F;
   spibuf[1] = 0x00;
   wiringPiSPIDataRW(CHANNEL, spibuf, 2);
   //unselectreceiver();
-  digitalWrite(ssPin, HIGH);
+  digitalWrite(_ss, HIGH);
 
   return spibuf[1];
 }
@@ -721,10 +721,10 @@ void LoRaClass::writeRegister(uint8_t address, uint8_t value)
   spibuf[0] = address | 0x80;
   spibuf[1] = value;
   //selectreceiver();
-  digitalWrite(ssPin, LOW);
+  digitalWrite(_ss, LOW);
   wiringPiSPIDataRW(CHANNEL, spibuf, 2);
   //unselectreceiver();
-  digitalWrite(ssPin, HIGH);
+  digitalWrite(_ss, HIGH);
 }
 
 ISR_PREFIX void LoRaClass::onDio0Rise()
