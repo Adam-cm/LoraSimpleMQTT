@@ -217,7 +217,7 @@ int LoRaClass::parsePacket(int size)
 {
   int packetLength = 0;
   int irqFlags = readRegister(REG_IRQ_FLAGS);
-  printf("IRQ Flags: %i", irqFlags);
+  //printf("IRQ Flags: %i", irqFlags);
   if (size > 0) {
     implicitHeaderMode();
 
