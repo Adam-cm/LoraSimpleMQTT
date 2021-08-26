@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 #include <cstddef>
 #include <stdint.h>
+#include <cstdio>
 #include "LoRa.h"
 
 static const int CHANNEL = 0;
