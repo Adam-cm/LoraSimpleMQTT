@@ -87,11 +87,12 @@ int main () {
       if (packetSize) {
         // received a packet
         printf("Packet Received\n");
-      /*  string message = "";        // Clear message string
+      string message = "";        // Clear message string
       while (LoRa.available()) {
         message = message + ((char)LoRa.read());
-      };
-      string rssi = "\"RSSI\":\"" + string(LoRa.packetRssi()) + "\"";
+      }
+      printf("Message: %s\n",message);
+      /*string rssi = "\"RSSI\":\"" + string(LoRa.packetRssi()) + "\"";
       string jsonString = message;
       jsonString.replace("xxx", rssi);
     
@@ -108,8 +109,8 @@ int main () {
 
       string value1 = jsonString.substring(8, 11);  // Vcc or heighth
       string value2 = jsonString.substring(23, 26); //counter*/
-    };
-  };
+    }
+  }
     return (0);
 
 }

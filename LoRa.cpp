@@ -228,10 +228,10 @@ int LoRaClass::parsePacket(int size)
 
   // clear IRQ's
   writeRegister(REG_IRQ_FLAGS, 0xFF);
-  
-  if(irqFlags > 0){
-    printf("IRQ Flags: %i\n",irqFlags);
-  }
+
+  //if(irqFlags > 0){
+  //  printf("IRQ Flags: %i\n",irqFlags);
+  //}
   
 
   if ((irqFlags & IRQ_RX_DONE_MASK) && (irqFlags & IRQ_PAYLOAD_CRC_ERROR_MASK) == 0) {
