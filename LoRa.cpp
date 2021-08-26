@@ -374,7 +374,7 @@ void LoRaClass::onReceive(void(*callback)(int))
     wiringPiISR(0, INT_EDGE_RISING, LoRaClass::onDio0Rise);
   } else {
     //detachInterrupt(digitalPinToInterrupt(_dio0));
-    //pinMode(_dio0, OUTPUT);
+    pinMode(_dio0, OUTPUT);
 #ifdef SPI_HAS_NOTUSINGINTERRUPT
     //SPI.notUsingInterrupt(digitalPinToInterrupt(_dio0));
 #endif
@@ -394,7 +394,7 @@ void LoRaClass::onTxDone(void(*callback)())
     wiringPiISR(0, INT_EDGE_RISING, LoRaClass::onDio0Rise);
   } else {
     //detachInterrupt(digitalPinToInterrupt(_dio0));
-    //pinMode(_dio0, OUTPUT);
+    pinMode(_dio0, OUTPUT);
 #ifdef SPI_HAS_NOTUSINGINTERRUPT
     //SPI.notUsingInterrupt(digitalPinToInterrupt(_dio0));
 #endif

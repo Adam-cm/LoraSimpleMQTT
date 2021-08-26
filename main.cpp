@@ -86,8 +86,7 @@ void sendAck(string message) {
 }
 
 int main () {
-
-    // Setup Wiring Pi
+  // Setup Wiring Pi
     wiringPiSetup () ;
     //wiringPiSPISetup(CHANNEL, 500000);
 
@@ -99,7 +98,6 @@ int main () {
       printf("\nStarting LoRa failed!\n");
       while (1);
     }
-
     LoRa.setSpreadingFactor(SF);
     printf("\nSystem Configured with:\n");
     // LoRa.setSignalBandwidth(bw);
@@ -131,12 +129,12 @@ int main () {
 
       //printf("Message: %s\n",jsonString.c_str());
       
-      //int ii = jsonString.indexOf("Count", 1);
-      //string count = jsonString.substring(ii + 8, ii + 11);
-      //counter = count.toInt();
+      int ii = jsonString.find("Count", 1);
+      string count = jsonString.substr(ii + 8, ii + 11);
+      counter = stoi(count);
       // Same Message Received
-      //if (counter - lastCounter == 0) print("Repetition");
-      //lastCounter = counter;
+      if (counter - lastCounter == 0) print("Repetition");
+      lastCounter = counter;
 
       // Finished recieving send Ack
       sendAck(message);
@@ -145,6 +143,6 @@ int main () {
       //string value2 = jsonString.substring(23, 26); //counter*/
     }
   }
-    return (0);
 
+return (0);
 }
