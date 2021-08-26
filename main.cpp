@@ -114,7 +114,7 @@ int main () {
         printf("Packet Received: ");
         string message = "";        // Clear message string
         while (LoRa.available()) {
-          message = message + ((char)LoRa.read());
+          //message = message + ((char)LoRa.read());
         }
         printf("Message Stored\n");
       }
