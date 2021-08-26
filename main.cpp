@@ -62,7 +62,7 @@ int main () {
     //wiringPiSPISetup(CHANNEL, 500000);
 
     printf("Configuring SX1276\n");
-    LoRa.setPins(ssPin,dio0,RST);
+    LoRa.setPins(ssPin,RST,dio0);
     
     printf("Starting LoRa Server\n");
     if (!LoRa.begin(freq)) {
