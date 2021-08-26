@@ -4,8 +4,8 @@
 #ifndef LORA_H
 #define LORA_H
 
-#include <Arduino.h>
-#include <SPI.h>
+#include <wiringPi.h>
+#include <wiringPiSPI.h>
 
 #if defined(ARDUINO_SAMD_MKRWAN1300)
 #define LORA_DEFAULT_SPI           SPI1
