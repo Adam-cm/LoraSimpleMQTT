@@ -72,7 +72,7 @@ void sendAck(string message) {
   
   string checksum = to_string(check);
 
-  printf("\nCheck sum reply: %s\n",checksum.c_str());
+  //printf("\nCheck sum reply: %s\n",checksum.c_str());
 
   LoRa.beginPacket();
   
@@ -141,7 +141,6 @@ int main () {
       // Finished recieving send Ack
       sendAck(message);
       printf("Message Recieved and Acknowledged: %s\n",jsonString.c_str());
-
       //string value1 = jsonString.substring(8, 11);  // Vcc or heighth
       //string value2 = jsonString.substring(23, 26); //counter*/
     }
