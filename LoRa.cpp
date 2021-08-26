@@ -236,6 +236,7 @@ int LoRaClass::parsePacket(int size)
     // read packet length
     if (_implicitHeaderMode) {
       packetLength = readRegister(REG_PAYLOAD_LENGTH);
+      printf("Packet Length: %i", packetLength);
     } else {
       packetLength = readRegister(REG_RX_NB_BYTES);
     }
