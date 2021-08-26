@@ -73,7 +73,7 @@ void sendAck(string message) {
   char buf[sizeof(check)];
 
   sprintf(buf,"%d",sizeof(check));
-  
+  printf("\nCheck sum reply: %d\n",buf);
   LoRa.beginPacket();
   
   LoRa.write(buf[0]);  // Send Check Sum
