@@ -22,7 +22,6 @@
 #include <cstring>
 #include <sys/ioctl.h>
 #include <net/if.h>
-#include <sstream>
 
 using namespace std;
 
@@ -71,7 +70,7 @@ void sendAck(string message) {
     check += message[i];
   }
   LoRa.beginPacket();
-  LoRa.print(to_string(check));  // Send Check Sum
+  LoRa.write(to_string(check));  // Send Check Sum
   LoRa.endPacket();
   //Serial.print(message);
   //Serial.print(" ");
