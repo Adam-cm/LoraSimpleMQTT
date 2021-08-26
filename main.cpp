@@ -86,16 +86,18 @@ int main () {
 
       if (packetSize) {
         // received a packet
-        printf("Packet Received\n");
-      string message = "";        // Clear message string
-      while (LoRa.available()) {
-        message = message + ((char)LoRa.read());
-      }
+        //printf("Packet Received\n");
+        string message = "";        // Clear message string
+        while (LoRa.available()) {
+          message = message + ((char)LoRa.read());
+        }
       printf("Message: %s\n",message.c_str());
-      /*string rssi = "\"RSSI\":\"" + string(LoRa.packetRssi()) + "\"";
+      string rssi = "\"RSSI\":\"" + string(LoRa.packetRssi()) + "\"";
       string jsonString = message;
       jsonString.replace("xxx", rssi);
-    
+
+      printf("Message: %s\n",jsonString.c_str());
+      /*
       int ii = jsonString.indexOf("Count", 1);
       string count = jsonString.substring(ii + 8, ii + 11);
       counter = count.toInt();
