@@ -1,8 +1,10 @@
 # LoRaSimpleMQTT
 # Single Channel LoRaWAN Gateway
 
+LIBS = -lwiringPi
+
 LoraSimpleMQTT: main.o LoRa.o base64.o
-	g++ main.o LoRa.o base64.o -o LoraSimpleMQTT
+	g++ main.o LoRa.o base64.o $(LIBS) -o LoraSimpleMQTT
 
 main.o: main.cpp
 	g++ -c main.cpp

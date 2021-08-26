@@ -55,10 +55,6 @@ int ssPin = 6;
 int dio0  = 0;
 int RST   = 3;
 static const int CHANNEL = 0;
-// Executed Interrupt
-void myInterrupt(void) {
-    printf("LoRa Message Received!\n");
-}
 
 int main () {
 
@@ -76,25 +72,58 @@ int main () {
     }
 
     LoRa.setSpreadingFactor(SF);
-    printf("System Configured with:\n");
+    printf("\nSystem Configured with:\n");
     // LoRa.setSignalBandwidth(bw);
     //printf("LoRa Started");
     printf("Frequency %li\n", freq);
-    printf(" Bandwidth %li\n",bw);
-    printf(" SF: %i\n", SF);
-
+    printf("Bandwidth %li\n",bw);
+    printf("SF: %i\n=========\n", SF);
     //System Configured
+
+    while(1){
+      // try to parse packet
+      int packetSize = LoRa.parsePacket();
+      if (packetSize) {
+        // received a packet
+        String message = "";        // Clear message string
+      while (LoRa.available()) {
+        message = message + ((char)LoRa.read());
+      }
+      String rssi = "\"RSSI\":\"" + String(LoRa.packetRssi()) + "\"";
+      String jsonString = message;
+      jsonString.replace("xxx", rssi);
     
+      int ii = jsonString.indexOf("Count", 1);
+      String count = jsonString.substring(ii + 8, ii + 11);
+      counter = count.toInt();
+      // Same Message Received
+      if (counter - lastCounter == 0) Serial.println("Repetition");
+      lastCounter = counter;
 
-    // Assigning Interrupt
-    if (wiringPiISR(0, INT_EDGE_RISING, &myInterrupt) < 0) {
-        fprintf(stderr, "Unable to setup ISR: %s\n", strerror(errno));
-        return 1;
+      // Finished recieving send Ack
+      sendAck(message);
+      Serial.print("Message Recieved and Acknowledged: ");
+      Serial.println(jsonString);
+
+      String value1 = jsonString.substring(8, 11);  // Vcc or heighth
+      String value2 = jsonString.substring(23, 26); //counter
     }
-
-    while(1);
-
+  };
     return (0);
 
 }
 
+void sendAck(String message) {
+  int check = 0;
+  // Calculate Check Sum
+  for (int i = 0; i < message.length(); i++) {
+    check += message[i];
+  }
+  LoRa.beginPacket();
+  LoRa.print(String(check));  // Send Check Sum
+  LoRa.endPacket();
+  //Serial.print(message);
+  //Serial.print(" ");
+  //Serial.print("Ack Sent: ");
+  //Serial.println(check);
+}
