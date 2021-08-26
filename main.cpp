@@ -55,6 +55,14 @@ int dio0  = 0;
 int RST   = 3;
 static const int CHANNEL = 0;
 
+bool replace(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+    return true;
+}
+
 int main () {
 
     // Setup Wiring Pi
@@ -96,7 +104,8 @@ int main () {
       string pktrssi = to_string(LoRa.packetRssi());
       string rssi = ("\"RSSI\":\"" + pktrssi + "\"");
       string jsonString = message;
-      jsonString.replace("xxx", rssi);
+      //jsonString.replace("xxx", rssi);
+      replace(jsonString, "xxx", rssi);
 
       printf("Message: %s\n",jsonString.c_str());
       /*
