@@ -70,7 +70,12 @@ void sendAck(string message) {
     check += message[i];
   }
   LoRa.beginPacket();
-  LoRa.write((to_string(check).c_str()));  // Send Check Sum
+  char buf[sizeof(check)];
+  sprintf(buf, "%d",(int)((ceil(log10(buf))+1)*sizeof(char)));
+  LoRa.write(buf,sizeof(buf));  // Send Check Sum
+
+
+
   LoRa.endPacket();
   //Serial.print(message);
   //Serial.print(" ");
