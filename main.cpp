@@ -35,8 +35,7 @@ using namespace std;
  * Lora Configurations!
  *
  *******************************************************************************/
-//#include "LoRa.h"
-class LoRa;
+#include "LoRa.h"
 
 const long freq = 915E6;
 const int SF = 7;
@@ -54,7 +53,7 @@ int counter, lastCounter;
 int ssPin = 6;
 int dio0  = 0;
 int RST   = 3;
-
+static const int CHANNEL = 0;
 // Executed Interrupt
 void myInterrupt(void) {
     printf("LoRa Message Received!\n");
