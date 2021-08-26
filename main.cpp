@@ -91,7 +91,7 @@ int main () {
       while (LoRa.available()) {
         message = message + ((char)LoRa.read());
       }
-      printf("Message: %s\n",message);
+      printf("Message: %s\n",message.c_str());
       /*string rssi = "\"RSSI\":\"" + string(LoRa.packetRssi()) + "\"";
       string jsonString = message;
       jsonString.replace("xxx", rssi);
