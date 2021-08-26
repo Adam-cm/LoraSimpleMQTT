@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <stdint>
+#include <stdint.h>
 #include <string.h>
 #include <iostream>
 #include <cstdlib>
