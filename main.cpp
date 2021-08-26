@@ -66,11 +66,11 @@ int main () {
     wiringPiSPISetup(CHANNEL, 500000);
 
     printf("Configuring SX1276\n");
-    Lora.setPins(ssPin,dio0,RST);
+    LoRa.setPins(ssPin,dio0,RST);
     
     printf("Starting LoRa Server\n");
     if (!LoRa.begin(freq)) {
-    Serial.println("Starting LoRa failed!");
+    printf("\nStarting LoRa failed!\n");
     while (1);
     }
 
@@ -78,12 +78,9 @@ int main () {
     printf("System Configured with:\n");
     // LoRa.setSignalBandwidth(bw);
     //printf("LoRa Started");
-    printf("Frequency ");
-    printf(freq);
-    printf(" Bandwidth ");
-    printf(bw);
-    printf(" SF ");
-    printf(SF);
+    printf("Frequency %li\n", freq);
+    printf(" Bandwidth %li\n",bw);
+    printf(" SF: %i\n", SF);
 
     //System Configured
     
