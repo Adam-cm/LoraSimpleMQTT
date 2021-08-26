@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "LoRa.h"
 
+static const int CHANNEL = 0;
+
 // registers
 #define REG_FIFO                 0x00
 #define REG_OP_MODE              0x01
@@ -185,7 +187,7 @@ int LoRaClass::endPacket(bool async)
   if (!async) {
     // wait for TX done
     while ((readRegister(REG_IRQ_FLAGS) & IRQ_TX_DONE_MASK) == 0) {
-      yield();
+      delay(1);
     }
     // clear IRQ's
     writeRegister(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK);
@@ -266,13 +268,13 @@ float LoRaClass::packetSnr()
 long LoRaClass::packetFrequencyError()
 {
   int32_t freqError = 0;
-  freqError = static_cast<int32_t>(readRegister(REG_FREQ_ERROR_MSB) & B111);
+  freqError = static_cast<int32_t>(readRegister(REG_FREQ_ERROR_MSB) & 7);
   freqError <<= 8L;
   freqError += static_cast<int32_t>(readRegister(REG_FREQ_ERROR_MID));
   freqError <<= 8L;
   freqError += static_cast<int32_t>(readRegister(REG_FREQ_ERROR_LSB));
 
-  if (readRegister(REG_FREQ_ERROR_MSB) & B1000) { // Sign bit is on
+  if (readRegister(REG_FREQ_ERROR_MSB) & 8) { // Sign bit is on
      freqError -= 524288; // B1000'0000'0000'0000'0000
   }
 
@@ -358,13 +360,15 @@ void LoRaClass::onReceive(void(*callback)(int))
   if (callback) {
     pinMode(_dio0, INPUT);
 #ifdef SPI_HAS_NOTUSINGINTERRUPT
-    SPI.usingInterrupt(digitalPinToInterrupt(_dio0));
+    //SPI.usingInterrupt(digitalPinToInterrupt(_dio0));
 #endif
-    attachInterrupt(digitalPinToInterrupt(_dio0), LoRaClass::onDio0Rise, RISING);
+    //attachInterrupt(digitalPinToInterrupt(_dio0), LoRaClass::onDio0Rise, RISING);
+    wiringPiISR(0, INT_EDGE_RISING, LoRaClass::onDio0Rise);
   } else {
-    detachInterrupt(digitalPinToInterrupt(_dio0));
+    //detachInterrupt(digitalPinToInterrupt(_dio0));
+    pinMode(_dio0, OUTPUT);
 #ifdef SPI_HAS_NOTUSINGINTERRUPT
-    SPI.notUsingInterrupt(digitalPinToInterrupt(_dio0));
+    //SPI.notUsingInterrupt(digitalPinToInterrupt(_dio0));
 #endif
   }
 }
@@ -376,13 +380,15 @@ void LoRaClass::onTxDone(void(*callback)())
   if (callback) {
     pinMode(_dio0, INPUT);
 #ifdef SPI_HAS_NOTUSINGINTERRUPT
-    SPI.usingInterrupt(digitalPinToInterrupt(_dio0));
+    //SPI.usingInterrupt(digitalPinToInterrupt(_dio0));
 #endif
-    attachInterrupt(digitalPinToInterrupt(_dio0), LoRaClass::onDio0Rise, RISING);
+    //attachInterrupt(digitalPinToInterrupt(_dio0), LoRaClass::onDio0Rise, RISING);
+    wiringPiISR(0, INT_EDGE_RISING, LoRaClass::onDio0Rise)
   } else {
-    detachInterrupt(digitalPinToInterrupt(_dio0));
+    //detachInterrupt(digitalPinToInterrupt(_dio0));
+    pinMode(_dio0, OUTPUT);
 #ifdef SPI_HAS_NOTUSINGINTERRUPT
-    SPI.notUsingInterrupt(digitalPinToInterrupt(_dio0));
+    //SPI.notUsingInterrupt(digitalPinToInterrupt(_dio0));
 #endif
   }
 }
@@ -489,7 +495,7 @@ void LoRaClass::setSpreadingFactor(int sf)
 
 long LoRaClass::getSignalBandwidth()
 {
-  byte bw = (readRegister(REG_MODEM_CONFIG_1) >> 4);
+  uint8_t bw = (readRegister(REG_MODEM_CONFIG_1) >> 4);
 
   switch (bw) {
     case 0: return 7.8E3;
@@ -543,10 +549,11 @@ void LoRaClass::setLdoFlag()
   long symbolDuration = 1000 / ( getSignalBandwidth() / (1L << getSpreadingFactor()) ) ;
 
   // Section 4.1.1.6
-  boolean ldoOn = symbolDuration > 16;
+  bool ldoOn = symbolDuration > 16;
 
   uint8_t config3 = readRegister(REG_MODEM_CONFIG_3);
-  bitWrite(config3, 3, ldoOn);
+  //bitWrite(config3, 3, ldoOn);
+  config = config3 ^ (ldoOn << 3 )
   writeRegister(REG_MODEM_CONFIG_3, config3);
 }
 
@@ -696,11 +703,13 @@ uint8_t LoRaClass::readRegister(uint8_t address)
 {
   unsigned char spibuf[2];
 
-  selectreceiver();
+  //selectreceiver();
+  digitalWrite(ssPin, LOW);
   spibuf[0] = address & 0x7F;
   spibuf[1] = 0x00;
   wiringPiSPIDataRW(CHANNEL, spibuf, 2);
-  unselectreceiver();
+  //unselectreceiver();
+  digitalWrite(ssPin, HIGH);
 
   return spibuf[1];
 }
@@ -711,9 +720,11 @@ void LoRaClass::writeRegister(uint8_t address, uint8_t value)
 
   spibuf[0] = address | 0x80;
   spibuf[1] = value;
-  selectreceiver();
+  //selectreceiver();
+  digitalWrite(ssPin, LOW);
   wiringPiSPIDataRW(CHANNEL, spibuf, 2);
-
+  //unselectreceiver();
+  digitalWrite(ssPin, HIGH);
 }
 
 ISR_PREFIX void LoRaClass::onDio0Rise()
