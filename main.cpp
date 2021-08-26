@@ -63,6 +63,21 @@ bool replace(std::string& str, const std::string& from, const std::string& to) {
     return true;
 }
 
+void sendAck(string message) {
+  int check = 0;
+  // Calculate Check Sum
+  for (int i = 0; i < message.length(); i++) {
+    check += message[i];
+  }
+  LoRa.beginPacket();
+  LoRa.print(to_string(check));  // Send Check Sum
+  LoRa.endPacket();
+  //Serial.print(message);
+  //Serial.print(" ");
+  //Serial.print("Ack Sent: ");
+  //Serial.println(check);
+}
+
 int main () {
 
     // Setup Wiring Pi
@@ -126,19 +141,4 @@ int main () {
   }
     return (0);
 
-}
-
-void sendAck(string message) {
-  int check = 0;
-  // Calculate Check Sum
-  for (int i = 0; i < message.length(); i++) {
-    check += message[i];
-  }
-  LoRa.beginPacket();
-  LoRa.print(to_string(check));  // Send Check Sum
-  LoRa.endPacket();
-  //Serial.print(message);
-  //Serial.print(" ");
-  //Serial.print("Ack Sent: ");
-  //Serial.println(check);
 }
