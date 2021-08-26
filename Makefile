@@ -3,7 +3,7 @@
 
 CC=g++
 CFLAGS=-c -Wall
-LIBS=-lwiringPi
+LIBS=-lwiringPi -lLoRa
 
 all: LoraSimpleMQTT
 
