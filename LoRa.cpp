@@ -121,9 +121,11 @@ int LoRaClass::begin(long frequency)
 
   // start SPI
   //_spi->begin();
+  wiringPiSPISetup(CHANNEL, 500000);
 
   // check version
   uint8_t version = readRegister(REG_VERSION);
+  printf("Version: %i", version);
   if (version != 0x12) {
     return 0;
   }

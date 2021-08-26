@@ -59,15 +59,15 @@ int main () {
 
     // Setup Wiring Pi
     wiringPiSetup () ;
-    wiringPiSPISetup(CHANNEL, 500000);
+    //wiringPiSPISetup(CHANNEL, 500000);
 
     printf("Configuring SX1276\n");
     LoRa.setPins(ssPin,dio0,RST);
     
     printf("Starting LoRa Server\n");
     if (!LoRa.begin(freq)) {
-    printf("\nStarting LoRa failed!\n");
-    while (1);
+      printf("\nStarting LoRa failed!\n");
+      while (1);
     }
 
     LoRa.setSpreadingFactor(SF);
@@ -82,6 +82,8 @@ int main () {
     while(1){
       // try to parse packet
       int packetSize = LoRa.parsePacket();
+      printf("Waiting to Receive pakcets:\n");
+
       if (packetSize) {
         // received a packet
         printf("Packet Received\n");
