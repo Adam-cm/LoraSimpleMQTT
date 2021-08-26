@@ -109,15 +109,10 @@ int main () {
 
     while(1){
       int packetSize = LoRa.parsePacket();
-      if (packetSize) {
+      
+      if (packetSize){
         // received a packet
         printf("Packet Received: ");
-        string message = "";        // Clear message string
-        while (LoRa.available()) {
-          //message = message + ((char)LoRa.read());
-          LoRa.read();
-        }
-        printf("Message Stored\n");
       }
     }
 

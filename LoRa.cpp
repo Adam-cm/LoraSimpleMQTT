@@ -307,7 +307,6 @@ size_t LoRaClass::write(const char *buffer, size_t size)
 
 int LoRaClass::available()
 {
-  printf("\n--Packets Still Available--\n");
   return (readRegister(REG_RX_NB_BYTES) - _packetIndex);
 }
 
