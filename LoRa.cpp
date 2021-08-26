@@ -117,7 +117,7 @@ int LoRaClass::begin(long frequency)
   }
 
   // start SPI
-  _spi->begin();
+  //_spi->begin();
 
   // check version
   uint8_t version = readRegister(REG_VERSION);
@@ -148,15 +148,6 @@ int LoRaClass::begin(long frequency)
   idle();
 
   return 1;
-}
-
-void LoRaClass::end()
-{
-  // put in sleep mode
-  sleep();
-
-  // stop SPI
-  _spi->end();
 }
 
 int LoRaClass::beginPacket(int implicitHeader)
@@ -655,26 +646,6 @@ void LoRaClass::setPins(int ss, int reset, int dio0)
   _dio0 = dio0;
 }
 
-void LoRaClass::setSPI(SPIClass& spi)
-{
-  _spi = &spi;
-}
-
-void LoRaClass::setSPIFrequency(uint32_t frequency)
-{
-  _spiSettings = SPISettings(frequency, MSBFIRST, SPI_MODE0);
-}
-
-void LoRaClass::dumpRegisters(Stream& out)
-{
-  for (int i = 0; i < 128; i++) {
-    out.print("0x");
-    out.print(i, HEX);
-    out.print(": 0x");
-    out.println(readRegister(i), HEX);
-  }
-}
-
 void LoRaClass::explicitHeaderMode()
 {
   _implicitHeaderMode = 0;
@@ -722,28 +693,26 @@ void LoRaClass::handleDio0Rise()
 
 uint8_t LoRaClass::readRegister(uint8_t address)
 {
-  return singleTransfer(address & 0x7f, 0x00);
+  unsigned char spibuf[2];
+
+  selectreceiver();
+  spibuf[0] = address & 0x7F;
+  spibuf[1] = 0x00;
+  wiringPiSPIDataRW(CHANNEL, spibuf, 2);
+  unselectreceiver();
+
+  return spibuf[1];
 }
 
 void LoRaClass::writeRegister(uint8_t address, uint8_t value)
 {
-  singleTransfer(address | 0x80, value);
-}
+  unsigned char spibuf[2];
 
-uint8_t LoRaClass::singleTransfer(uint8_t address, uint8_t value)
-{
-  uint8_t response;
+  spibuf[0] = address | 0x80;
+  spibuf[1] = value;
+  selectreceiver();
+  wiringPiSPIDataRW(CHANNEL, spibuf, 2);
 
-  digitalWrite(_ss, LOW);
-
-  _spi->beginTransaction(_spiSettings);
-  _spi->transfer(address);
-  response = _spi->transfer(value);
-  _spi->endTransaction();
-
-  digitalWrite(_ss, HIGH);
-
-  return response;
 }
 
 ISR_PREFIX void LoRaClass::onDio0Rise()

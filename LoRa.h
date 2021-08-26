@@ -89,10 +89,10 @@ public:
   uint8_t random();
 
   void setPins(int ss = LORA_DEFAULT_SS_PIN, int reset = LORA_DEFAULT_RESET_PIN, int dio0 = LORA_DEFAULT_DIO0_PIN);
-  void setSPI(SPIClass& spi);
-  void setSPIFrequency(uint32_t frequency);
+  //void setSPI(SPIClass& spi);
+  //void setSPIFrequency(uint32_t frequency);
 
-  void dumpRegisters(Stream& out);
+  //void dumpRegisters(Stream& out);
 
 private:
   void explicitHeaderMode();
@@ -113,8 +113,8 @@ private:
   static void onDio0Rise();
 
 private:
-  SPISettings _spiSettings;
-  SPIClass* _spi;
+  //SPISettings _spiSettings;
+  //SPIClass* _spi;
   int _ss;
   int _reset;
   int _dio0;

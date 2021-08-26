@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "cstring": "cpp",
-        "cstddef": "cpp"
+        "cstddef": "cpp",
+        "xmemory": "cpp",
+        "initializer_list": "cpp",
+        "xstring": "cpp",
+        "xutility": "cpp"
     }
 }
