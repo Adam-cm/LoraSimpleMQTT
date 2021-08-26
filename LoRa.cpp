@@ -222,17 +222,14 @@ int LoRaClass::parsePacket(int size)
     _packetIndex = 0;
 
     // read packet length
-    if (_implicitHeaderMode) {
-      packetLength = readRegister(REG_PAYLOAD_LENGTH);
-    } else {
-      packetLength = readRegister(REG_RX_NB_BYTES);
-    }
+    packetLength = readRegister(REG_RX_NB_BYTES);
 
     // set FIFO address to current RX address
     writeRegister(REG_FIFO_ADDR_PTR, readRegister(REG_FIFO_RX_CURRENT_ADDR));
 
     // put in standby mode
     idle();
+    
   } else if (readRegister(REG_OP_MODE) != (MODE_LONG_RANGE_MODE | MODE_RX_SINGLE)) {
     // not currently in RX mode
 
