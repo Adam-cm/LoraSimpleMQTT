@@ -218,9 +218,9 @@ int LoRaClass::parsePacket(int size)
   int packetLength = 0;
   int irqFlags = readRegister(REG_IRQ_FLAGS);
 
-  if(irqFlags > 0){
-    printf("IRQ Flags: %i\n",irqFlags);
-  }
+  //if(irqFlags > 0){
+  //  printf("IRQ Flags: %i\n",irqFlags);
+  //}
 
   //printf("IRQ Flags: %i", irqFlags);
   if (size > 0) {

@@ -112,6 +112,13 @@ int main () {
       if (packetSize) {
         // received a packet
         printf("Packet Received\n");
+        string message = "";        // Clear message string
+        // Store Message in string Message
+        while (LoRa.available()) {
+          message = message + ((char)LoRa.read());
+        }
+        // Reply to Node with Ack
+        sendAck(message);
       }
     }
 
