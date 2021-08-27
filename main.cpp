@@ -38,6 +38,8 @@ using namespace std;
 
 #include "raspberry_osio_client.h"
 
+RaspberryOSIOClient * client = 0;
+
 /*******************************************************************************
  *
  * Lora Configurations!
@@ -97,11 +99,11 @@ int main () {
   // Setup Wiring Pi
     wiringPiSetup () ;
     //wiringPiSPISetup(CHANNEL, 500000);
-
+    printf(" -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
     printf("\n======================================================\n\n");
     //printf(" Configuring SX1276\n");
     LoRa.setPins(ssPin,RST,dio0);
-    printf(" -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
+    
     printf(" Starting LoRa Gateway\n");
     if (!LoRa.begin(freq)) {
       printf("\nStarting LoRa failed!\n");
@@ -119,7 +121,8 @@ int main () {
     //System Configured
 
     // Configure MQTT connection to thingspeak
-
+    // Start MQTT Client
+    client = new RaspberryOSIOClient("AAINMAc9Az0yFB4MIxUNKQ8", "AAINMAc9Az0yFB4MIxUNKQ8", "Oe3mjgWv8jQD2PIGaEnAGmaQ");
     
     while(1){
       int packetSize = LoRa.parsePacket();
@@ -149,7 +152,12 @@ int main () {
           printf("Repetition\n");
         } 
         else{
+          // Print Message Received
           printf("Message: %s\n",jsonString.c_str());
+          // Send msg to MQTT Broker (Thingspeak)
+          result = client->publish("Temp 1", "22.5");
+          printf("MQTT: %s\n",(result == OSIO_ERROR_SUCCESS ? "success" : "error"));
+          delete client;
         }
         lastCounter = counter;
       }
