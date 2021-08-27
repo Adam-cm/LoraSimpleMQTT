@@ -90,8 +90,8 @@ int main () {
     wiringPiSetup () ;
     //wiringPiSPISetup(CHANNEL, 500000);
 
-    printf("\n===========================\n");
-    printf(" Configuring SX1276\n");
+    printf("\n======================================================\n\n");
+    //printf(" Configuring SX1276\n");
     LoRa.setPins(ssPin,RST,dio0);
     
     printf(" Starting LoRa Server\n");
@@ -99,13 +99,15 @@ int main () {
       printf("\nStarting LoRa failed!\n");
       while (1);
     }
+    //printf(" Status: Online");
+
     LoRa.setSpreadingFactor(SF);
-    printf("\n System Configured with:\n");
+    printf("\n - - System Configuration - - \n");
     // LoRa.setSignalBandwidth(bw);
     //printf("LoRa Started");
-    printf(" Frequency %li\n", freq);
-    printf(" Bandwidth %li\n",bw);
-    printf(" SF: %i\n===========================\n", SF);
+    printf(" Frequency: %li\n", freq);
+    printf(" Bandwidth: %li\n",bw);
+    printf(" Spreading Factor: %i\n\n======================================================\n", SF);
     //System Configured
 
     while(1){

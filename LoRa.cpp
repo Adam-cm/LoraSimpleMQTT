@@ -133,7 +133,7 @@ int LoRaClass::begin(long frequency)
     return 0;
   }
   else{
-    printf("SX1276 Detected, Configuring module\n");
+    printf(" SX1276 Detected and Configured\n");
 
     // put in sleep mode
     sleep();
