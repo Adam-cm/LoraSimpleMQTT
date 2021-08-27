@@ -126,32 +126,38 @@ int LoRaClass::begin(long frequency)
 
   // check version
   uint8_t version = readRegister(REG_VERSION);
-  printf("Version: %i", version);
+  //printf("Version: %i", version);
+
   if (version != 0x12) {
+    printf("\nUnknown LoRa Module\n");
     return 0;
   }
+  else{
+    printf("SX1276 Detected, Configuring module\n");
 
-  // put in sleep mode
-  sleep();
+    // put in sleep mode
+    sleep();
 
-  // set frequency
-  setFrequency(frequency);
+    // set frequency
+    setFrequency(frequency);
 
-  // set base addresses
-  writeRegister(REG_FIFO_TX_BASE_ADDR, 0);
-  writeRegister(REG_FIFO_RX_BASE_ADDR, 0);
+    // set base addresses
+    writeRegister(REG_FIFO_TX_BASE_ADDR, 0);
+    writeRegister(REG_FIFO_RX_BASE_ADDR, 0);
 
-  // set LNA boost
-  writeRegister(REG_LNA, readRegister(REG_LNA) | 0x03);
+    // set LNA boost
+    writeRegister(REG_LNA, readRegister(REG_LNA) | 0x03);
 
-  // set auto AGC
-  writeRegister(REG_MODEM_CONFIG_3, 0x04);
+    // set auto AGC
+    writeRegister(REG_MODEM_CONFIG_3, 0x04);
 
-  // set output power to 17 dBm
-  setTxPower(17);
+    // set output power to 17 dBm
+    setTxPower(17);
 
-  // put in standby mode
-  idle();
+    // put in standby mode
+    idle();
+
+  }
 
   return 1;
 }

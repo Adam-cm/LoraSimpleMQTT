@@ -90,21 +90,22 @@ int main () {
     wiringPiSetup () ;
     //wiringPiSPISetup(CHANNEL, 500000);
 
-    printf("Configuring SX1276\n");
+    printf("\n===========================\n");
+    printf(" Configuring SX1276\n");
     LoRa.setPins(ssPin,RST,dio0);
     
-    printf("Starting LoRa Server\n");
+    printf(" Starting LoRa Server\n");
     if (!LoRa.begin(freq)) {
       printf("\nStarting LoRa failed!\n");
       while (1);
     }
     LoRa.setSpreadingFactor(SF);
-    printf("\nSystem Configured with:\n");
+    printf("\n System Configured with:\n");
     // LoRa.setSignalBandwidth(bw);
     //printf("LoRa Started");
-    printf("Frequency %li\n", freq);
-    printf("Bandwidth %li\n",bw);
-    printf("SF: %i\n=================\n", SF);
+    printf(" Frequency %li\n", freq);
+    printf(" Bandwidth %li\n",bw);
+    printf(" SF: %i\n===========================\n", SF);
     //System Configured
 
     while(1){
@@ -126,16 +127,17 @@ int main () {
         string jsonString = message;
         //jsonString.replace("xxx", rssi);
         replace(jsonString, "xxx", rssi);
-
-        printf("Message: %s\n",jsonString.c_str());
       
         int ii = jsonString.find("Count", 1);
         string count = jsonString.substr(ii + 8, ii + 11);
         counter = stoi(count);
         // Same Message Received
         if (counter - lastCounter == 0){
-          printf("Repetition");
+          printf("Repetition\n");
         } 
+        else{
+          printf("Message: %s\n",jsonString.c_str());
+        }
         lastCounter = counter;
       }
     }
