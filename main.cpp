@@ -40,8 +40,15 @@ using namespace std;
  * MQTT Configuration
  *
  *******************************************************************************/
+#include <PubSubClient.h>
+//#include <ESP8266WiFi.h>
+//#include <credentials.h>
 
+//IPAddress server(192, 168, 0, 203);
+//#define TOPIC "mailBox"
 
+//WiFiClient wifiClient;
+//PubSubClient client(wifiClient);
 
 /*******************************************************************************
  *
@@ -128,7 +135,26 @@ int main () {
     printf("  Bandwidth: %li\n",bw);
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
-    
+
+    /*
+    // MQTT
+    WiFi.begin(mySSID, myPASSWORD);
+
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("");
+
+    client.setServer(server, 1883);
+    client.setCallback(callback);
+
+    if (client.connect("Mailbox", "admin", "admin")) {
+      client.publish(TOPIC"/STAT", "Mailbox live");
+      // client.subscribe("inTopic");
+    }
+    Serial.println("MQTT Started");
+    */
     // Main Loop
     while(1){
       // Check for LoRa Message
