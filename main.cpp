@@ -127,7 +127,7 @@ int main () {
         //jsonString.replace("xxx", rssi);
         replace(jsonString, "xxx", rssi);
 
-        //printf("Message: %s\n",jsonString.c_str());
+        printf("Message: %s\n",jsonString.c_str());
       
         int ii = jsonString.find("Count", 1);
         string count = jsonString.substr(ii + 8, ii + 11);
