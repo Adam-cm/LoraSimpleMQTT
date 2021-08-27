@@ -63,6 +63,7 @@ int dio0  = 0;
 int RST   = 3;
 static const int CHANNEL = 0;
 
+// Replace string values
 bool replace(std::string& str, const std::string& from, const std::string& to) {
     size_t start_pos = str.find(from);
     if(start_pos == std::string::npos)
@@ -71,6 +72,7 @@ bool replace(std::string& str, const std::string& from, const std::string& to) {
     return true;
 }
 
+// Message Reply
 void sendAck(string message) {
   int check = 0;
   // Calculate Check Sum
@@ -83,22 +85,6 @@ void sendAck(string message) {
   LoRa.write(checksum.c_str(),4);  // Send Check Sum
   LoRa.endPacket();
 }
-
-void die(const char *s)
-{
-    perror(s);
-    exit(1);
-}
-
-void sendudp(char *msg, int length) {
-  //send the update
-  inet_aton(SERVER1 , &si_other.sin_addr);
-
-  if (sendto(s, (char *)msg, length, 0 , (struct sockaddr *) &si_other, slen)==-1){
-    die("sendto()");
-  }
-}
-
 
 int main () {
   // Setup Wiring Pi
