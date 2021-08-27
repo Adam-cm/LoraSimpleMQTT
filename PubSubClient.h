@@ -7,7 +7,7 @@
 #ifndef PubSubClient_h
 #define PubSubClient_h
 
-#include <Arduino.h>
+//#include <Arduino.h>
 #include "IPAddress.h"
 #include "Client.h"
 #include "Stream.h"
