@@ -110,6 +110,9 @@ int main () {
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
 
+    // Configure MQTT connection to thingspeak
+
+    
     while(1){
       int packetSize = LoRa.parsePacket();
       if (packetSize) {
