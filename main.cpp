@@ -1,11 +1,16 @@
 /*******************************************************************************
  *
- * Copyright (c) 2015 Thomas Telkamp
+ * IoT Wetlands Gateway (Raspberry Pi)
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Provides a LoRa connection operating on a single frequency and spreading
+ * factor. It implments a simple point to point communication to allow
+ * data managment and buffering.
+ * 
+ * TO_DO:
+ * Need to implement a MQTT server to publish to the thingspeak network
+ * 
+ * Created By: Adam Hawke
+ * Created: 26/08/2021
  *
  *******************************************************************************/
 
@@ -32,7 +37,7 @@ using namespace std;
 
 /*******************************************************************************
  *
- * MQTT Configurations!
+ * MQTT Configuration
  *
  *******************************************************************************/
 
@@ -40,7 +45,7 @@ using namespace std;
 
 /*******************************************************************************
  *
- * Lora Configurations!
+ * Lora Paramaters
  *
  *******************************************************************************/
 #include "LoRa.h"
@@ -53,7 +58,7 @@ int counter, lastCounter;
 
 /*******************************************************************************
  *
- * Configure these values!
+ * Wiring Pi Configuration
  *
  *******************************************************************************/
 
@@ -62,6 +67,12 @@ int ssPin = 6;
 int dio0  = 0;
 int RST   = 3;
 static const int CHANNEL = 0;
+
+/*******************************************************************************
+ *
+ * Functions
+ *
+ *******************************************************************************/
 
 // Replace string values
 bool replace(std::string& str, const std::string& from, const std::string& to) {
@@ -86,31 +97,39 @@ void sendAck(string message) {
   LoRa.endPacket();
 }
 
+/*******************************************************************************
+ *
+ * Main Program
+ * 
+ *******************************************************************************/
+
 int main () {
-  // Setup Wiring Pi
-    wiringPiSetup () ;
-    //wiringPiSPISetup(CHANNEL, 500000);
-    printf(" -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
+    // Console Print
+    printf("\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
     printf("\n======================================================\n\n");
-    //printf(" Configuring SX1276\n");
-    LoRa.setPins(ssPin,RST,dio0);
+
+    // Setup Wiring Pi
+    wiringPiSetup () ;                      // Start wiring Pi
+    LoRa.setPins(ssPin,RST,dio0);           // Set module pins
     
+    // Configure Gateway
     printf(" Starting LoRa Gateway\n");
+    // Start LoRa with Freq
     if (!LoRa.begin(freq)) {
-      printf("\nStarting LoRa failed!\n");
+      printf("\nStarting LoRa failed!\n");  
       while (1);
     }
-    //printf(" Status: Online");
-
-    LoRa.setSpreadingFactor(SF);
-    printf("\n - - System Configuration - - \n");
+    LoRa.setSpreadingFactor(SF);            // Set Spreading Factor
     // LoRa.setSignalBandwidth(bw);
-    //printf("LoRa Started");
+
+    // Print Console, configuration successful
+    printf("\n - - System Configuration - - \n");
     printf("  Frequency: %li Hz\n", freq);
     printf("  Bandwidth: %li\n",bw);
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
     
+    // Main Loop
     while(1){
       // Check for LoRa Message
       int packetSize = LoRa.parsePacket();
