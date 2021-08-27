@@ -40,9 +40,9 @@ using namespace std;
 
 RaspberryOSIOClient * client = 0;
 
-string username = 'AAINMAc9Az0yFB4MIxUNKQ8';
-string deviceid = 'AAINMAc9Az0yFB4MIxUNKQ8';
-string password = 'Oe3mjgWv8jQD2PIGaEnAGmaQ';
+string username = "AAINMAc9Az0yFB4MIxUNKQ8";
+string deviceid = "AAINMAc9Az0yFB4MIxUNKQ8";
+string password = "Oe3mjgWv8jQD2PIGaEnAGmaQ";
 
 /*******************************************************************************
  *
