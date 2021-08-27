@@ -108,7 +108,7 @@ int main () {
     //System Configured
 
     while(1){
-      int irqFlags = readRegister(REG_IRQ_FLAGS);
+      int irqFlags = readRegister(0x12);
       if(irqFlags > 0){
         printf("IRQ Flags: %i\n",irqFlags);
       }
