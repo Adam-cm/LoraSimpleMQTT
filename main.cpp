@@ -111,7 +111,7 @@ int main () {
       int packetSize = LoRa.parsePacket();
       if (packetSize) {
         // received a packet
-        printf("Packet Received\n");
+        // printf("Packet Received\n");
         string message = "";        // Clear message string
         // Store Message in string Message
         while (LoRa.available()) {
@@ -119,6 +119,24 @@ int main () {
         }
         // Reply to Node with Ack
         sendAck(message);
+
+        // Present Message
+        string pktrssi = to_string(LoRa.packetRssi());
+        string rssi = ("\"RSSI\":\"" + pktrssi + "\"");
+        string jsonString = message;
+        //jsonString.replace("xxx", rssi);
+        replace(jsonString, "xxx", rssi);
+
+        //printf("Message: %s\n",jsonString.c_str());
+      
+        int ii = jsonString.find("Count", 1);
+        string count = jsonString.substr(ii + 8, ii + 11);
+        counter = stoi(count);
+        // Same Message Received
+        if (counter - lastCounter == 0){
+          printf("Repetition");
+        } 
+        lastCounter = counter;
       }
     }
 
