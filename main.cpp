@@ -108,10 +108,9 @@ int main () {
     //System Configured
 
     while(1){
-      int packetSize = LoRa.parsePacket();
-      if (packetSize) {
-        // received a packet
-        printf("Packet Received\n");
+      int irqFlags = readRegister(REG_IRQ_FLAGS);
+      if(irqFlags > 0){
+        printf("IRQ Flags: %i\n",irqFlags);
       }
     }
 
