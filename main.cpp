@@ -40,6 +40,10 @@ using namespace std;
 
 RaspberryOSIOClient * client = 0;
 
+string username = "AAINMAc9Az0yFB4MIxUNKQ8";
+string deviceid = "AAINMAc9Az0yFB4MIxUNKQ8";
+string password = "Oe3mjgWv8jQD2PIGaEnAGmaQ";
+
 /*******************************************************************************
  *
  * Lora Configurations!
@@ -154,8 +158,8 @@ int main () {
           // Print Message Received
           printf("Message: %s\n",jsonString.c_str());
           // Send msg to MQTT Broker (Thingspeak)
-          client = new RaspberryOSIOClient("AAINMAc9Az0yFB4MIxUNKQ8", "AAINMAc9Az0yFB4MIxUNKQ8", "Oe3mjgWv8jQD2PIGaEnAGmaQ");
-          bool result = client->publish("Temp 1", "22.5");
+          client = new RaspberryOSIOClient(username.c_str(), deviceid.c_str(), password.c_str());
+          bool result = client->publish("Temp 1", '22.5');
           printf("MQTT: %s\n",(result == true ? "success" : "error"));
           delete client;
         }
