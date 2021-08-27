@@ -217,6 +217,11 @@ int LoRaClass::parsePacket(int size)
 {
   int packetLength = 0;
   int irqFlags = readRegister(REG_IRQ_FLAGS);
+
+  if(irqFlags > 0){
+    printf("IRQ Flags: %i\n",irqFlags);
+  }
+
   //printf("IRQ Flags: %i", irqFlags);
   if (size > 0) {
     implicitHeaderMode();
@@ -227,12 +232,7 @@ int LoRaClass::parsePacket(int size)
   }
 
   // clear IRQ's
-  writeRegister(REG_IRQ_FLAGS, 0xFF);
-
-  //if(irqFlags > 0){
-    printf("IRQ Flags: %i\n",irqFlags);
-  //}
-  
+  writeRegister(REG_IRQ_FLAGS, irqFlags);
 
   if ((irqFlags & IRQ_RX_DONE_MASK) && (irqFlags & IRQ_PAYLOAD_CRC_ERROR_MASK) == 0) {
     // received a packet
