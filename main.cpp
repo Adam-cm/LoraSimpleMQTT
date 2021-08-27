@@ -35,7 +35,7 @@ using namespace std;
  * Lora Configurations!
  *
  *******************************************************************************/
-#include "LoRa.h"
+#include "LoRa/LoRa.h"
 
 const long freq = 915E6;
 const int SF = 7;
