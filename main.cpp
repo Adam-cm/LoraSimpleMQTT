@@ -158,7 +158,7 @@ int main () {
           // Print Message Received
           printf("Message: %s\n",jsonString.c_str());
           // Send msg to MQTT Broker (Thingspeak)
-          client = new RaspberryOSIOClient(username.c_str(), deviceid.c_str(), password.c_str());
+          client = new RaspberryOSIOClient(username, deviceid, password);
           bool result = client->publish("Temp 1", "22.5");
           printf("MQTT: %s\n",(result == true ? "success" : "error"));
           delete client;
