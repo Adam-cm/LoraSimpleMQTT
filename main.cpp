@@ -40,9 +40,9 @@ using namespace std;
 
 RaspberryOSIOClient * client = 0;
 
-string username = "AAINMAc9Az0yFB4MIxUNKQ8";
-string deviceid = "AAINMAc9Az0yFB4MIxUNKQ8";
-string password = "Oe3mjgWv8jQD2PIGaEnAGmaQ";
+string username = 'AAINMAc9Az0yFB4MIxUNKQ8';
+string deviceid = 'AAINMAc9Az0yFB4MIxUNKQ8';
+string password = 'Oe3mjgWv8jQD2PIGaEnAGmaQ';
 
 /*******************************************************************************
  *
@@ -159,7 +159,7 @@ int main () {
           printf("Message: %s\n",jsonString.c_str());
           // Send msg to MQTT Broker (Thingspeak)
           client = new RaspberryOSIOClient(username.c_str(), deviceid.c_str(), password.c_str());
-          bool result = client->publish("Temp 1", '22.5');
+          bool result = client->publish("Temp 1", "22.5");
           printf("MQTT: %s\n",(result == true ? "success" : "error"));
           delete client;
         }
