@@ -36,13 +36,7 @@ using namespace std;
  *
  *******************************************************************************/
 
-#include "raspberry_osio_client.h"
 
-RaspberryOSIOClient * client = 0;
-
-string username = "AAINMAc9Az0yFB4MIxUNKQ8";
-string deviceid = "AAINMAc9Az0yFB4MIxUNKQ8";
-string password = "Oe3mjgWv8jQD2PIGaEnAGmaQ";
 
 /*******************************************************************************
  *
@@ -83,21 +77,28 @@ void sendAck(string message) {
   for (int i = 0; i < message.length(); i++) {
     check += message[i];
   }
-  
   string checksum = to_string(check);
-
   //printf("\nCheck sum reply: %s\n",checksum.c_str());
-
   LoRa.beginPacket();
-  
   LoRa.write(checksum.c_str(),4);  // Send Check Sum
-
   LoRa.endPacket();
-  //Serial.print(message);
-  //Serial.print(" ");
-  //Serial.print("Ack Sent: ");
-  //Serial.println(check);
 }
+
+void die(const char *s)
+{
+    perror(s);
+    exit(1);
+}
+
+void sendudp(char *msg, int length) {
+  //send the update
+  inet_aton(SERVER1 , &si_other.sin_addr);
+
+  if (sendto(s, (char *)msg, length, 0 , (struct sockaddr *) &si_other, slen)==-1){
+    die("sendto()");
+  }
+}
+
 
 int main () {
   // Setup Wiring Pi
@@ -123,16 +124,14 @@ int main () {
     printf("  Bandwidth: %li\n",bw);
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
-
-    // Configure MQTT connection to thingspeak
-    // Start MQTT Client
     
     while(1){
+      // Check for LoRa Message
       int packetSize = LoRa.parsePacket();
-      if (packetSize) {
+      // Message Handling
+      if (packetSize){
         // received a packet
-        // printf("Packet Received\n");
-        string message = "";        // Clear message string
+        string message = "";                              // Clear message string
         // Store Message in string Message
         while (LoRa.available()) {
           message = message + ((char)LoRa.read());
@@ -141,12 +140,12 @@ int main () {
         sendAck(message);
 
         // Present Message
-        string pktrssi = to_string(LoRa.packetRssi());
-        string rssi = ("\"RSSI\":\"" + pktrssi + "\"");
-        string jsonString = message;
-        //jsonString.replace("xxx", rssi);
-        replace(jsonString, "xxx", rssi);
-      
+        string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
+        string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
+        string jsonString = message;                      // Store message in jsonString
+        replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
+
+        // Check count value for repeated messages
         int ii = jsonString.find("Count", 1);
         string count = jsonString.substr(ii + 8, ii + 11);
         counter = stoi(count);
@@ -154,55 +153,13 @@ int main () {
         if (counter - lastCounter == 0){
           printf("Repetition\n");
         } 
+
+        // Different Message Received print to console
         else{
-          // Print Message Received
-          printf("Message: %s\n",jsonString.c_str());
-          // Send msg to MQTT Broker (Thingspeak)
-          client = new RaspberryOSIOClient(const_cast<char*>(username.c_str()), const_cast<char*>(deviceid.c_str()), const_cast<char*>(password.c_str()));
-          bool result = client->publish( const_cast<char*>("Temp 1"), const_cast<char*>("22.5"));
-          printf("MQTT: %s\n",(result == true ? "success" : "error"));
-          delete client;
+          printf("Message: %s\n",jsonString.c_str());   // Print Message Received
         }
+        // Update Counter
         lastCounter = counter;
-      }
-    }
-
-    while(1){
-      // try to parse packet
-      int packetSize = LoRa.parsePacket();
-      //printf("Waiting to Receive pakcets: %i\n",packetSize);
-
-      if (packetSize) {
-        // received a packet
-        printf("Packet Received\n");
-        string message = "";        // Clear message string
-        while (LoRa.available()) {
-          message = message + ((char)LoRa.read());
-        }
-      //printf("Message: %s\n",message.c_str());
-
-      string pktrssi = to_string(LoRa.packetRssi());
-      string rssi = ("\"RSSI\":\"" + pktrssi + "\"");
-      string jsonString = message;
-      //jsonString.replace("xxx", rssi);
-      replace(jsonString, "xxx", rssi);
-
-      //printf("Message: %s\n",jsonString.c_str());
-      
-      int ii = jsonString.find("Count", 1);
-      string count = jsonString.substr(ii + 8, ii + 11);
-      counter = stoi(count);
-      // Same Message Received
-      if (counter - lastCounter == 0){
-        printf("Repetition");
-      } 
-      lastCounter = counter;
-
-      // Finished recieving send Ack
-      sendAck(message);
-      printf("Message Recieved and Acknowledged: %s\n",jsonString.c_str());
-      //string value1 = jsonString.substring(8, 11);  // Vcc or heighth
-      //string value2 = jsonString.substring(23, 26); //counter*/
       }
     }
   return (0);
