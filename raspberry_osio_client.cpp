@@ -42,7 +42,7 @@ RaspberryOSIOClient::RaspberryOSIOClient(char * userName,
                                          char * deviceId, 
                                          char * devicePassword)
 {
-  this->initialize(userName, deviceId, devicePassword, OSIO_SERVERNAME, 0);
+  this->initialize(userName, deviceId, devicePassword, const_cast<char*>(OSIO_SERVERNAME), 0);
 }
 
 
