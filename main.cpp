@@ -93,8 +93,8 @@ int main () {
     printf("\n======================================================\n\n");
     //printf(" Configuring SX1276\n");
     LoRa.setPins(ssPin,RST,dio0);
-    
-    printf(" Starting LoRa Server\n");
+    printf(" -  -  - -- IoT Control System: Wetlands -- -  -  - - ");
+    printf(" Starting LoRa Gateway\n");
     if (!LoRa.begin(freq)) {
       printf("\nStarting LoRa failed!\n");
       while (1);
@@ -105,9 +105,9 @@ int main () {
     printf("\n - - System Configuration - - \n");
     // LoRa.setSignalBandwidth(bw);
     //printf("LoRa Started");
-    printf(" Frequency: %li\n", freq);
-    printf(" Bandwidth: %li\n",bw);
-    printf(" Spreading Factor: %i\n\n======================================================\n", SF);
+    printf("  Frequency: %li\n", freq);
+    printf("  Bandwidth: %li\n",bw);
+    printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
 
     while(1){
