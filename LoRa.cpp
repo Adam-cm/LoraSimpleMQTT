@@ -83,11 +83,27 @@ LoRaClass::LoRaClass() :
   _onTxDone(NULL)
 {
   // overide Stream timeout value
-  // setTimeout(0);
+  //setTimeout(0);
 }
 
 int LoRaClass::begin(long frequency)
 {
+#if defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310)
+  pinMode(LORA_IRQ_DUMB, OUTPUT);
+  digitalWrite(LORA_IRQ_DUMB, LOW);
+
+  // Hardware reset
+  pinMode(LORA_BOOT0, OUTPUT);
+  digitalWrite(LORA_BOOT0, LOW);
+
+  pinMode(LORA_RESET, OUTPUT);
+  digitalWrite(LORA_RESET, HIGH);
+  delay(200);
+  digitalWrite(LORA_RESET, LOW);
+  delay(200);
+  digitalWrite(LORA_RESET, HIGH);
+  delay(50);
+#endif
 
   // setup pins
   pinMode(_ss, OUTPUT);
@@ -96,6 +112,7 @@ int LoRaClass::begin(long frequency)
 
   if (_reset != -1) {
     pinMode(_reset, OUTPUT);
+
     // perform reset
     digitalWrite(_reset, LOW);
     delay(10);
@@ -222,14 +239,17 @@ int LoRaClass::parsePacket(int size)
     _packetIndex = 0;
 
     // read packet length
-    packetLength = readRegister(REG_RX_NB_BYTES);
+    if (_implicitHeaderMode) {
+      packetLength = readRegister(REG_PAYLOAD_LENGTH);
+    } else {
+      packetLength = readRegister(REG_RX_NB_BYTES);
+    }
 
     // set FIFO address to current RX address
     writeRegister(REG_FIFO_ADDR_PTR, readRegister(REG_FIFO_RX_CURRENT_ADDR));
 
     // put in standby mode
     idle();
-    
   } else if (readRegister(REG_OP_MODE) != (MODE_LONG_RANGE_MODE | MODE_RX_SINGLE)) {
     // not currently in RX mode
 
