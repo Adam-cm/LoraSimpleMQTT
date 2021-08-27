@@ -122,7 +122,6 @@ int main () {
 
     // Configure MQTT connection to thingspeak
     // Start MQTT Client
-    client = new RaspberryOSIOClient('AAINMAc9Az0yFB4MIxUNKQ8', 'AAINMAc9Az0yFB4MIxUNKQ8', 'Oe3mjgWv8jQD2PIGaEnAGmaQ');
     
     while(1){
       int packetSize = LoRa.parsePacket();
@@ -155,8 +154,9 @@ int main () {
           // Print Message Received
           printf("Message: %s\n",jsonString.c_str());
           // Send msg to MQTT Broker (Thingspeak)
+          client = new RaspberryOSIOClient("AAINMAc9Az0yFB4MIxUNKQ8", "AAINMAc9Az0yFB4MIxUNKQ8", "Oe3mjgWv8jQD2PIGaEnAGmaQ");
           bool result = client->publish("Temp 1", "22.5");
-          printf("MQTT: %s\n",(result ? "success" : "error"));
+          printf("MQTT: %s\n",(result == true ? "success" : "error"));
           delete client;
         }
         lastCounter = counter;
