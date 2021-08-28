@@ -45,8 +45,10 @@ using namespace std;
 
 #define ADDRESS     "tcp:mqtt3.thingspeak.com:1883"
 #define CLIENTID    "AD0yMgE2NSwgFBE0DAY2CAs"
+#define MQTTUSERNAME "AAINMAc9Az0yFB4MIxUNKQ8"
+#define MQTTPASSWORD "Oe3mjgWv8jQD2PIGaEnAGmaQ"
 #define TOPIC       "Temp 1"
-#define PAYLOAD     "Hello World!"
+#define PAYLOAD     "22.2"
 #define QOS         1
 #define TIMEOUT     10000L
 
@@ -142,7 +144,7 @@ int main () {
  * 
  *******************************************************************************/
     MQTTClient client;
-    MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
+    MQTTClient_connectOptions conn_opts =  { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
     MQTTClient_message pubmsg = MQTTClient_message_initializer;
     MQTTClient_deliveryToken token;
     int rc;
