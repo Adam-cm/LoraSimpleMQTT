@@ -169,11 +169,11 @@ int main () {
         exit(EXIT_FAILURE);
     }
 
-    pubmsg.payload = PAYLOAD.c_str();
-    pubmsg.payloadlen = (int)strlen(PAYLOAD.c_str());
+    pubmsg.payload = PAYLOAD;
+    pubmsg.payloadlen = (int)strlen(PAYLOAD);
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
-    if ((rc = MQTTClient_publishMessage(client, TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
+    if ((rc = MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
     {
          printf("Failed to publish message, return code %d\n", rc);
          exit(EXIT_FAILURE);
@@ -181,7 +181,7 @@ int main () {
 
     printf("Waiting for up to %d seconds for publication of %s\n"
             "on topic %s for client with ClientID: %s\n",
-            (int)(TIMEOUT/1000), (PAYLOAD.c_str(), TOPIC, CLIENTID);
+            (int)(TIMEOUT/1000), (PAYLOAD, TOPIC, CLIENTID);
     rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
     printf("Message with delivery token %d delivered\n", token);
 
