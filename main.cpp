@@ -42,7 +42,6 @@ using namespace std;
  *******************************************************************************/
 
 #include "mqtt/client.h"
-#include "MQTTProperties.h"
 
 const string SERVER_ADDRESS { "tcp:mqtt3.thingspeak.com:1883" };
 const string CLIENT_ID { "AD0yMgE2NSwgFBE0DAY2CAs" };
