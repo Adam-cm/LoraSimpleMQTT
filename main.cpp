@@ -119,7 +119,7 @@ void sendAck(string message) {
  *******************************************************************************/
 
 int main () {
-    printf("Payload = %s\n", PAYLOAD.c_str());
+    printf("Payload = %s\n", (char *)PAYLOAD.c_str());
     // Console Print
     printf("\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
     printf("\n======================================================\n\n");
