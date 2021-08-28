@@ -47,8 +47,12 @@ using namespace std;
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
-#define TOPIC       "Temp 1"
-#define PAYLOAD     "22.2"
+#define ChannelID    "1488787"
+#define writeapiKey  "F2G2A2ASFRSDM35M"
+#define readapiKey   "SHJERDVYG0EDGHCH"
+
+string TOPIC = "channels/" + ChannelID + "/publish/" + writeapiKey;
+string PAYLOAD = "field1=" + "22.2";
 #define QOS         1
 #define TIMEOUT     10000L
 
@@ -164,11 +168,11 @@ int main () {
         exit(EXIT_FAILURE);
     }
 
-    pubmsg.payload = (char *)PAYLOAD;
-    pubmsg.payloadlen = (int)strlen((char *)PAYLOAD);
+    pubmsg.payload = PAYLOAD.c_str();
+    pubmsg.payloadlen = (int)strlen(PAYLOAD.c_str());
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
-    if ((rc = MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
+    if ((rc = MQTTClient_publishMessage(client, TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
     {
          printf("Failed to publish message, return code %d\n", rc);
          exit(EXIT_FAILURE);
@@ -176,7 +180,7 @@ int main () {
 
     printf("Waiting for up to %d seconds for publication of %s\n"
             "on topic %s for client with ClientID: %s\n",
-            (int)(TIMEOUT/1000), (char *)PAYLOAD, TOPIC, CLIENTID);
+            (int)(TIMEOUT/1000), (PAYLOAD.c_str(), TOPIC, CLIENTID);
     rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
     printf("Message with delivery token %d delivered\n", token);
 
