@@ -54,6 +54,8 @@ string TempMQTT = "22.5";
 
 string TOPIC = "channels/" + ChannelID + "/publish/" + writeapiKey;
 string PAYLOAD = "field1=" + TempMQTT;
+
+printf("Payload = %s\n", PAYLOAD.c_str());
 #define QOS         1
 #define TIMEOUT     10000L
 
