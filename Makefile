@@ -1,7 +1,7 @@
 # LoRaSimpleMQTT
 # Single Channel LoRaWAN Gateway
 
-LIBS = -lwiringPi -I/usr/bin/python3.7 -lPython
+LIBS = -lwiringPi -L/usr/bin/python3.7 -lPython
 
 LoraSimpleMQTT: main.o LoRa.o base64.o
 	g++ main.o LoRa.o base64.o $(LIBS) -o LoraSimpleMQTT
