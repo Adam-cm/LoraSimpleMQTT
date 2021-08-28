@@ -181,7 +181,7 @@ int main () {
 
     printf("Waiting for up to %d seconds for publication of %s\n"
             "on topic %s for client with ClientID: %s\n",
-            (int)(TIMEOUT/1000), ((char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
+            (int)(TIMEOUT/1000), ((char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID));
     rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
     printf("Message with delivery token %d delivered\n", token);
 
