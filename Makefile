@@ -1,7 +1,7 @@
 # LoRaSimpleMQTT
 # Single Channel LoRaWAN Gateway
 
-LIBS = -lwiringPi -lpaho-mqtt3c
+LIBS = -lwiringPi -lpaho-mqtt
 
 LoraSimpleMQTT: main.o LoRa.o base64.o
 	g++ main.o LoRa.o base64.o $(LIBS) -o LoraSimpleMQTT
