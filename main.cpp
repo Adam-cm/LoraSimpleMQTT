@@ -47,12 +47,13 @@ using namespace std;
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
-#define ChannelID    "1488787"
-#define writeapiKey  "F2G2A2ASFRSDM35M"
+string ChannelID = "1488787";
+string writeapiKey = "F2G2A2ASFRSDM35M";
+string TempMQTT = "22.5";
 #define readapiKey   "SHJERDVYG0EDGHCH"
 
-string TOPIC = "channels/" + to_string(ChannelID) + "/publish/" + to_string(writeapiKey);
-string PAYLOAD = "field1=" + "22.2";
+string TOPIC = "channels/" + ChannelID + "/publish/" + writeapiKey;
+string PAYLOAD = "field1=" + TempMQTT;
 #define QOS         1
 #define TIMEOUT     10000L
 
