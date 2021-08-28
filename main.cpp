@@ -172,7 +172,7 @@ int main () {
     }
 
     pubmsg.payload = (char *)PAYLOAD.c_str();
-    pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
+    pubmsg.payloadlen = (int)strlen(PAYLOAD);
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
     if ((rc = MQTTClient_publishMessage(client, (char *)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
