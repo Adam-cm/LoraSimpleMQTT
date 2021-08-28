@@ -46,7 +46,7 @@ using namespace std;
 #define ADDRESS     "tcp:mqtt3.thingspeak.com:1883"
 #define CLIENTID    "AD0yMgE2NSwgFBE0DAY2CAs"
 #define TOPIC       "Temp 1"
-#define MSG         "22.5"
+string PAYLOAD = "22.5";
 #define QOS         1
 #define TIMEOUT     10000L
 
@@ -162,8 +162,8 @@ int main () {
         exit(EXIT_FAILURE);
     }
 
-    pubmsg.payload = MSG;
-    pubmsg.payloadlen = (int)strlen(MSG);
+    pubmsg.payload = PAYLOAD;
+    pubmsg.payloadlen = (int)strlen(PAYLOAD);
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
     if ((rc = MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
@@ -174,7 +174,7 @@ int main () {
 
     printf("Waiting for up to %d seconds for publication of %s\n"
             "on topic %s for client with ClientID: %s\n",
-            (int)(TIMEOUT/1000), MSG, TOPIC, CLIENTID);
+            (int)(TIMEOUT/1000), PAYLOAD, TOPIC, CLIENTID);
     rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
     printf("Message with delivery token %d delivered\n", token);
 
