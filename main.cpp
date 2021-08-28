@@ -40,8 +40,6 @@ using namespace std;
  * MQTT Configuration
  *
  *******************************************************************************/
-#define PY_SSIZE_T_CLEAN
-#include <python3.7/Python.h>
 
 
 /*******************************************************************************
@@ -129,13 +127,6 @@ int main () {
     printf("  Bandwidth: %li\n",bw);
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
-    
-    // Configuring Python functions
-    // Python enabled
-    Py_Initialize();
-
-    // Python disabled
-    Py_Finalize();
 
     // Main Loop
     while(1){
