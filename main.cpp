@@ -44,9 +44,9 @@ using namespace std;
 #include "MQTTClient.h"
 
 #define ADDRESS     "mqtt3.thingspeak.com:1883"
-#define CLIENTID    "AD0yMgE2NSwgFBE0DAY2CAs"
-#define MQTTUSERNAME "AAINMAc9Az0yFB4MIxUNKQ8"
-#define MQTTPASSWORD "Oe3mjgWv8jQD2PIGaEnAGmaQ"
+#define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
+#define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
+#define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
 #define TOPIC       "Temp 1"
 #define PAYLOAD     "22.2"
 #define QOS         1
