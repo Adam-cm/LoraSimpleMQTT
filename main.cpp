@@ -43,6 +43,14 @@ using namespace std;
 
 #include "mqtt/client.h"
 
+const string SERVER_ADDRESS { "tcp:mqtt3.thingspeak.com:1883" };
+const string CLIENT_ID { "AD0yMgE2NSwgFBE0DAY2CAs" };
+const string TOPIC { "Temp 1" };
+
+const string PAYLOAD1 { "22.5" };
+
+const int QOS = 1;
+
 /*******************************************************************************
  *
  * Lora Paramaters
@@ -128,6 +136,20 @@ int main () {
     printf("  Bandwidth: %li\n",bw);
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
+
+    // Start MQTT Client
+    mqtt::client client(SERVER_ADDRESS, CLIENT_ID, &persist);
+    mqtt::connect_options connOpts;
+	  connOpts.set_keep_alive_interval(20);
+	  connOpts.set_clean_session(true);
+
+    // Sening Data through MQTT
+    auto pubmsg = mqtt::make_message(TOPIC, PAYLOAD1);
+		pubmsg->set_qos(QOS);
+		client.publish(pubmsg);
+
+    // Delete MQTT Client
+    client.disconnect();
 
     // Main Loop
     while(1){
