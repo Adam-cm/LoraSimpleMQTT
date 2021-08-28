@@ -130,6 +130,13 @@ int main () {
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
     
+    // Configuring Python functions
+    // Python enabled
+    Py_Initialize();
+
+    // Python disabled
+    Py_Finalize();
+
     // Main Loop
     while(1){
       // Check for LoRa Message
