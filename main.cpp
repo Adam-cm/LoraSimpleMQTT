@@ -41,15 +41,14 @@ using namespace std;
  *
  *******************************************************************************/
 
-#include "mqtt/client.h"
+#include "MQTTClient.h"
 
-const string SERVER_ADDRESS { "tcp:mqtt3.thingspeak.com:1883" };
-const string CLIENT_ID { "AD0yMgE2NSwgFBE0DAY2CAs" };
-const string TOPIC { "Temp 1" };
-
-const string PAYLOAD1 { "22.5" };
-
-const int QOS = 1;
+#define ADDRESS     "tcp:mqtt3.thingspeak.com:1883"
+#define CLIENTID    "AD0yMgE2NSwgFBE0DAY2CAs"
+#define TOPIC       "Temp 1"
+#define PAYLOAD     "22.5"
+#define QOS         1
+#define TIMEOUT     10000L
 
 /*******************************************************************************
  *
@@ -137,39 +136,58 @@ int main () {
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
 
-    // Start MQTT Client
-    mqtt::client client(SERVER_ADDRESS, CLIENT_ID);
-    
-    // Configure a callback
+/*******************************************************************************
+ *
+ * MQTT
+ * 
+ *******************************************************************************/
+    MQTTClient client;
+    MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
+    MQTTClient_message pubmsg = MQTTClient_message_initializer;
+    MQTTClient_deliveryToken token;
+    int rc;
 
-    //Define MQTT options
-    mqtt::connect_options connOpts;
-	  connOpts.set_keep_alive_interval(20);
-	  connOpts.set_clean_session(true);
-
-    try {
-    // Connect to MQTT
-    client.connect(connOpts);
-
-    // Sening Data through MQTT
-    auto pubmsg = mqtt::make_message(TOPIC, PAYLOAD1);
-		pubmsg->set_qos(QOS);
-		client.publish(pubmsg);
-
-    // Delete MQTT Client
-    client.disconnect();
+    if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID,
+        MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS)
+    {
+         printf("Failed to create client, return code %d\n", rc);
+         exit(EXIT_FAILURE);
     }
-    catch (const mqtt::persistence_exception& exc) {
-		  std::cerr << "Persistence Error: " << exc.what() << " ["
-			<< exc.get_reason_code() << "]" << std::endl;
-		  return 1;
-	  }
-	  catch (const mqtt::exception& exc) {
-		  std::cerr << exc.what() << std::endl;
-		  return 1;
-	  }
 
-    // Main Loop
+    conn_opts.keepAliveInterval = 20;
+    conn_opts.cleansession = 1;
+    if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
+    {
+        printf("Failed to connect, return code %d\n", rc);
+        exit(EXIT_FAILURE);
+    }
+
+    pubmsg.payload = PAYLOAD;
+    pubmsg.payloadlen = (int)strlen(PAYLOAD);
+    pubmsg.qos = QOS;
+    pubmsg.retained = 0;
+    if ((rc = MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
+    {
+         printf("Failed to publish message, return code %d\n", rc);
+         exit(EXIT_FAILURE);
+    }
+
+    printf("Waiting for up to %d seconds for publication of %s\n"
+            "on topic %s for client with ClientID: %s\n",
+            (int)(TIMEOUT/1000), PAYLOAD, TOPIC, CLIENTID);
+    rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
+    printf("Message with delivery token %d delivered\n", token);
+
+    if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS)
+    	printf("Failed to disconnect, return code %d\n", rc);
+    MQTTClient_destroy(&client);
+
+
+/*******************************************************************************
+ *
+ * Main Loop
+ * 
+ *******************************************************************************/
     while(1){
       // Check for LoRa Message
       int packetSize = LoRa.parsePacket();
