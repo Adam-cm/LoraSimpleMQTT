@@ -40,7 +40,8 @@ using namespace std;
  * MQTT Configuration
  *
  *******************************************************************************/
-#include <Python.h>
+#define PY_SSIZE_T_CLEAN
+#include <Python/Python.h>
 
 
 /*******************************************************************************
