@@ -43,7 +43,7 @@ using namespace std;
 
 #include "MQTTClient.h"
 
-#define ADDRESS     "mqtt3.thingspeak.com:1883"
+#define ADDRESS     "ws://broker.emqx.io:8083"
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
@@ -119,7 +119,7 @@ void sendAck(string message) {
  *******************************************************************************/
 
 int main () {
-    printf("Payload = %s\n", (char *)PAYLOAD.c_str());
+
     // Console Print
     printf("\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
     printf("\n======================================================\n\n");
