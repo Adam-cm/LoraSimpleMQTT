@@ -46,7 +46,7 @@ using namespace std;
 #define ADDRESS     "tcp:mqtt3.thingspeak.com:1883"
 #define CLIENTID    "AD0yMgE2NSwgFBE0DAY2CAs"
 #define TOPIC       "Temp 1"
-#define PAYLOAD     "22.5"
+#define PAYLOAD     "225"
 #define QOS         1
 #define TIMEOUT     10000L
 
