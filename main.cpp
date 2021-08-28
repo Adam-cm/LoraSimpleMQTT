@@ -55,7 +55,6 @@ string TempMQTT = "22.5";
 string TOPIC = "channels/" + ChannelID + "/publish/" + writeapiKey;
 string PAYLOAD = "field1=" + TempMQTT;
 
-printf("Payload = %s\n", PAYLOAD.c_str());
 #define QOS         1
 #define TIMEOUT     10000L
 
@@ -120,6 +119,7 @@ void sendAck(string message) {
  *******************************************************************************/
 
 int main () {
+    printf("Payload = %s\n", PAYLOAD.c_str());
     // Console Print
     printf("\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
     printf("\n======================================================\n\n");
