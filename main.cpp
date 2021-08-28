@@ -43,7 +43,7 @@ using namespace std;
 
 #include "MQTTClient.h"
 
-#define ADDRESS     "tcp:mqtt3.thingspeak.com:1883"
+#define ADDRESS     "mqtt3.thingspeak.com:1883"
 #define CLIENTID    "AD0yMgE2NSwgFBE0DAY2CAs"
 #define MQTTUSERNAME "AAINMAc9Az0yFB4MIxUNKQ8"
 #define MQTTPASSWORD "Oe3mjgWv8jQD2PIGaEnAGmaQ"
