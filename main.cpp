@@ -51,7 +51,7 @@ using namespace std;
 #define writeapiKey  "F2G2A2ASFRSDM35M"
 #define readapiKey   "SHJERDVYG0EDGHCH"
 
-string TOPIC = "channels/" + ChannelID + "/publish/" + writeapiKey;
+string TOPIC = "channels/" + to_string(ChannelID) + "/publish/" + to_string(writeapiKey);
 string PAYLOAD = "field1=" + "22.2";
 #define QOS         1
 #define TIMEOUT     10000L
