@@ -132,10 +132,10 @@ int main () {
     
     // Configuring Python functions
     // Python enabled
-    Py_Initialize();
+    //Py_Initialize();
 
     // Python disabled
-    Py_Finalize();
+    //Py_Finalize();
 
     // Main Loop
     while(1){
