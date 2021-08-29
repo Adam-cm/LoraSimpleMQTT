@@ -157,9 +157,10 @@ bool send_MQTT(string payload){
   }
 
   // Print output
-  printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
+  //printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
   rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
-  printf("Message with delivery token %d delivered\n", token);
+  printf("MQTT Message delivered\n");
+  //printf("Message with delivery token %d delivered\n", token);
 
   return true;
 }
@@ -256,7 +257,8 @@ int main () {
           Temp2MQTT = jsonString.substr(jsonString.find("Temp2", 1),4);
           TurbidityMQTT = jsonString.substr(jsonString.find("Turbidity", 1),1);
           FrameCountMQTT = jsonString.substr(jsonString.find("Count", 1),3);
-          printf("Count fine: %i\n",jsonString.find("Count", 1));
+          printf("Count find: %i\n",jsonString.find("Count", 1));
+          printf("Count Substring: %s\n",FrameCountMQTT.c_str());
 
           // Send Message to Thingspeak
           send_MQTT(PAYLOAD);
