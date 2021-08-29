@@ -43,7 +43,7 @@ using namespace std;
 
 #include "MQTTClient.h"
 
-#define ADDRESS     "tcp:mqtt3.thingspeak.com:1883"
+#define ADDRESS     "tcp://mqtt3.thingspeak.com:1883"
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
@@ -52,7 +52,7 @@ string writeapiKey = "F2G2A2ASFRSDM35M";
 string TempMQTT = "22.5";
 #define readapiKey   "SHJERDVYG0EDGHCH"
 
-string TOPIC = "channels/" + ChannelID + "/publish/fields/";
+string TOPIC = "channels/" + ChannelID + "/publish/" + PAYLOAD;
 string PAYLOAD = "field1=" + TempMQTT;
 
 #define QOS         0
