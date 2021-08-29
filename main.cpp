@@ -302,7 +302,7 @@ int main () {
         string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
         string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
         string jsonString = message;                      // Store message in jsonString
-        replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
+        replace(jsonString, "xx", rssi);                 // Replace xxx with RSSI value and metadata
 
         // Check count value for repeated messages
         int ii = jsonString.find("Count", 1);
