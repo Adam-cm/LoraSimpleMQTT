@@ -45,7 +45,8 @@ using namespace std;
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
-string ChannelID = "1488787";
+string ChannelID1 = "1488787";
+string ChannelID2 = "1488787";
 
 // Variables Shared/Sent
 string Temp1MQTT = "00.0";
@@ -55,7 +56,7 @@ string FrameCountMQTT = "000";
 string RSSIMQTT = "-00";
 
 // Topic and Payload Structure
-string TOPIC = "channels/" + ChannelID + "/publish";
+string TOPIC = "channels/" + ChannelID1 + "/publish";
 string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
 // Connection Parameters
@@ -151,9 +152,12 @@ bool setup_MQTT(){
   return true;
 }
 
-bool send_MQTT(string payload){
+bool send_MQTT(string payload, string ChannelID){
   MQTTClient_message pubmsg = MQTTClient_message_initializer;
   MQTTClient_deliveryToken token;
+
+  TOPIC = "channels/" + ChannelID + "/publish";
+
   // Format Payload
   pubmsg.payload = (char *)PAYLOAD.c_str();
   pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
@@ -181,7 +185,9 @@ bool die_MQTT(){
   return true;
 }
 
-void update_MQTT(string jsonString){
+int update_MQTT(string jsonString){
+  int node = jsonString.substr(jsonString.find("Node", 1)+4,1);
+
   Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
   Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
   TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length()+3,1);
@@ -189,6 +195,7 @@ void update_MQTT(string jsonString){
   RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
 
   PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+  return node;
 }
 
 /*******************************************************************************
@@ -268,7 +275,7 @@ int main () {
           update_MQTT(jsonString);
 
           // Send Message to Thingspeak
-          send_MQTT(PAYLOAD);
+          send_MQTT(PAYLOAD,ChannelID1);
         }
         // Update Counter
         lastCounter = counter;
