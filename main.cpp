@@ -186,9 +186,14 @@ int main () {
     // Setup Wiring Pi
     wiringPiSetup () ;                      // Start wiring Pi
     LoRa.setPins(ssPin,RST,dio0);           // Set module pins
-    
+
+    // Setup MQTT
+    printf(" Starting MQTT Client \n");
+    setup_MQTT();
+    printf(" MQTT Client Status: Online\n");
+
     // Configure Gateway
-    printf(" Starting LoRa Gateway\n");
+    printf("\n Starting LoRa Gateway\n");
     // Start LoRa with Freq
     if (!LoRa.begin(freq)) {
       printf("\nStarting LoRa failed!\n");  
@@ -203,15 +208,6 @@ int main () {
     printf("  Bandwidth: %li\n",bw);
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
-
-/*******************************************************************************
- *
- * MQTT
- * 
- *******************************************************************************/
-  setup_MQTT();
-  send_MQTT(PAYLOAD);
-  die_MQTT();
 
 /*******************************************************************************
  *
