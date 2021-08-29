@@ -60,6 +60,11 @@ string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + T
 
 #define QOS         0
 #define TIMEOUT     10000L
+int rc;
+
+MQTTClient client;
+MQTTClient_connectOptions conn_opts =  { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
+
 
 /*******************************************************************************
  *
@@ -117,12 +122,7 @@ void sendAck(string message) {
 
 bool setup_MQTT(){
   // Create MQTT Client variables
-  MQTTClient client;
-  MQTTClient_connectOptions conn_opts =  { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
-  MQTTClient_message pubmsg = MQTTClient_message_initializer;
-  MQTTClient_deliveryToken token;
-  int rc;
-
+  
   // Create Client
   if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS){
     printf("Failed to create client, return code %d\n", rc);
@@ -143,6 +143,8 @@ bool setup_MQTT(){
 }
 
 bool send_MQTT(string payload){
+  MQTTClient_message pubmsg = MQTTClient_message_initializer;
+  MQTTClient_deliveryToken token;
   // Format Payload
   pubmsg.payload = (char *)PAYLOAD.c_str();
   pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
