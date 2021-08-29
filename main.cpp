@@ -131,7 +131,7 @@ void sendAck(string message) {
     check += message[i];
   }
   string checksum = to_string(check);
-  //printf("\nCheck sum reply: %s\n",checksum.c_str());
+  printf("\nCheck sum reply: %s\n",checksum.c_str());
   LoRa.beginPacket();
   LoRa.write(checksum.c_str(),4);  // Send Check Sum
   LoRa.endPacket();
@@ -253,7 +253,6 @@ int main () {
 
     // Setup Wiring Pi
     wiringPiSetup () ;                      // Start wiring Pi
-    LoRa.setPins(ssPin,RST,dio0);           // Set module pins
 
     // Setup MQTT
     printf(" Starting MQTT Client \n");
@@ -265,8 +264,10 @@ int main () {
       printf(" MQTT Client Status: OFFLINE\n");
     }
 
+    // Setup LoRa Communications
     // Configure Gateway
     printf("\n Starting LoRa Gateway\n");
+    LoRa.setPins(ssPin,RST,dio0);           // Set module pins
     // Start LoRa with Freq
     if (!LoRa.begin(freq)) {
       printf("\nStarting LoRa failed!\n");  
