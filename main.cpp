@@ -294,6 +294,7 @@ int main () {
         while (LoRa.available()) {
           message = message + ((char)LoRa.read());
         }
+        printf("Messaged Received: %s\n", message.c_str());
         // Reply to Node with Ack
         sendAck(message);
 
