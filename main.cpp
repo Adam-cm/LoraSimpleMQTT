@@ -252,11 +252,11 @@ int main () {
         else{
           //printf("Message: %s\n",jsonString.c_str());   // Print Message Received
           // Update PAYLOAD VARIABLES
-          Temp1MQTT = jsonString.find("Temp1",1);
-          Temp2MQTT = jsonString.find("Temp2",1);
-          TurbidityMQTT = jsonString.find("Turbidity",1);
-          FrameCountMQTT = jsonString.find("Count",1);
-          printf("Count fine: %s\n",jsonString.find("Count", 1));
+          Temp1MQTT = jsonString.substr(jsonString.find("Temp1", 1),4);
+          Temp2MQTT = jsonString.substr(jsonString.find("Temp2", 1),4);
+          TurbidityMQTT = jsonString.substr(jsonString.find("Turbidity", 1),1);
+          FrameCountMQTT = jsonString.substr(jsonString.find("Count", 1),3);
+          printf("Count fine: %i\n",jsonString.find("Count", 1));
 
           // Send Message to Thingspeak
           send_MQTT(PAYLOAD);
