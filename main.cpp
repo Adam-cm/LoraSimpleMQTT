@@ -62,6 +62,11 @@ string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + T
 #define TIMEOUT     10000L
 int rc;
 
+string field1 = "Temp1";
+string field2 = "Temp2";
+string field3 = "Turbidity";
+string field4 = "Count";
+
 MQTTClient client;
 MQTTClient_connectOptions conn_opts =  { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
 
@@ -253,10 +258,10 @@ int main () {
         else{
           //printf("Message: %s\n",jsonString.c_str());   // Print Message Received
           // Update PAYLOAD VARIABLES
-          Temp1MQTT = jsonString.substr(jsonString.find("Temp1", 0)+strlen("Temp1"),4);
-          Temp2MQTT = jsonString.substr(jsonString.find("Temp2", 0)+strlen("Temp2"),4);
-          TurbidityMQTT = jsonString.substr(jsonString.find("Turbidity", 0)+strlen("Turbidity"),1);
-          FrameCountMQTT = jsonString.substr(jsonString.find("Count", 0)+strlen("Count"),3);
+          Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length(),4);
+          Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length(),4);
+          TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length(),1);
+          FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length(),3);
           //printf("Count find: %i\n",jsonString.find("Count", 0)+strlen("Count"));
           printf("Count Substring: %s\n",FrameCountMQTT.c_str());
 
