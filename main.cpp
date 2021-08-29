@@ -43,7 +43,7 @@ using namespace std;
 
 #include "MQTTClient.h"
 
-#define ADDRESS     "mqtt3.thingspeak.com:1883"
+#define ADDRESS     "ssl:mqtt3.thingspeak.com:1883"
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
@@ -173,7 +173,6 @@ int main () {
 
     pubmsg.payload = (char *)PAYLOAD.c_str();
     pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
-    printf("String length =: %i\n",(int)strlen((char *)PAYLOAD.c_str()));
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
 
