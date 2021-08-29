@@ -58,8 +58,6 @@ string RSSIMQTT = "-00";
 // Weather System variables
 string AmbientTempMQTT = "00.0";
 string WindSpeedMQTT = "00.0";
-string FrameCountMQTT = "000";
-string RSSIMQTT = "-00";
 
 // Topic and Payload Structure
 string TOPIC = "channels/" + ChannelID1 + "/publish";
@@ -232,13 +230,6 @@ int update_MQTT(string jsonString){
     // Update Payload String
     PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
   }
-  else{
-
-  }
-  
-
-  PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
-
 
   return node_num;
 }
