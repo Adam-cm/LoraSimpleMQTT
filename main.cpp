@@ -184,6 +184,16 @@ bool die_MQTT(){
   return true;
 }
 
+void update_MQTT(string jsonString){
+  Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
+  Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
+  TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length()+3,1);
+  FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
+  RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
+
+  PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+}
+
 /*******************************************************************************
  *
  * Main Program
@@ -227,11 +237,6 @@ int main () {
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
     //System Configured
 
-/*******************************************************************************
- *
- * Main Loop
- * 
- *******************************************************************************/
     while(1){
       // Check for LoRa Message
       int packetSize = LoRa.parsePacket();
@@ -263,17 +268,7 @@ int main () {
 
         // Different Message Received print to console
         else{
-          //printf("Message: %s\n",jsonString.c_str());   // Print Message Received
-          // Update PAYLOAD VARIABLES
-          Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
-          Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
-          TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length()+3,1);
-          FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
-          RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
-          //printf("Count find: %i\n",jsonString.find("Count", 0)+strlen("Count"));
-          //printf("Count Substring: %s\n",FrameCountMQTT.c_str());
-
-          PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+          update_MQTT(jsonString);
 
           // Send Message to Thingspeak
           send_MQTT(PAYLOAD);
