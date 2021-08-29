@@ -49,10 +49,10 @@ using namespace std;
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
 string ChannelID = "1488787";
 string writeapiKey = "F2G2A2ASFRSDM35M";
-string Temp1MQTT = "23.5";
-string Temp2MQTT = "26.5";
-string TurbidityMQTT = "5";
-string FrameCountMQTT = "000";
+string Temp1MQTT = "21.5";
+string Temp2MQTT = "24.5";
+string TurbidityMQTT = "4.5";
+string FrameCountMQTT = "001";
 #define readapiKey   "SHJERDVYG0EDGHCH"
 
 string TOPIC = "channels/" + ChannelID + "/publish";
@@ -115,6 +115,60 @@ void sendAck(string message) {
   LoRa.endPacket();
 }
 
+bool setup_MQTT(){
+  // Create MQTT Client variables
+  MQTTClient client;
+  MQTTClient_connectOptions conn_opts =  { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
+  MQTTClient_message pubmsg = MQTTClient_message_initializer;
+  MQTTClient_deliveryToken token;
+  int rc;
+
+  // Create Client
+  if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS){
+    printf("Failed to create client, return code %d\n", rc);
+    return false;
+  }
+
+  // Define connection variables
+  conn_opts.keepAliveInterval = 20;
+  conn_opts.cleansession = 1;
+
+  // Connect to MQTT Broker (Thingspeak)
+  if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS){
+    printf("Failed to connect, return code %d\n", rc);
+    return false;
+  }
+
+  return true;
+}
+
+bool send_MQTT(string payload){
+  // Format Payload
+  pubmsg.payload = (char *)PAYLOAD.c_str();
+  pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
+  pubmsg.qos = QOS;
+  pubmsg.retained = 0;
+
+  if ((rc = MQTTClient_publishMessage(client, (char *)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS){
+    printf("Failed to publish message, return code %d\n", rc);
+    return false;
+  }
+
+  // Print output
+  printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
+  c = MQTTClient_waitForCompletion(client, token, TIMEOUT);
+  printf("Message with delivery token %d delivered\n", token);
+
+  return true;
+}
+
+bool die_MQTT(){
+  if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS)
+  printf("Failed to disconnect, return code %d\n", rc);
+  MQTTClient_destroy(&client);
+  return true;
+}
+
 /*******************************************************************************
  *
  * Main Program
@@ -153,48 +207,9 @@ int main () {
  * MQTT
  * 
  *******************************************************************************/
-    MQTTClient client;
-    MQTTClient_connectOptions conn_opts =  { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
-    MQTTClient_message pubmsg = MQTTClient_message_initializer;
-    MQTTClient_deliveryToken token;
-    int rc;
-
-    if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS)
-    {
-         printf("Failed to create client, return code %d\n", rc);
-         exit(EXIT_FAILURE);
-    }
-
-    conn_opts.keepAliveInterval = 20;
-    conn_opts.cleansession = 1;
-
-    if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
-    {
-        printf("Failed to connect, return code %d\n", rc);
-        exit(EXIT_FAILURE);
-    }
-
-    pubmsg.payload = (char *)PAYLOAD.c_str();
-    pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
-    pubmsg.qos = QOS;
-    pubmsg.retained = 0;
-
-    if ((rc = MQTTClient_publishMessage(client, (char *)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
-    {
-         printf("Failed to publish message, return code %d\n", rc);
-         exit(EXIT_FAILURE);
-    }
-
-    printf("Waiting for up to %d seconds for publication of %s\n"
-            "on topic %s for client with ClientID: %s\n",
-            (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
-    rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
-    printf("Message with delivery token %d delivered\n", token);
-
-    if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS)
-    	printf("Failed to disconnect, return code %d\n", rc);
-    MQTTClient_destroy(&client);
-
+  setup_MQTT();
+  send_MQTT(PAYLOAD);
+  die_MQTT();
 
 /*******************************************************************************
  *
