@@ -6,8 +6,6 @@
  * factor. It implments a simple point to point communication to allow
  * data managment and buffering.
  * 
- * TO_DO:
- * Need to implement a MQTT server to publish to the thingspeak network
  * 
  * Created By: Adam Hawke
  * Created: 26/08/2021
