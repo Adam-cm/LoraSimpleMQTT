@@ -6,7 +6,6 @@
  * factor. It implments a simple point to point communication to allow
  * data managment and buffering.
  * 
- * 
  * Created By: Adam Hawke
  * Created: 26/08/2021
  *
