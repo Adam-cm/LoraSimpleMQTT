@@ -76,8 +76,7 @@ string field4 = "Count";
 string field5 = "RSSI";
 
 // Number of Fields and Names
-string field6 = "Temp1";
-string field7 = "Wind";
+string field6 = "Wind";
 
 // MQTT Client Variables
 MQTTClient client;
@@ -222,10 +221,11 @@ int update_MQTT(string jsonString){
   }
   else if(node_num == 2){
     // Update Weather Station Variables
-    AmbientTempMQTT = jsonString.substr(jsonString.find(field6, 1)+field1.length()+3,4);
-    WindSpeedMQTT = jsonString.substr(jsonString.find(field7, 1)+field2.length()+3,4);
+    AmbientTempMQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
+    WindSpeedMQTT = jsonString.substr(jsonString.find(field6, 1)+field6.length()+3,4);
     FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
     RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
+    printf("Wind Speed: %s\n", WindSpeedMQTT.c_str());
 
     // Update Payload String
     PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
