@@ -256,6 +256,7 @@ int main () {
           Temp2MQTT = jsonString.find("Temp2",1);
           TurbidityMQTT = jsonString.find("Turbidity",1);
           FrameCountMQTT = jsonString.find("Count",1);
+          printf("Count fine: %s\n",jsonString.find("Count", 1));
 
           // Send Message to Thingspeak
           send_MQTT(PAYLOAD);
