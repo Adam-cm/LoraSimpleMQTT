@@ -193,7 +193,7 @@ bool die_MQTT(){
 }
 
 int update_MQTT(string jsonString){
-  string node = jsonString.substr(jsonString.find("Node", 0)+7,1);
+  string node = jsonString.substr(jsonString.find("N", 0)+4,1);
   
   int node_num = 0;
   // Convert string into int
@@ -302,7 +302,7 @@ int main () {
         string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
         string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
         string jsonString = message;                      // Store message in jsonString
-        replace(jsonString, "xx", rssi);                 // Replace xxx with RSSI value and metadata
+        replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
 
         // Check count value for repeated messages
         int ii = jsonString.find("Count", 1);
