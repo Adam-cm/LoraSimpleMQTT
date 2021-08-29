@@ -49,11 +49,12 @@ using namespace std;
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
 string ChannelID = "1488787";
 string writeapiKey = "F2G2A2ASFRSDM35M";
-string TempMQTT = "23.5";
+string Temp1MQTT = "23.5";
+string Temp2MQTT = "26.5";
 #define readapiKey   "SHJERDVYG0EDGHCH"
 
 string TOPIC = "channels/" + ChannelID + "/publish";
-string PAYLOAD = "field1=" + TempMQTT;
+string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT;
 
 #define QOS         0
 #define TIMEOUT     10000L
