@@ -52,7 +52,7 @@ string writeapiKey = "F2G2A2ASFRSDM35M";
 string TempMQTT = "22.5";
 #define readapiKey   "SHJERDVYG0EDGHCH"
 
-string TOPIC = "channels/" + ChannelID + "/publish/" + writeapiKey;
+string TOPIC = "channels/" + ChannelID + "/publish/fields/";
 string PAYLOAD = "field1=" + TempMQTT;
 
 #define QOS         0
