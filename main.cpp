@@ -208,7 +208,7 @@ int main () {
     // LoRa.setSignalBandwidth(bw);
 
     // Print Console, configuration successful
-    printf("\n - - System Configuration - - \n");
+    printf("\n - - LoRa Configuration - - \n");
     printf("  Frequency: %li Hz\n", freq);
     printf("  Bandwidth: %li\n",bw);
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
@@ -250,7 +250,15 @@ int main () {
 
         // Different Message Received print to console
         else{
-          printf("Message: %s\n",jsonString.c_str());   // Print Message Received
+          //printf("Message: %s\n",jsonString.c_str());   // Print Message Received
+          // Update PAYLOAD VARIABLES
+          Temp1MQTT = jsonString.find("Temp1",1);
+          Temp2MQTT = jsonString.find("Temp2",1);
+          TurbidityMQTT = jsonString.find("Turbidity",1);
+          FrameCountMQTT = jsonString.find("Count",1);
+
+          // Send Message to Thingspeak
+          send_MQTT(PAYLOAD);
         }
         // Update Counter
         lastCounter = counter;
