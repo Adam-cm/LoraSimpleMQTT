@@ -131,7 +131,7 @@ void sendAck(string message) {
     check += message[i];
   }
   string checksum = to_string(check);
-  printf("\nCheck sum reply: %s\n",checksum.c_str());
+  //printf("\nCheck sum reply: %s\n",checksum.c_str());
   LoRa.beginPacket();
   LoRa.write(checksum.c_str(),4);  // Send Check Sum
   LoRa.endPacket();
@@ -179,7 +179,7 @@ bool send_MQTT(string payload, string ChannelID){
   // Print output
   //printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
   rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
-  printf("MQTT Message delivered\n");
+  //printf("MQTT Message delivered\n");
   //printf("Message with delivery token %d delivered\n", token);
 
   return true;
@@ -219,7 +219,7 @@ int update_MQTT(string jsonString){
     // Update Payload String
     PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
-    printf("Message Send from Control System\n");
+    printf("Message sent from Control System\n");
 
   }
   else if(node_num == 2){
@@ -233,7 +233,7 @@ int update_MQTT(string jsonString){
     // Update Payload String
     PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
-    printf("Message Send from Weather Station\n");
+    printf("Message sent from Weather Station\n");
   }
 
   return node_num;
