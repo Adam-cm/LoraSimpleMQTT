@@ -46,12 +46,18 @@ using namespace std;
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
 string ChannelID1 = "1488787";
-string ChannelID2 = "1488787";
+string ChannelID2 = "1490440";
 
-// Variables Shared/Sent
+// Control System variables
 string Temp1MQTT = "00.0";
 string Temp2MQTT = "00.0";
 string TurbidityMQTT = "0.0";
+string FrameCountMQTT = "000";
+string RSSIMQTT = "-00";
+
+// Weather System variables
+string AmbientTempMQTT = "00.0";
+string WindSpeedMQTT = "00.0";
 string FrameCountMQTT = "000";
 string RSSIMQTT = "-00";
 
@@ -70,6 +76,10 @@ string field2 = "Temp2";
 string field3 = "Turbidity";
 string field4 = "Count";
 string field5 = "RSSI";
+
+// Number of Fields and Names
+string field6 = "Temp1";
+string field7 = "Wind";
 
 // MQTT Client Variables
 MQTTClient client;
@@ -191,23 +201,45 @@ int update_MQTT(string jsonString){
   int node_num = 0;
   // Convert string into int
   if(node == "1"){
-    printf("Node 1 Detected\n");
+    //printf("Node 1 Detected\n");
     node_num = 1;
   }
-  else if(node.c_str() == "2"){
+  else if(node == "2"){
     node_num = 2;
   }
   else{
     node_num = 0;
   }
 
-  Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
-  Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
-  TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length()+3,1);
-  FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
-  RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
+  if(node_num == 1){
+    // Update Control System Variables
+    Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
+    Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
+    TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length()+3,1);
+    FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
+    RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
+
+    // Update Payload String
+    PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+  }
+  else if(node_num == 2){
+    // Update Weather Station Variables
+    AmbientTempMQTT = jsonString.substr(jsonString.find(field6, 1)+field1.length()+3,4);
+    WindSpeedMQTT = jsonString.substr(jsonString.find(field7, 1)+field2.length()+3,4);
+    FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
+    RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
+
+    // Update Payload String
+    PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
+  }
+  else{
+
+  }
+  
 
   PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+
+
   return node_num;
 }
 
@@ -285,11 +317,21 @@ int main () {
 
         // Different Message Received print to console
         else{
-          update_MQTT(jsonString);
+          int node = update_MQTT(jsonString);
 
-          // Send Message to Thingspeak
-          send_MQTT(PAYLOAD,ChannelID1);
+          if(node == 1){
+            // Send Message to Thingspeak 1
+            send_MQTT(PAYLOAD,ChannelID1);
+          }
+          else if(node == 2){
+            // Send Message to Thingspeak 2
+            send_MQTT(PAYLOAD,ChannelID2);
+          }
+          else{
+            printf("Error: Unknown node detected\n");
+          }
         }
+
         // Update Counter
         lastCounter = counter;
       }
