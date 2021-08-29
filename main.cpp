@@ -55,7 +55,7 @@ string TempMQTT = "22.5";
 string TOPIC = "channels/" + ChannelID + "/publish/" + writeapiKey;
 string PAYLOAD = "field1=" + TempMQTT;
 
-#define QOS         1
+#define QOS         0
 #define TIMEOUT     10000L
 
 /*******************************************************************************
