@@ -258,10 +258,10 @@ int main () {
         else{
           //printf("Message: %s\n",jsonString.c_str());   // Print Message Received
           // Update PAYLOAD VARIABLES
-          Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length(),4);
-          Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length(),4);
-          TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length(),1);
-          FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length(),3);
+          Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
+          Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
+          TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length()+3,1);
+          FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
           //printf("Count find: %i\n",jsonString.find("Count", 0)+strlen("Count"));
           printf("Count Substring: %s\n",FrameCountMQTT.c_str());
 
