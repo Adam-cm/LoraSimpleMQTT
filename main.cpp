@@ -43,7 +43,7 @@ using namespace std;
 
 #include "MQTTClient.h"
 
-#define ADDRESS     "tcp:mqtt3.thingspeak.com:1883"
+#define ADDRESS     "mqtt3.thingspeak.com:1883"
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
@@ -156,8 +156,7 @@ int main () {
     MQTTClient_deliveryToken token;
     int rc;
 
-    if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID,
-        MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS)
+    if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS)
     {
          printf("Failed to create client, return code %d\n", rc);
          exit(EXIT_FAILURE);
@@ -175,6 +174,7 @@ int main () {
     pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
+
     if ((rc = MQTTClient_publishMessage(client, (char *)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
     {
          printf("Failed to publish message, return code %d\n", rc);
