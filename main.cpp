@@ -164,6 +164,7 @@ int main () {
 
     conn_opts.keepAliveInterval = 20;
     conn_opts.cleansession = 1;
+
     if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
     {
         printf("Failed to connect, return code %d\n", rc);
@@ -172,6 +173,7 @@ int main () {
 
     pubmsg.payload = (char *)PAYLOAD.c_str();
     pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
+    printf("String length =: %i\n",(int)strlen((char *)PAYLOAD.c_str()));
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
 
