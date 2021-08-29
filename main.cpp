@@ -189,8 +189,13 @@ int main () {
 
     // Setup MQTT
     printf(" Starting MQTT Client \n");
-    setup_MQTT();
-    printf(" MQTT Client Status: Online\n");
+    bool status = setup_MQTT();
+    if(status == true){
+      printf(" MQTT Client Status: ONLINE\n");
+    }
+    else{
+      printf(" MQTT Client Status: OFFLINE\n");
+    }
 
     // Configure Gateway
     printf("\n Starting LoRa Gateway\n");
