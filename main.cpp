@@ -187,10 +187,11 @@ bool die_MQTT(){
 
 int update_MQTT(string jsonString){
   string node = jsonString.substr(jsonString.find("Node", 0)+7,1);
-  printf("Node number found: %s \n", node.c_str());
+  
   int node_num = 0;
   // Convert string into int
   if(node.c_str() == "1"){
+    printf("Node 1 Detected\n");
     node_num = 1;
   }
   else if(node.c_str() == "2"){
