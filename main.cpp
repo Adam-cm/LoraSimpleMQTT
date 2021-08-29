@@ -186,7 +186,19 @@ bool die_MQTT(){
 }
 
 int update_MQTT(string jsonString){
-  int node = jsonString.substr(jsonString.find("Node", 1)+4,1);
+  string node = jsonString.substr(jsonString.find("Node", 1)+4,1);
+  printf("Node nmumber found: %s \n", node.c_str());
+  int node_num = 0;
+  // Convert string into int
+  if(node.c_str() == "1"){
+    node_num = 1;
+  }
+  else if(node.c_str() == "2"){
+    node_num = 2;
+  }
+  else{
+    node_num = 0;
+  }
 
   Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
   Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
@@ -195,7 +207,7 @@ int update_MQTT(string jsonString){
   RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
 
   PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
-  return node;
+  return node_num;
 }
 
 /*******************************************************************************
