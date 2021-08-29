@@ -190,7 +190,7 @@ int update_MQTT(string jsonString){
   
   int node_num = 0;
   // Convert string into int
-  if(node.c_str() == '1'){
+  if(node == "1"){
     printf("Node 1 Detected\n");
     node_num = 1;
   }
