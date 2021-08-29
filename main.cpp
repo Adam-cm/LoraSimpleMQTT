@@ -56,7 +56,7 @@ string FrameCountMQTT = "000";
 #define readapiKey   "SHJERDVYG0EDGHCH"
 
 string TOPIC = "channels/" + ChannelID + "/publish";
-string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4" + FrameCountMQTT;
+string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT;
 
 #define QOS         0
 #define TIMEOUT     10000L
