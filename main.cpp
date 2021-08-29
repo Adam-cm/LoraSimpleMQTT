@@ -43,30 +43,37 @@ using namespace std;
 
 #include "MQTTClient.h"
 
+// MQTT Connection definitions
 #define ADDRESS     "tcp://mqtt3.thingspeak.com:1883"
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
 string ChannelID = "1488787";
-string writeapiKey = "F2G2A2ASFRSDM35M";
-string Temp1MQTT = "21.5";
-string Temp2MQTT = "24.5";
-string TurbidityMQTT = "4.5";
-string FrameCountMQTT = "001";
-#define readapiKey   "SHJERDVYG0EDGHCH"
 
+// Variables Shared/Sent
+string Temp1MQTT = "00.0";
+string Temp2MQTT = "00.0";
+string TurbidityMQTT = "0.0";
+string FrameCountMQTT = "000";
+string RSSIMQTT = "-00";
+
+// Topic and Payload Structure
 string TOPIC = "channels/" + ChannelID + "/publish";
-string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT;
+string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
+// Connection Parameters
 #define QOS         0
 #define TIMEOUT     10000L
 int rc;
 
+// Number of Fields and Names
 string field1 = "Temp1";
 string field2 = "Temp2";
 string field3 = "Turbidity";
 string field4 = "Count";
+string field5 = "RSSI";
 
+// MQTT Client Variables
 MQTTClient client;
 MQTTClient_connectOptions conn_opts =  { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
 
@@ -262,10 +269,11 @@ int main () {
           Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
           TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length()+3,1);
           FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
+          RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
           //printf("Count find: %i\n",jsonString.find("Count", 0)+strlen("Count"));
-          printf("Count Substring: %s\n",FrameCountMQTT.c_str());
+          //printf("Count Substring: %s\n",FrameCountMQTT.c_str());
 
-          PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT;
+          PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
           // Send Message to Thingspeak
           send_MQTT(PAYLOAD);
