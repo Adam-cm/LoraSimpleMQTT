@@ -1,0 +1,14 @@
+[Unit]
+Description=Lora Packet Forwarder
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/LoraSimpleMQTT/
+ExecStart=/home/pi/LoraSimpleMQTT/LoraSimpleMQTT 
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
