@@ -2,7 +2,7 @@
 This program is developed for a Raspbery Pi and is intended for use with LoRa Dragino modules. It is responsible for receiving various LoRa messages and uploading them to Thingspeak using a MQTT Client. It includes data management and reliability checks on both LoRa and MQTT interfaces.
 
 
-![image](https://drive.google.com/uc?export=view&id=1PAvQSJpcVpgUNcnWkAdf_EzsPJLLr91X
+![image](https://drive.google.com/uc?export=view&id=1PAvQSJpcVpgUNcnWkAdf_EzsPJLLr91X)
 
 ![image](https://drive.google.com/uc?export=view&id=1XWNL8NdCEkjr6fpAYRsgic4OdOn5ZbUE)
 
