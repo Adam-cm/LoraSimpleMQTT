@@ -1,14 +1,6 @@
 # LoRaSimpleMQTT
 # Single Channel LoRaWAN Gateway
 
-SRC_DIR := src
-OBJ_DIR := obj
-BIN_DIR := bin # or . if you want it in the current directory
-
-EXE := $(BIN_DIR)/LoraSimpleMQTT
-
-SRC := $(wildcard $(SRC_DIR)/*.c)
-
 LIBS = -lwiringPi -lpaho-mqttpp3 -lpaho-mqtt3c -lpaho-mqtt3cs -lpaho-mqtt3as -lpaho-mqtt3a
 
 LoraSimpleMQTT: main.o LoRa.o base64.o
@@ -25,3 +17,15 @@ base64.o: base64.c base64.h
 	
 clean:
 	rm *.o LoraSimpleMQTT
+
+install:
+	sudo cp -f ./LoraSimpleMQTT.service /lib/systemd/system/
+	sudo systemctl enable LoraSimpleMQTT.service
+	sudo systemctl daemon-reload
+	sudo systemctl start LoraSimpleMQTT
+	sudo systemctl status LoraSimpleMQTT -l
+	
+uninstall:
+	sudo systemctl stop LoraSimpleMQTT
+	sudo systemctl disable LoraSimpleMQTT.service
+	sudo rm -f /lib/systemd/system/LoraSimpleMQTT.service 
