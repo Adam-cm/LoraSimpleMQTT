@@ -304,34 +304,35 @@ int main () {
         string jsonString = message;                      // Store message in jsonString
         replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
 
+        // Counter needs to be updated for both nodes:
+        
         // Check count value for repeated messages
-        int ii = jsonString.find("Count", 1);
-        string count = jsonString.substr(ii + 8, ii + 11);
-        counter = stoi(count);
+        //int ii = jsonString.find("Count", 1);
+        //string count = jsonString.substr(ii + 8, ii + 11);
+        //counter = stoi(count);
         // Same Message Received
-        if (counter - lastCounter == 0){
-          printf("Repetition\n");
-        } 
-
+        //if (counter - lastCounter == 0){
+        //  printf("Repetition\n");
+        //} 
         // Different Message Received print to console
-        else{
-          int node = update_MQTT(jsonString);
+        //else{
 
-          if(node == 1){
-            // Send Message to Thingspeak 1
-            send_MQTT(PAYLOAD,ChannelID1);
-          }
-          else if(node == 2){
-            // Send Message to Thingspeak 2
-            send_MQTT(PAYLOAD,ChannelID2);
-          }
-          else{
-            printf("Error: Unknown node detected\n");
-          }
+        int node = update_MQTT(jsonString);
+
+        if(node == 1){
+          // Send Message to Thingspeak 1
+          send_MQTT(PAYLOAD,ChannelID1);
+        }
+        else if(node == 2){
+          // Send Message to Thingspeak 2
+          send_MQTT(PAYLOAD,ChannelID2);
+        }
+        else{
+          printf("Error: Unknown node detected\n");
         }
 
         // Update Counter
-        lastCounter = counter;
+        // lastCounter = counter;
       }
     }
   return (0);
