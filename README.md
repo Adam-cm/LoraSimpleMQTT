@@ -20,6 +20,13 @@ Figure 3: Circuit diagram of the interface between Dragino shield and Raspberry 
 
 # TO DO:
 - ...
+# Operation
+The program utilises a simple make file for both building and installing the program on the Raspberry Pi. This can be achieved by using the following functions:
+```
+sudo make
+
+sudo make install LoRaSimpleMQTT
+```
 
 # Limitations:
 The structure of the application only uses one channel to receive information using LoRa. This means that there is a possibility of packets colliding during transmission. This could be accommodated by adding an additional Dragino module listening on a different frequency, this would allow information to be transmitted on different frequencies for different nodes. Although the GPIO on the Raspberry Pi does support this, this was not implemented in this test/proof of concept scenario.
