@@ -27,6 +27,17 @@ sudo make
 
 sudo make install LoRaSimpleMQTT
 ```
+This builds and allows the application to run in the background of the Raspberry Pi, it also assists with reliability where if the application was to experience an error or issue it will attempt to reboot. If you do not wish for the program to run in the background you can run the application using:
+```
+sudo make
+
+sudo ./LoRaSimpleMQTT
+```
+This will build and run the application in an single instance, this is less reliable as faults and crashes within the program will result in the program terminating and not rebooting. It does however assist in bug testing and building of the application providing a more verbose output. To monitor the application in real time while installed on the Raspberry Pi, using the first method, you can monitor the application using the following command:
+```
+sudo journalctl -f -u LoRaSimpleMQTT
+```
+This will provide information regarding the application and information passing through the Gateway.
 
 # Limitations:
 The structure of the application only uses one channel to receive information using LoRa. This means that there is a possibility of packets colliding during transmission. This could be accommodated by adding an additional Dragino module listening on a different frequency, this would allow information to be transmitted on different frequencies for different nodes. Although the GPIO on the Raspberry Pi does support this, this was not implemented in this test/proof of concept scenario.
