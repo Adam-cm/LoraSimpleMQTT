@@ -2,7 +2,14 @@
 # Single Channel LoRaWAN Gateway
 
 LIBS = -lwiringPi -lpaho-mqttpp3 -lpaho-mqtt3c -lpaho-mqtt3cs -lpaho-mqtt3as -lpaho-mqtt3a
-INC=-I/$(CURDIR)/src
+
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin .
+
+EXE := $(BIN_DIR)/LoraSimpleMQTT
+SRC := $(wildcard $(SRC_DIR)/*.c)
+OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 LoraSimpleMQTT: main.o LoRa.o base64.o
 	g++ main.o LoRa.o base64.o $(LIBS) -o LoraSimpleMQTT
