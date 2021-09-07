@@ -17,30 +17,29 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 
-$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+LoraSimpleMQTT: main.o LoRa.o base64.o
+	g++ main.o LoRa.o base64.o $(LIBS) -o LoraSimpleMQTT
 
-# assembly
-$(BUILD_DIR)/%.s.o: %.s
-	$(MKDIR_P) $(dir $@)
-	$(AS) $(ASFLAGS) -c $< -o $@
-
-# c source
-$(BUILD_DIR)/%.c.o: %.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
-
-# c++ source
-$(BUILD_DIR)/%.cpp.o: %.cpp
-	$(MKDIR_P) $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
-
-
-.PHONY: clean
-
+main.o: main.cpp 
+	g++ -c main.cpp
+	
+LoRa.o: LoRa.cpp LoRa.h
+	g++ -c LoRa.cpp
+	
+base64.o: base64.c base64.h
+	g++ -c base64.c
+	
 clean:
-	$(RM) -r $(BUILD_DIR)
+	rm *.o LoraSimpleMQTT
 
--include $(DEPS)
-
-MKDIR_P ?= mkdir -p
+install:
+	sudo cp -f ./LoraSimpleMQTT.service /lib/systemd/system/
+	sudo systemctl enable LoraSimpleMQTT.service
+	sudo systemctl daemon-reload
+	sudo systemctl start LoraSimpleMQTT
+	sudo systemctl status LoraSimpleMQTT -l
+	
+uninstall:
+	sudo systemctl stop LoraSimpleMQTT
+	sudo systemctl disable LoraSimpleMQTT.service
+	sudo rm -f /lib/systemd/system/LoraSimpleMQTT.service 
