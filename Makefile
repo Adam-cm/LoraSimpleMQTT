@@ -5,35 +5,32 @@ LIBS = -lwiringPi -lpaho-mqttpp3 -lpaho-mqtt3c -lpaho-mqtt3cs -lpaho-mqtt3as -lp
 
 SRC_DIR := src
 OBJ_DIR := obj
-BIN_DIR := bin .
+BIN_DIR := bin
 
-EXE := $(BIN_DIR)/LoraSimpleMQTT
+EXE := $(BIN_DIR)/hellomake
 SRC := $(wildcard $(SRC_DIR)/*.c)
 OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-LoraSimpleMQTT: main.o LoRa.o base64.o
-	g++ main.o LoRa.o base64.o $(LIBS) -o LoraSimpleMQTT
+CPPFLAGS := -Iinclude -MMD -MP
+CFLAGS   := -Wall
+LDFLAGS  := -Llib
+LDLIBS   := -lm
 
-main.o: main.cpp 
-	g++ -c main.cpp
-	
-LoRa.o: LoRa.cpp LoRa.h
-	g++ -c LoRa.cpp
-	
-base64.o: base64.c base64.h
-	g++ -c base64.c
-	
+.PHONY: all clean
+
+all: $(EXE)
+
+$(EXE): $(OBJ) | $(BIN_DIR)
+    $(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+    $(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(BIN_DIR) $(OBJ_DIR):
+    mkdir -p $@
+
 clean:
-	rm *.o LoraSimpleMQTT
+    @$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
 
-install:
-	sudo cp -f ./LoraSimpleMQTT.service /lib/systemd/system/
-	sudo systemctl enable LoraSimpleMQTT.service
-	sudo systemctl daemon-reload
-	sudo systemctl start LoraSimpleMQTT
-	sudo systemctl status LoraSimpleMQTT -l
-	
-uninstall:
-	sudo systemctl stop LoraSimpleMQTT
-	sudo systemctl disable LoraSimpleMQTT.service
-	sudo rm -f /lib/systemd/system/LoraSimpleMQTT.service 
+-include $(OBJ:.o=.d)
+
