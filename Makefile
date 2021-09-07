@@ -3,34 +3,44 @@
 
 LIBS = -lwiringPi -lpaho-mqttpp3 -lpaho-mqtt3c -lpaho-mqtt3cs -lpaho-mqtt3as -lpaho-mqtt3a
 
-SRC_DIR := src
-OBJ_DIR := obj
-BIN_DIR := bin
+TARGET_EXEC ?= a.out
 
-EXE := $(BIN_DIR)/hellomake
-SRC := $(wildcard $(SRC_DIR)/*.c)
-OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+BUILD_DIR ?= ./build
+SRC_DIRS ?= ./src
 
-CPPFLAGS := -Iinclude -MMD -MP
-CFLAGS   := -Wall
-LDFLAGS  := -Llib
-LDLIBS   := -lm
+SRCS := $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+DEPS := $(OBJS:.o=.d)
 
-.PHONY: all clean
+INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-all: $(EXE)
+CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 
-$(EXE): $(OBJ) | $(BIN_DIR)
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+# assembly
+$(BUILD_DIR)/%.s.o: %.s
+	$(MKDIR_P) $(dir $@)
+	$(AS) $(ASFLAGS) -c $< -o $@
+
+# c source
+$(BUILD_DIR)/%.c.o: %.c
+	$(MKDIR_P) $(dir $@)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(BIN_DIR) $(OBJ_DIR):
-	mkdir -p $@
+# c++ source
+$(BUILD_DIR)/%.cpp.o: %.cpp
+	$(MKDIR_P) $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+
+.PHONY: clean
 
 clean:
-	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+	$(RM) -r $(BUILD_DIR)
 
--include $(OBJ:.o=.d)
+-include $(DEPS)
 
+MKDIR_P ?= mkdir -p
