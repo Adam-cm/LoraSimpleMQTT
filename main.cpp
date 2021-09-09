@@ -132,7 +132,7 @@ void sendAck(string message) {
   for (int i = 0; i < message.length(); i++) {
     check += message[i];
   }
-  string reply;
+  string reply = "";
   // Convert string into int
   if(node == "1"){
     sprintf((char *)reply.c_str(), "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
