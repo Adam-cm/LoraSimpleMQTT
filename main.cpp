@@ -125,16 +125,31 @@ bool replace(std::string& str, const std::string& from, const std::string& to) {
 
 // Message Reply
 void sendAck(string message) {
+  string node = message.substr(message.find("N", 0)+4,1);
+
   int check = 0;
   // Calculate Check Sum
   for (int i = 0; i < message.length(); i++) {
     check += message[i];
   }
-  string checksum = to_string(check);
-  //printf("\nCheck sum reply: %s\n",checksum.c_str());
-  LoRa.beginPacket();
-  LoRa.write(checksum.c_str(),4);  // Send Check Sum
-  LoRa.endPacket();
+
+  // Convert string into int
+  if(node == "1"){
+    sprintf(message, "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
+    LoRa.beginPacket();
+    LoRa.write(message);  // Send Check Sum
+    LoRa.endPacket();
+  }
+  else if(node == "2"){
+    string checksum = to_string(check);
+    //printf("\nCheck sum reply: %s\n",checksum.c_str());
+    LoRa.beginPacket();
+    LoRa.write(checksum.c_str(),4);  // Send Check Sum
+    LoRa.endPacket();
+  }
+  else{
+    printf("Unknown Node");
+  }
 }
 
 bool setup_MQTT(){
@@ -229,18 +244,18 @@ int update_MQTT(string jsonString){
     FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
     RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
     //printf("Wind Speed: %s\n", WindSpeedMQTT.c_str());
+    
+    // Sending CPU Temp as AMBIENT
     float systemp, millideg;
     FILE *thermal;
     int n;
-
     thermal = fopen("/sys/class/thermal/thermal_zone0/temp","r");
     n = fscanf(thermal,"%f",&millideg);
     fclose(thermal);
     systemp = millideg / 1000;
-
     //printf("CPU temperature is %f degrees C\n",systemp);
 
-    AmbientTempMQTT = to_string(systemp);
+    AmbientTempMQTT = to_string(systemp); // Update variable to transmit
 
     // Update Payload String
     PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
