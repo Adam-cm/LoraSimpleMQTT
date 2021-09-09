@@ -234,7 +234,7 @@ int update_MQTT(string jsonString){
     int n;
 
     thermal = fopen("/sys/class/thermal/thermal_zone0/temp","r");
-    n = fscanf(thermal,"%f",&milldeg);
+    n = fscanf(thermal,"%f",&millideg);
     fclose(thermal);
     systemp = millideg / 1000;
 
