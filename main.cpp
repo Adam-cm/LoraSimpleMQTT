@@ -135,7 +135,7 @@ void sendAck(string message) {
   string reply;
   // Convert string into int
   if(node == "1"){
-    sprintf(reply.c_str(), "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
+    sprintf((char *)reply.c_str(), "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
     LoRa.beginPacket();
     LoRa.write(reply);  // Send Check Sum
     LoRa.endPacket();
