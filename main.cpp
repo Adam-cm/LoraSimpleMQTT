@@ -219,7 +219,7 @@ int update_MQTT(string jsonString){
     // Update Payload String
     PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
-    printf("Message sent from Control System\n");
+    printf("Message sent to MQTT Broker from Control System\n");
 
   }
   else if(node_num == 2){
@@ -229,11 +229,23 @@ int update_MQTT(string jsonString){
     FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
     RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
     //printf("Wind Speed: %s\n", WindSpeedMQTT.c_str());
+    float systemp, millideg;
+    FILE *thermal;
+    int n;
+
+    thermal = fopen("/sys/class/thermal/thermal_zone0/temp","r");
+    n = fscanf(thermal,"%f",&milldeg);
+    fclose(thermal);
+    systemp = millideg / 1000;
+
+    //printf("CPU temperature is %f degrees C\n",systemp);
+
+    AmbientTempMQTT = to_string(systemp);
 
     // Update Payload String
     PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
-    printf("Message sent from Weather Station\n");
+    printf("Message sent to MQTT Broker from Weather Station\n");
   }
 
   return node_num;
