@@ -134,16 +134,16 @@ void sendAck(string message) {
     string reply = "";
     // Convert string into int
     if (node == "1") {
-        //sprintf((char *)reply.c_str(), "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
-        //LoRa.beginPacket();
-        //LoRa.write((char *)reply.c_str(),strlen((char *)reply.c_str()));  // Send Check Sum
-        //LoRa.endPacket();
-
-        string reply = to_string(check);
-        //printf("\nCheck sum reply: %s\n",checksum.c_str());
+        sprintf((char *)reply.c_str(), "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
         LoRa.beginPacket();
-        LoRa.write(reply.c_str(), 4);  // Send Check Sum
+        LoRa.write((char *)reply.c_str(),strlen((char *)reply.c_str()));  // Send Check Sum
         LoRa.endPacket();
+
+        //string reply = to_string(check);
+          //printf("\nCheck sum reply: %s\n",checksum.c_str());
+        //LoRa.beginPacket();
+        //LoRa.write(reply.c_str(), 4);  // Send Check Sum
+        //LoRa.endPacket();
     }
     else if (node == "2") {
         string reply = to_string(check);
