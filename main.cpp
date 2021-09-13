@@ -135,6 +135,7 @@ void sendAck(string message) {
     // Convert string into int
     if (node == "1") {
         sprintf((char *)reply.c_str(), "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
+        printf("\n Packet Prepared!");
         LoRa.beginPacket();
         LoRa.write((char *)reply.c_str(),strlen((char *)reply.c_str()));  // Send Check Sum
         LoRa.endPacket();
