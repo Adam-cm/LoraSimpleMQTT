@@ -5,7 +5,7 @@
  * Provides a LoRa connection operating on a single frequency and spreading
  * factor. It implments a simple point to point communication to allow
  * data managment and buffering.
- * 
+ *
  * Created By: Adam Hawke
  * Created: 26/08/2021
  *
@@ -40,7 +40,7 @@ using namespace std;
 
 #include "MQTTClient.h"
 
-// MQTT Connection definitions
+ // MQTT Connection definitions
 #define ADDRESS     "tcp://mqtt3.thingspeak.com:1883"
 #define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
@@ -80,8 +80,7 @@ string field6 = "Wind";
 
 // MQTT Client Variables
 MQTTClient client;
-MQTTClient_connectOptions conn_opts =  { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
-
+MQTTClient_connectOptions conn_opts = { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char*)MQTTUSERNAME, (char*)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0 };
 
 /*******************************************************************************
  *
@@ -102,10 +101,10 @@ int counter, lastCounter;
  *
  *******************************************************************************/
 
-// SX1272 - Raspberry connections Wiring Pi Connections
+ // SX1272 - Raspberry connections Wiring Pi Connections
 int ssPin = 6;
-int dio0  = 0;
-int RST   = 3;
+int dio0 = 0;
+int RST = 3;
 static const int CHANNEL = 0;
 
 /*******************************************************************************
@@ -114,10 +113,10 @@ static const int CHANNEL = 0;
  *
  *******************************************************************************/
 
-// Replace string values
-bool replace(std::string& str, const std::string& from, const std::string& to) {
+ // Replace string values
+bool replace(string& str, const string& from, const string& to) {
     size_t start_pos = str.find(from);
-    if(start_pos == std::string::npos)
+    if (start_pos == string::npos)
         return false;
     str.replace(start_pos, from.length(), to);
     return true;
@@ -125,248 +124,220 @@ bool replace(std::string& str, const std::string& from, const std::string& to) {
 
 // Message Reply
 void sendAck(string message) {
-  string node = message.substr(message.find("N", 0)+4,1);
+    string node = message.substr(message.find("N", 0) + 4, 1);
 
-  int check = 0;
-  // Calculate Check Sum
-  for (int i = 0; i < message.length(); i++) {
-    check += message[i];
-  }
-  string reply = "";
-  // Convert string into int
-  if(node == "1"){
-    //sprintf((char *)reply.c_str(), "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
-    //LoRa.beginPacket();
-    //LoRa.write((char *)reply.c_str(),strlen((char *)reply.c_str()));  // Send Check Sum
-    //LoRa.endPacket();
-    
-    string reply = to_string(check);
-    //printf("\nCheck sum reply: %s\n",checksum.c_str());
-    LoRa.beginPacket();
-    LoRa.write(reply.c_str(),4);  // Send Check Sum
-    LoRa.endPacket();
-  }
-  else if(node == "2"){
-    string reply = to_string(check);
-    //printf("\nCheck sum reply: %s\n",checksum.c_str());
-    LoRa.beginPacket();
-    LoRa.write(reply.c_str(),4);  // Send Check Sum
-    LoRa.endPacket();
-  }
-  else{
-    printf("Unknown Node");
-  }
+    int check = 0;
+    // Calculate Check Sum
+    for (int i = 0; i < message.length(); i++) {
+        check += message[i];
+    }
+    string reply = "";
+    // Convert string into int
+    if (node == "1") {
+        //sprintf((char *)reply.c_str(), "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
+        //LoRa.beginPacket();
+        //LoRa.write((char *)reply.c_str(),strlen((char *)reply.c_str()));  // Send Check Sum
+        //LoRa.endPacket();
+
+        string reply = to_string(check);
+        //printf("\nCheck sum reply: %s\n",checksum.c_str());
+        LoRa.beginPacket();
+        LoRa.write(reply.c_str(), 4);  // Send Check Sum
+        LoRa.endPacket();
+    }
+    else if (node == "2") {
+        string reply = to_string(check);
+        //printf("\nCheck sum reply: %s\n",checksum.c_str());
+        LoRa.beginPacket();
+        LoRa.write(reply.c_str(), 4);  // Send Check Sum
+        LoRa.endPacket();
+    }
+    else {
+        printf("Unknown Node");
+    }
 }
 
-bool setup_MQTT(){
-  // Create MQTT Client variables
-  
-  // Create Client
-  if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS){
-    printf("Failed to create client, return code %d\n", rc);
-    return false;
-  }
+bool setup_MQTT() {
+    // Create MQTT Client variables
 
-  // Define connection variables
-  conn_opts.keepAliveInterval = 20;
-  conn_opts.cleansession = 1;
+    // Create Client
+    if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
+        printf("Failed to create client, return code %d\n", rc);
+        return false;
+    }
 
-  // Connect to MQTT Broker (Thingspeak)
-  if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS){
-    printf("Failed to connect, return code %d\n", rc);
-    return false;
-  }
+    // Define connection variables
+    conn_opts.keepAliveInterval = 20;
+    conn_opts.cleansession = 1;
 
-  return true;
+    // Connect to MQTT Broker (Thingspeak)
+    if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
+        printf("Failed to connect, return code %d\n", rc);
+        return false;
+    }
+
+    return true;
 }
 
-bool send_MQTT(string payload, string ChannelID){
-  MQTTClient_message pubmsg = MQTTClient_message_initializer;
-  MQTTClient_deliveryToken token;
+bool send_MQTT(string payload, string ChannelID) {
+    MQTTClient_message pubmsg = MQTTClient_message_initializer;
+    MQTTClient_deliveryToken token;
 
-  TOPIC = "channels/" + ChannelID + "/publish";
+    TOPIC = "channels/" + ChannelID + "/publish";
 
-  // Format Payload
-  pubmsg.payload = (char *)PAYLOAD.c_str();
-  pubmsg.payloadlen = (int)strlen((char *)PAYLOAD.c_str());
-  pubmsg.qos = QOS;
-  pubmsg.retained = 0;
+    // Format Payload
+    pubmsg.payload = (char*)PAYLOAD.c_str();
+    pubmsg.payloadlen = (int)strlen((char*)PAYLOAD.c_str());
+    pubmsg.qos = QOS;
+    pubmsg.retained = 0;
 
-  if ((rc = MQTTClient_publishMessage(client, (char *)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS){
-    printf("Failed to publish message, return code %d\n", rc);
-    return false;
-  }
+    if ((rc = MQTTClient_publishMessage(client, (char*)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS) {
+        printf("Failed to publish message, return code %d\n", rc);
+        return false;
+    }
 
-  // Print output
-  //printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
-  rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
-  //printf("MQTT Message delivered\n");
-  //printf("Message with delivery token %d delivered\n", token);
-
-  return true;
+    // Print output
+    //printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
+    rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
+    //printf("MQTT Message delivered\n");
+    //printf("Message with delivery token %d delivered\n", token);
+    return true;
 }
 
-bool die_MQTT(){
-  if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS)
-  printf("Failed to disconnect, return code %d\n", rc);
-  MQTTClient_destroy(&client);
-  return true;
+bool die_MQTT() {
+    if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS)
+        printf("Failed to disconnect, return code %d\n", rc);
+    MQTTClient_destroy(&client);
+    return true;
 }
 
-int update_MQTT(string jsonString){
-  string node = jsonString.substr(jsonString.find("N", 0)+4,1);
-  
-  int node_num = 0;
-  // Convert string into int
-  if(node == "1"){
-    //printf("Node 1 Detected\n");
-    node_num = 1;
-  }
-  else if(node == "2"){
-    node_num = 2;
-  }
-  else{
-    node_num = 0;
-  }
+string update_MQTT(string jsonString) {
+    string node = jsonString.substr(jsonString.find("N", 0) + 4, 1);
 
-  if(node_num == 1){
-    // Update Control System Variables
-    Temp1MQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
-    Temp2MQTT = jsonString.substr(jsonString.find(field2, 1)+field2.length()+3,4);
-    TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1)+field3.length()+3,1);
-    FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
-    RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
+    if (node == "1") {
+        // Update Control System Variables
+        Temp1MQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 4);
+        Temp2MQTT = jsonString.substr(jsonString.find(field2, 1) + field2.length() + 3, 4);
+        TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 1);
+        FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 3);
+        RSSIMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
 
-    // Update Payload String
-    PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+        // Update Payload String
+        PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
-    printf("Message sent to MQTT Broker from Control System\n");
+        printf("Message sent to MQTT Broker from Control System\n");
+    }
+    else if (node == "2") {
+        // Update Weather Station Variables
+        AmbientTempMQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 4);
+        WindSpeedMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 4);
+        FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 3);
+        RSSIMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
 
-  }
-  else if(node_num == 2){
-    // Update Weather Station Variables
-    AmbientTempMQTT = jsonString.substr(jsonString.find(field1, 1)+field1.length()+3,4);
-    WindSpeedMQTT = jsonString.substr(jsonString.find(field6, 1)+field6.length()+3,4);
-    FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1)+field4.length()+3,3);
-    RSSIMQTT = jsonString.substr(jsonString.find(field5, 1)+field5.length()+3,3);
-    //printf("Wind Speed: %s\n", WindSpeedMQTT.c_str());
-    
-    // Sending CPU Temp as AMBIENT
-    float systemp, millideg;
-    FILE *thermal;
-    int n;
-    thermal = fopen("/sys/class/thermal/thermal_zone0/temp","r");
-    n = fscanf(thermal,"%f",&millideg);
-    fclose(thermal);
-    systemp = millideg / 1000;
-    //printf("CPU temperature is %f degrees C\n",systemp);
+        // Sending CPU Temp as AMBIENT
+        float systemp, millideg;
+        FILE* thermal;
+        int n;
+        thermal = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
+        n = fscanf(thermal, "%f", &millideg);
+        fclose(thermal);
+        systemp = millideg / 1000;
+        //printf("CPU temperature is %f degrees C\n",systemp);
+        AmbientTempMQTT = to_string(systemp); // Update variable to transmit
 
-    AmbientTempMQTT = to_string(systemp); // Update variable to transmit
+        // Update Payload String
+        PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
-    // Update Payload String
-    PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
+        printf("Message sent to MQTT Broker from Weather Station\n");
+    }
 
-    printf("Message sent to MQTT Broker from Weather Station\n");
-  }
-
-  return node_num;
+    return node;
 }
 
-/*******************************************************************************
- *
- * Main Program
- * 
- *******************************************************************************/
+int main() {
 
-int main () {
-  
+    /*******************************************************************************
+     *
+     * Setup Variables
+     *
+    *******************************************************************************/
+
     // Console Print
     printf("\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
     printf("\n======================================================\n\n");
 
     // Setup Wiring Pi
-    wiringPiSetup () ;                      // Start wiring Pi
+    wiringPiSetup();                      // Start wiring Pi
 
     // Setup MQTT
     printf(" Starting MQTT Client \n");
     bool status = setup_MQTT();
-    if(status == true){
-      printf(" MQTT Client Status: ONLINE\n");
+    if (status == true) {
+        printf(" MQTT Client Status: ONLINE\n");
     }
-    else{
-      printf(" MQTT Client Status: OFFLINE\n");
+    else {
+        printf(" MQTT Client Status: OFFLINE\n");
     }
 
     // Setup LoRa Communications
     // Configure Gateway
     printf("\n Starting LoRa Gateway\n");
-    LoRa.setPins(ssPin,RST,dio0);           // Set module pins
+    LoRa.setPins(ssPin, RST, dio0);             // Set module pins
     // Start LoRa with Freq
     if (!LoRa.begin(freq)) {
-      printf("\nStarting LoRa failed!\n");  
-      while (1);
+        printf("\n Starting LoRa failed!\n");
+        exit(EXIT_FAILURE);
     }
-    LoRa.setSpreadingFactor(SF);            // Set Spreading Factor
+    LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
     // LoRa.setSignalBandwidth(bw);
 
     // Print Console, configuration successful
     printf("\n - - LoRa Configuration - - \n");
     printf("  Frequency: %li Hz\n", freq);
-    printf("  Bandwidth: %li\n",bw);
+    printf("  Bandwidth: %li\n", bw);
     printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
+    
     //System Configured
 
-    while(1){
-      // Check for LoRa Message
-      int packetSize = LoRa.parsePacket();
-      // Message Handling
-      if (packetSize){
-        // received a packet
-        string message = "";                              // Clear message string
-        // Store Message in string Message
-        while (LoRa.available()) {
-          message = message + ((char)LoRa.read());
+    /*******************************************************************************
+     *
+     * System Logic
+     *
+    *******************************************************************************/
+    while(1) {
+        if (LoRa.parsePacket()) {
+            // received a packet
+            string message = "";                              // Clear message string
+            // Store Message in string Message
+            while (LoRa.available()) {
+                message = message + ((char)LoRa.read());
+            }
+            //printf("Message Received: %s\n", message.c_str());
+            // Reply to Node with Ack
+            sendAck(message);
+
+            // Present Message
+            string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
+            string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
+            string jsonString = message;                      // Store message in jsonString
+            replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
+
+            string node = update_MQTT(jsonString);
+
+            if (node == "1") {
+                // Send Message to Thingspeak 1
+                send_MQTT(PAYLOAD, ChannelID1);
+            }
+            else if (node == "2") {
+                // Send Message to Thingspeak 2
+                send_MQTT(PAYLOAD, ChannelID2);
+            }
+            else {
+                printf("Error: Unknown node detected\n");
+            }
+
+            // Update Counter
+            // lastCounter = counter;
         }
-        //printf("Message Received: %s\n", message.c_str());
-        // Reply to Node with Ack
-        sendAck(message);
-
-        // Present Message
-        string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
-        string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
-        string jsonString = message;                      // Store message in jsonString
-        replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
-
-        // Counter needs to be updated for both nodes:
-        
-        // Check count value for repeated messages
-        //int ii = jsonString.find("Count", 1);
-        //string count = jsonString.substr(ii + 8, ii + 11);
-        //counter = stoi(count);
-        // Same Message Received
-        //if (counter - lastCounter == 0){
-        //  printf("Repetition\n");
-        //} 
-        // Different Message Received print to console
-        //else{
-
-        int node = update_MQTT(jsonString);
-
-        if(node == 1){
-          // Send Message to Thingspeak 1
-          send_MQTT(PAYLOAD,ChannelID1);
-        }
-        else if(node == 2){
-          // Send Message to Thingspeak 2
-          send_MQTT(PAYLOAD,ChannelID2);
-        }
-        else{
-          printf("Error: Unknown node detected\n");
-        }
-
-        // Update Counter
-        // lastCounter = counter;
-      }
     }
-  return (0);
 }
