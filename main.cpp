@@ -50,15 +50,15 @@ string ChannelID1 = "1488787";
 string ChannelID2 = "1490440";
 
 // Control System variables
-string Temp1MQTT = "00.0";
-string Temp2MQTT = "00.0";
-string TurbidityMQTT = "0.0";
-string FrameCountMQTT = "000";
-string RSSIMQTT = "-00";
+string Temp1MQTT = "ERR";
+string Temp2MQTT = "ERR";
+string TurbidityMQTT = "ERR";
+string FrameCountMQTT = "ERR";
+string RSSIMQTT = "ERR";
 
 // Weather System variables
-string AmbientTempMQTT = "00.0";
-string WindSpeedMQTT = "00.0";
+string AmbientTempMQTT = "ERR";
+string WindSpeedMQTT = "ERR";
 
 // Topic and Payload Structure
 string TOPIC = "channels/" + ChannelID1 + "/publish";
@@ -138,6 +138,7 @@ void sendAck(string message) {
     if (node == "1") {
         //sprintf(reply, "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
         //reply = "{\"N\":\"2\",\"CheckSum\":\"" + check + "\",\"TempW\":\"" + AmbientTempMQTT + "\",\"Wind\":\"" + WindSpeedMQTT + "\"}";
+        oss.precision(4);
         oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
         reply = oss.str();
         printf("\n Packet Prepared! %s", reply);
