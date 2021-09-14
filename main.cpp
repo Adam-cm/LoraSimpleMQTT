@@ -131,12 +131,12 @@ void sendAck(string message) {
     for (int i = 0; i < message.length(); i++) {
         check += message[i];
     }
-    char reply[255];
+    string reply= "";
     // Convert string into int
     if (node == "1") {
         //sprintf(reply, "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
         reply = "{\"N\":\"2\",\"CheckSum\":\"" + check + "\",\"TempW\":\"" + AmbientTempMQTT + "\",\"Wind\":\"" + WindSpeedMQTT + "\"}";
-        printf("\n Packet Prepared!");
+        printf("\n Packet Prepared! %s", reply);
         LoRa.beginPacket();
         LoRa.write(reply,strlen((char *)reply.c_str()));  // Send Check Sum
         LoRa.endPacket();
