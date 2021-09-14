@@ -141,7 +141,7 @@ void sendAck(string message) {
         oss.precision(4);
         oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
         reply = oss.str();
-        printf("\n Packet Prepared! %s", reply);
+        //printf("\n Packet Prepared! %s", reply);
         LoRa.beginPacket();
         LoRa.write(reply.c_str(),strlen((char *)reply.c_str()));  // Send Check Sum
         LoRa.endPacket();
