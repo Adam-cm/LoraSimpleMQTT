@@ -142,7 +142,7 @@ void sendAck(string message) {
         reply = oss.str();
         printf("\n Packet Prepared! %s", reply);
         LoRa.beginPacket();
-        LoRa.write(reply,strlen((char *)reply.c_str()));  // Send Check Sum
+        LoRa.write(reply.c_str(),strlen((char *)reply.c_str()));  // Send Check Sum
         LoRa.endPacket();
 
         //string reply = to_string(check);
