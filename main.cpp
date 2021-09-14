@@ -123,6 +123,18 @@ bool replace(string& str, const string& from, const string& to) {
     return true;
 }
 
+// Get and Return CPUTEMP
+float updateCPUTEMP(void){
+  float systemp, millideg;
+  FILE* thermal;
+  int n;
+  thermal = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
+  n = fscanf(thermal, "%f", &millideg);
+  fclose(thermal);
+  systemp = millideg / 1000;
+  return systemp;
+}
+
 // Message Reply
 void sendAck(string message) {
     string node = message.substr(message.find("N", 0) + 4, 1);
@@ -139,6 +151,7 @@ void sendAck(string message) {
         //sprintf(reply, "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
         //reply = "{\"N\":\"2\",\"CheckSum\":\"" + check + "\",\"TempW\":\"" + AmbientTempMQTT + "\",\"Wind\":\"" + WindSpeedMQTT + "\"}";
         oss.precision(4);
+        AmbientTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
         oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
         reply = oss.str();
         //printf("\n Packet Prepared! %s", reply);
@@ -242,15 +255,7 @@ string update_MQTT(string jsonString) {
         RSSIMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
 
         // Sending CPU Temp as AMBIENT
-        float systemp, millideg;
-        FILE* thermal;
-        int n;
-        thermal = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
-        n = fscanf(thermal, "%f", &millideg);
-        fclose(thermal);
-        systemp = millideg / 1000;
-        //printf("CPU temperature is %f degrees C\n",systemp);
-        AmbientTempMQTT = to_string(systemp); // Update variable to transmit
+        AmbientTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
 
         // Update Payload String
         PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
