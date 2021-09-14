@@ -30,9 +30,6 @@ using namespace std;
 
 #include "base64.h"
 
-#include <wiringPi.h>
-#include <wiringPiSPI.h>
-
 /*******************************************************************************
  *
  * MQTT Configuration
@@ -101,6 +98,8 @@ int counter, lastCounter;
  * Wiring Pi Configuration
  *
  *******************************************************************************/
+#include <wiringPi.h>
+#include <wiringPiSPI.h>
 
  // SX1272 - Raspberry connections Wiring Pi Connections
 int ssPin = 6;
@@ -123,7 +122,7 @@ bool replace(string& str, const string& from, const string& to) {
     return true;
 }
 
-// Get and Return CPUTEMP
+// Get and Return CPU_TEMP
 float updateCPUTEMP(void){
   float systemp, millideg;
   FILE* thermal;
@@ -137,44 +136,48 @@ float updateCPUTEMP(void){
 
 // Message Reply
 void sendAck(string message) {
-    string node = message.substr(message.find("N", 0) + 4, 1);
+    
+    // Local Variables
+    string node = message.substr(message.find("N", 0) + 4, 1);  // Identify Node Number
+    int check = 0;                                              // Int to store CheckSUM
+    string reply = "";                                          // String to store reply message
+    ostringstream oss;                                          // String stream to prepare messages
 
-    int check = 0;
-    // Calculate Check Sum
+    // Calculate Check Sum from message received
     for (int i = 0; i < message.length(); i++) {
         check += message[i];
     }
-    string reply = "";
-    ostringstream oss;
-    // Convert string into int
-    if (node == "1") {
-        //sprintf(reply, "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
-        //reply = "{\"N\":\"2\",\"CheckSum\":\"" + check + "\",\"TempW\":\"" + AmbientTempMQTT + "\",\"Wind\":\"" + WindSpeedMQTT + "\"}";
-        oss.precision(4);
-        AmbientTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
-        oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
-        reply = oss.str();
-        //printf("\n Packet Prepared! %s", reply);
-        LoRa.beginPacket();
-        LoRa.write(reply.c_str(),strlen((char *)reply.c_str()));  // Send Check Sum
-        LoRa.endPacket();
 
-        //string reply = to_string(check);
-          //printf("\nCheck sum reply: %s\n",checksum.c_str());
-        //LoRa.beginPacket();
-        //LoRa.write(reply.c_str(), 4);  // Send Check Sum
-        //LoRa.endPacket();
+    // Handle Situation according to node number
+    if (node == "1") {
+        // Update variable to transmit
+        AmbientTempMQTT = to_string(updateCPUTEMP()); 
+
+        // Prepare reply message (Send most recent WindSpeed and AmbientTEMP)
+        oss.precision(4);                             // Set string stream precision to 4
+        oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
+        reply = oss.str();  // Store string stream
+        
+        // Send Packet Reply
+        LoRa.beginPacket();                                       // Setup LoRa CHIP
+        LoRa.write(reply.c_str(),strlen((char *)reply.c_str()));  // Send Reply String
+        LoRa.endPacket();                                         // Finish LoRa Transmit
     }
-    else if (node == "2") {
-        string reply = to_string(check);
-        //printf("\nCheck sum reply: %s\n",checksum.c_str());
-        LoRa.beginPacket();
-        LoRa.write(reply.c_str(), 4);  // Send Check Sum
-        LoRa.endPacket();
+    else if (node == "2"){
+        // Store Check Sum received
+        reply = to_string(check);       
+
+        // Send Packet Reply
+        LoRa.beginPacket();             // Setup LoRa CHIP
+        LoRa.write(reply.c_str(), 4);   // Send Check Sum
+        LoRa.endPacket();               // Finish LoRa Transmit
     }
     else {
+        // Unknown Message from Node Detected
         printf("Unknown Node");
     }
+
+    return;
 }
 
 bool setup_MQTT() {
