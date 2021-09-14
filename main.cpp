@@ -18,6 +18,7 @@
 #include <arpa/inet.h>
 #include <stdint.h>
 //#include <string.h>
+#include <sstream>
 #include <iostream>
 #include <cstdlib>
 #include <sys/time.h>
@@ -132,10 +133,13 @@ void sendAck(string message) {
         check += message[i];
     }
     string reply = "";
+    ostringstream oss;
     // Convert string into int
     if (node == "1") {
         //sprintf(reply, "{\"N\":\"2\",\"CheckSum\":\"%i\",\"TempW\":\"%s\",\"Wind\":\"%s\"}", check, AmbientTempMQTT, WindSpeedMQTT);
-        reply = "{\"N\":\"2\",\"CheckSum\":\"" + check + "\",\"TempW\":\"" + AmbientTempMQTT + "\",\"Wind\":\"" + WindSpeedMQTT + "\"}";
+        //reply = "{\"N\":\"2\",\"CheckSum\":\"" + check + "\",\"TempW\":\"" + AmbientTempMQTT + "\",\"Wind\":\"" + WindSpeedMQTT + "\"}";
+        oss << "{\"N\":\"2\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
+        reply = oss.str();
         printf("\n Packet Prepared! %s", reply);
         LoRa.beginPacket();
         LoRa.write(reply,strlen((char *)reply.c_str()));  // Send Check Sum
