@@ -30,6 +30,8 @@ using namespace std;
 
 #include "base64.h"
 
+#define REPLY_NODE1 0
+
 /*******************************************************************************
  *
  * MQTT Configuration
@@ -49,17 +51,18 @@ string ChannelID2 = "1490440";
 // Control System variables
 string Temp1MQTT = "ERR";
 string Temp2MQTT = "ERR";
-string TurbidityMQTT = "ERR";
+string HumidityMQTT = "ERR";
 string FrameCountMQTT = "ERR";
 string RSSIMQTT = "ERR";
 
 // Weather System variables
 string AmbientTempMQTT = "ERR";
+string RaspiTempMQTT = "ERR";
 string WindSpeedMQTT = "ERR";
 
 // Topic and Payload Structure
 string TOPIC = "channels/" + ChannelID1 + "/publish";
-string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + HumidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
 // Connection Parameters
 #define QOS         0
@@ -69,12 +72,13 @@ int rc;
 // Number of Fields and Names
 string field1 = "Temp1";
 string field2 = "Temp2";
-string field3 = "Turbidity";
-string field4 = "Count";
-string field5 = "RSSI";
+string field3 = "TempW";
+string field4 = "Humidity";
+string field5 = "Count";
+string field6 = "RSSI";
 
 // Number of Fields and Names
-string field6 = "Wind";
+string field7 = "HumidityW";
 
 // MQTT Client Variables
 MQTTClient client;
@@ -150,14 +154,18 @@ void sendAck(string message) {
 
     // Handle Situation according to node number
     if (node == "1") {
+        // Store Check Sum received
+        reply = to_string(check); 
+
+        #ifdef REPLY_NODE1
         // Update variable to transmit
         AmbientTempMQTT = to_string(updateCPUTEMP()); 
-
         // Prepare reply message (Send most recent WindSpeed and AmbientTEMP)
         oss.precision(4);                             // Set string stream precision to 4
         oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
         reply = oss.str();  // Store string stream
-        
+        #endif
+
         // Send Packet Reply
         LoRa.beginPacket();                                       // Setup LoRa CHIP
         LoRa.write(reply.c_str(),strlen((char *)reply.c_str()));  // Send Reply String
@@ -241,24 +249,24 @@ string update_MQTT(string jsonString) {
         // Update Control System Variables
         Temp1MQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 4);
         Temp2MQTT = jsonString.substr(jsonString.find(field2, 1) + field2.length() + 3, 4);
-        TurbidityMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 1);
-        FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 3);
-        RSSIMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
+        HumidityMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 1);
+        FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
+        RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
 
         // Update Payload String
-        PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + TurbidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+        PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + HumidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
         printf("Message sent to MQTT Broker from Control System\n");
     }
     else if (node == "2") {
         // Update Weather Station Variables
-        AmbientTempMQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 4);
-        WindSpeedMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 4);
-        FrameCountMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 3);
-        RSSIMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
+        AmbientTempMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
+        WindSpeedMQTT = jsonString.substr(jsonString.find(field7, 1) + field7.length() + 3, 4);
+        FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
+        RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
 
         // Sending CPU Temp as AMBIENT
-        AmbientTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
+        RaspiTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
 
         // Update Payload String
         PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
