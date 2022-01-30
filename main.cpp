@@ -271,7 +271,7 @@ string update_MQTT(string jsonString) {
     }
     else if (node == "2") {
         // Update Weather Station Variables
-        Temp_DMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 7, 4);
+        Temp_DMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 10, 4);
         Humidity_DMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 4);
         FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 4);
         RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
