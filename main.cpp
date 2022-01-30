@@ -258,6 +258,7 @@ string update_MQTT(string jsonString) {
 
         printf("Message sent to MQTT Broker from Upstairs\n");
         cout << "PRINTING: " << PAYLOAD << "\n";
+        cout << "Message recieved: " << jsonString << "\n";
     }
     else if (node == "2") {
         // Update Weather Station Variables
