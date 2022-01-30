@@ -283,6 +283,8 @@ string update_MQTT(string jsonString) {
         PAYLOAD = "field1=" + Temp_DMQTT + "&field2=" + Humidity_DMQTT + "&field3=" + RaspiTempMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
         printf("Message sent to MQTT Broker from Downstairs\n");
+        cout << "PRINTING: " << PAYLOAD << "\n";
+        cout << "Message recieved: " << jsonString << "\n";
     }
 
     return node;
