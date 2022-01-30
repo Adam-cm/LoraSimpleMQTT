@@ -158,14 +158,14 @@ void sendAck(string message) {
         // Store Check Sum received
         reply = to_string(check); 
 
-        #ifdef REPLY_NODE1
+        //#ifdef REPLY_NODE1
         // Update variable to transmit
         AmbientTempMQTT = to_string(updateCPUTEMP()); 
         // Prepare reply message (Send most recent WindSpeed and AmbientTEMP)
         oss.precision(4);                             // Set string stream precision to 4
         oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
         reply = oss.str();  // Store string stream
-        #endif
+        //#endif
 
         // Send Packet Reply
         LoRa.beginPacket();                                       // Setup LoRa CHIP
@@ -175,6 +175,15 @@ void sendAck(string message) {
     else if (node == "2"){
         // Store Check Sum received
         reply = to_string(check);       
+        
+        //#ifdef REPLY_NODE1
+        // Update variable to transmit
+        AmbientTempMQTT = to_string(updateCPUTEMP()); 
+        // Prepare reply message (Send most recent WindSpeed and AmbientTEMP)
+        oss.precision(4);                             // Set string stream precision to 4
+        oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
+        reply = oss.str();  // Store string stream
+        //#endif
 
         // Send Packet Reply
         LoRa.beginPacket();                                         // Setup LoRa CHIP
@@ -353,7 +362,7 @@ int main() {
                 // Send Message to Thingspeak 1
                 send_MQTT(PAYLOAD, ChannelID1);
             }
-            else if ((node == "2")||(node == "3")) {
+            else if (node == "2") {
                 // Send Message to Thingspeak 2
                 send_MQTT(PAYLOAD, ChannelID2);
             }
