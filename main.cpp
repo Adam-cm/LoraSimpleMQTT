@@ -257,6 +257,7 @@ string update_MQTT(string jsonString) {
         PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
         printf("Message sent to MQTT Broker from Upstairs\n");
+        printf("PRINTING: %s\n",PAYLOAD);
     }
     else if (node == "2") {
         // Update Weather Station Variables
