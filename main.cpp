@@ -254,6 +254,7 @@ bool die_MQTT() {
 
 string update_MQTT(string jsonString) {
     string node = jsonString.substr(jsonString.find("N", 0) + 4, 1);
+    cout << "Node: " << node;
 
     if (node == "1") {
         // Update Control System Variables
