@@ -31,6 +31,7 @@ using namespace std;
 #include "base64.h"
 
 #define REPLY_NODE1 0
+#define DEBUG 0
 
 /*******************************************************************************
  *
@@ -254,7 +255,9 @@ bool die_MQTT() {
 
 string update_MQTT(string jsonString) {
     string node = jsonString.substr(jsonString.find("N", 0) + 4, 1);
-    cout << "Node: " << node;
+    if(DEBUG == 1){
+        cout << "Node: " << node;
+    }
 
     if (node == "1") {
         // Update Control System Variables
@@ -266,9 +269,11 @@ string update_MQTT(string jsonString) {
         // Update Payload String
         PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
+        if(DEBUG == 1){
         printf("Message sent to MQTT Broker from Upstairs\n");
         cout << "PRINTING: " << PAYLOAD << "\n";
         cout << "Message recieved: " << jsonString << "\n";
+        }
     }
     else if (node == "2") {
         // Update Weather Station Variables
@@ -283,9 +288,11 @@ string update_MQTT(string jsonString) {
         // Update Payload String
         PAYLOAD = "field1=" + Temp_DMQTT + "&field2=" + Humidity_DMQTT + "&field3=" + RaspiTempMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
+        if(DEBUG == 1){
         printf("Message sent to MQTT Broker from Downstairs\n");
         cout << "PRINTING: " << PAYLOAD << "\n";
         cout << "Message recieved: " << jsonString << "\n";
+        }
     }
 
     return node;
