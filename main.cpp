@@ -257,7 +257,7 @@ string update_MQTT(string jsonString) {
 
     if (node == "1") {
         // Update Control System Variables
-        Temp_UMQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 4);
+        Temp_UMQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 5);
         Humidity_UMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
         FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
         RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
