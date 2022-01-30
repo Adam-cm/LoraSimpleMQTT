@@ -49,9 +49,10 @@ string ChannelID1 = "1488787";
 string ChannelID2 = "1490440";
 
 // Control System variables
-string Temp1MQTT = "ERR";
-string Temp2MQTT = "ERR";
-string HumidityMQTT = "ERR";
+string Temp_UMQTT = "ERR";
+string Temp_DMQTT = "ERR";
+string Humidity_UMQTT = "ERR";
+string Humidity_DMQTT = "ERR";
 string FrameCountMQTT = "ERR";
 string RSSIMQTT = "ERR";
 
@@ -62,7 +63,7 @@ string WindSpeedMQTT = "ERR";
 
 // Topic and Payload Structure
 string TOPIC = "channels/" + ChannelID1 + "/publish";
-string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + HumidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+string PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
 // Connection Parameters
 #define QOS         0
@@ -70,10 +71,10 @@ string PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + H
 int rc;
 
 // Number of Fields and Names
-string field1 = "Temp1";
-string field2 = "Temp2";
-string field3 = "TempW";
-string field4 = "Humidity";
+string field1 = "Temp_U";
+string field2 = "Temp_D";
+string field3 = "Humidity_U";
+string field4 = "Humidity_D";
 string field5 = "Count";
 string field6 = "RSSI";
 
@@ -176,9 +177,9 @@ void sendAck(string message) {
         reply = to_string(check);       
 
         // Send Packet Reply
-        LoRa.beginPacket();             // Setup LoRa CHIP
-        LoRa.write(reply.c_str(), 4);   // Send Check Sum
-        LoRa.endPacket();               // Finish LoRa Transmit
+        LoRa.beginPacket();                                         // Setup LoRa CHIP
+        LoRa.write(reply.c_str(),strlen((char *)reply.c_str()));    // Send Check Sum
+        LoRa.endPacket();                                           // Finish LoRa Transmit
     }
     else {
         // Unknown Message from Node Detected
@@ -247,21 +248,20 @@ string update_MQTT(string jsonString) {
 
     if (node == "1") {
         // Update Control System Variables
-        Temp1MQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 4);
-        Temp2MQTT = jsonString.substr(jsonString.find(field2, 1) + field2.length() + 3, 4);
-        HumidityMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 1);
+        Temp_UMQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 4);
+        Humidity_UMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
         FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
         RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
 
         // Update Payload String
-        PAYLOAD = "field1=" + Temp1MQTT + "&field2=" + Temp2MQTT + "&field3=" + HumidityMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+        PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
-        printf("Message sent to MQTT Broker from Control System\n");
+        printf("Message sent to MQTT Broker from Upstairs\n");
     }
     else if (node == "2") {
         // Update Weather Station Variables
-        AmbientTempMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
-        WindSpeedMQTT = jsonString.substr(jsonString.find(field7, 1) + field7.length() + 3, 4);
+        Temp_DMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
+        Humidity_DMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 4);
         FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
         RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
 
@@ -269,9 +269,9 @@ string update_MQTT(string jsonString) {
         RaspiTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
 
         // Update Payload String
-        PAYLOAD = "field1=" + AmbientTempMQTT + "&field2=" + WindSpeedMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
+        PAYLOAD = "field1=" + Temp_DMQTT + "&field2=" + Humidity_DMQTT + "&field3=" + RaspiTempMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
 
-        printf("Message sent to MQTT Broker from Weather Station\n");
+        printf("Message sent to MQTT Broker from Downstairs\n");
     }
 
     return node;
@@ -351,7 +351,7 @@ int main() {
                 // Send Message to Thingspeak 1
                 send_MQTT(PAYLOAD, ChannelID1);
             }
-            else if (node == "2") {
+            else if ((node == "2")||(node == "3")) {
                 // Send Message to Thingspeak 2
                 send_MQTT(PAYLOAD, ChannelID2);
             }
