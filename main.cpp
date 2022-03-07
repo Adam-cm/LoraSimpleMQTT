@@ -205,7 +205,7 @@ bool setup_MQTT() {
     // Create Client
     if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
         printf("Failed to create client, return code %d\n", rc);
-        sleep(5000);
+        //sleep(5000);
         //return false;
     }
 
