@@ -385,7 +385,7 @@ int main() {
             // lastCounter = counter;
 
             // Check if MQTT is still open
-            if(!MQTTClient_isConnected (MQTTClient handle)){
+            if(!MQTTClient_isConnected (&client)){
                 bool status = setup_MQTT();
                 if (status == true) {
                     printf(" MQTT Client Status: ONLINE\n");
