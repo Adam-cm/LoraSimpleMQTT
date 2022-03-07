@@ -393,7 +393,7 @@ int main() {
             //    else {
             //        printf(" MQTT Client Status: OFFLINE\n");
              //   }
-            }
+            //}
         }
     }
 }
