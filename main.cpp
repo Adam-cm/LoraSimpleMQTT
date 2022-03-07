@@ -31,7 +31,7 @@ using namespace std;
 #include "base64.h"
 
 #define REPLY_NODE1 0
-#define DEBUG 1
+#define DEBUG 0
 
 /*******************************************************************************
  *
@@ -385,15 +385,15 @@ int main() {
             // lastCounter = counter;
 
             // Check if MQTT is still open
-            //if(!(MQTTClient_isConnected(client))){
-            //    bool status = setup_MQTT();
-            //    if (status == true) {
-            //        printf(" MQTT Client Status: ONLINE\n");
-             //   }
-            //    else {
-            //        printf(" MQTT Client Status: OFFLINE\n");
-             //   }
-            //}
+            if(!(MQTTClient_isConnected(client))){
+                bool status = setup_MQTT();
+                if (status == true) {
+                    printf(" MQTT Client Status: ONLINE\n");
+                }
+                else {
+                    printf(" MQTT Client Status: OFFLINE\n");
+                }
+            }
         }
     }
 }
