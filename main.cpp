@@ -31,7 +31,7 @@ using namespace std;
 #include "base64.h"
 
 #define REPLY_NODE1 0
-#define DEBUG 0
+#define DEBUG 1
 
 /*******************************************************************************
  *
