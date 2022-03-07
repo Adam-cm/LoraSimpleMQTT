@@ -205,7 +205,8 @@ bool setup_MQTT() {
     // Create Client
     if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
         printf("Failed to create client, return code %d\n", rc);
-        return false;
+        sleep(5000);
+        //return false;
     }
 
     // Define connection variables
@@ -382,6 +383,17 @@ int main() {
 
             // Update Counter
             // lastCounter = counter;
+
+            // Check if MQTT is still open
+            if(!MQTTClient_isConnected (MQTTClient handle)){
+                bool status = setup_MQTT();
+                if (status == true) {
+                    printf(" MQTT Client Status: ONLINE\n");
+                }
+                else {
+                    printf(" MQTT Client Status: OFFLINE\n");
+                }
+            }
         }
     }
 }
