@@ -242,15 +242,15 @@ bool send_MQTT(string payload, string ChannelID) {
 
     // Print output
     if(DEBUG == 1){
-        printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
+        printf("- Waiting for up to %d seconds for publication of %s\n" "- Topic: %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
     }
     //
     rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
     if (rc == 0 && DEBUG == 1){
-        printf("Publication Succeeded!\n");
+        printf("- Publication Succeeded!\n");
     }
     else{
-        printf("Publication Failed!\n");
+        printf("- Publication Failed!\n");
     }
     //printf("MQTT Message delivered\n");
     //printf("Message with delivery token %d delivered\n", token);
@@ -267,7 +267,7 @@ bool die_MQTT() {
 string update_MQTT(string jsonString) {
     string node = jsonString.substr(jsonString.find("N", 0) + 4, 1);
     if(DEBUG == 1){
-        cout << "Node: " << node;
+        cout << "\n\nNode: " << node;
     }
 
     if (node == "1") {
@@ -281,9 +281,9 @@ string update_MQTT(string jsonString) {
         PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
         if(DEBUG == 1){
-        printf("Message sent to MQTT Broker from Upstairs\n");
-        cout << "PRINTING: " << PAYLOAD << "\n";
-        cout << "Message recieved: " << jsonString << "\n";
+        printf("\nMessage sent to MQTT Broker from Upstairs\n");
+        cout << "- Message recieved: " << jsonString << "\n";
+        cout << "- PAYLOAD: " << PAYLOAD << "\n";
         }
     }
     else if (node == "2") {
@@ -328,10 +328,10 @@ int main() {
     printf(" Starting MQTT Client \n");
     bool status = setup_MQTT();
     if (status == true) {
-        printf(" MQTT Client Status: ONLINE\n");
+        printf(" {MQTT Client Status: ONLINE}\n");
     }
     else {
-        printf(" MQTT Client Status: OFFLINE\n");
+        printf(" {MQTT Client Status: OFFLINE}\n");
     }
 
     // Setup LoRa Communications
