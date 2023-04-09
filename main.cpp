@@ -250,7 +250,7 @@ bool send_MQTT(string payload, string ChannelID) {
         printf("Publication Succeeded!\n");
     }
     else{
-        printf("Publication Failed!\n")
+        printf("Publication Failed!\n");
     }
     //printf("MQTT Message delivered\n");
     //printf("Message with delivery token %d delivered\n", token);
