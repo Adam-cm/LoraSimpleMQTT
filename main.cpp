@@ -279,6 +279,7 @@ string update_MQTT(string jsonString) {
 
         // Update Payload String
         PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
+        printf("\nMessage sent to MQTT Broker from Upstairs\n");
 
         if(DEBUG == 1){
         printf("\nMessage sent to MQTT Broker from Upstairs\n");
@@ -298,11 +299,12 @@ string update_MQTT(string jsonString) {
 
         // Update Payload String
         PAYLOAD = "field1=" + Temp_DMQTT + "&field2=" + Humidity_DMQTT + "&field3=" + RaspiTempMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
+        printf("\nMessage sent to MQTT Broker from Downstairs\n");
 
         if(DEBUG == 1){
-        printf("Message sent to MQTT Broker from Downstairs\n");
-        cout << "PRINTING: " << PAYLOAD << "\n";
-        cout << "Message recieved: " << jsonString << "\n";
+        printf("-- DEBUG --\n");
+        cout << "- Message recieved: " << jsonString << "\n";
+        cout << "- PAYLOAD: " << PAYLOAD << "\n";
         }
     }
 
@@ -328,10 +330,10 @@ int main() {
     printf(" Starting MQTT Client \n");
     bool status = setup_MQTT();
     if (status == true) {
-        printf(" {MQTT Client Status: ONLINE}\n");
+        printf(" MQTT Client Status: ONLINE\n");
     }
     else {
-        printf(" {MQTT Client Status: OFFLINE}\n");
+        printf(" MQTT Client Status: OFFLINE\n");
     }
 
     // Setup LoRa Communications
@@ -397,16 +399,16 @@ int main() {
             // Check if MQTT is still open
             if(!(MQTTClient_isConnected(client))){
                 if(DEBUG == 1){
-                    printf("MQTT Client Status: OFFLINE\n");
+                    printf(" {MQTT Client Status: OFFLINE}\n");
                 }
                 bool status = setup_MQTT();
                 if (status == true && DEBUG == 1) {
-                    printf("MQTT Restarted, Client Status: ONLINE\n");
+                    printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                 }
             }
             else{
                 if(DEBUG == 1){
-                    printf(" MQTT Client Status: ONLINE\n");
+                    printf(" {MQTT Client Status: ONLINE}\n");
                 }
             }
         }
