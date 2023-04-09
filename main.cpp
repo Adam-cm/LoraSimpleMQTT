@@ -31,7 +31,7 @@ using namespace std;
 #include "base64.h"
 
 #define REPLY_NODE1 0
-#define DEBUG 0
+#define DEBUG 1
 
 /*******************************************************************************
  *
@@ -205,8 +205,8 @@ bool setup_MQTT() {
     // Create Client
     if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
         printf("Failed to create client, return code %d\n", rc);
-        //sleep(5000);
-        //return false;
+        sleep(5000);
+        return false;
     }
 
     // Define connection variables
@@ -240,8 +240,17 @@ bool send_MQTT(string payload, string ChannelID) {
     }
 
     // Print output
-    //printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
+    if(DEBUG == 1){
+        printf("Waiting for up to %d seconds for publication of %s\n" "on topic %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
+    }
+    //
     rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
+    if (rc == 0 && DEBUG == 1){
+        printf("Publication Succeeded!\n");
+    }
+    else{
+        printf("Publication Failed!\n")
+    }
     //printf("MQTT Message delivered\n");
     //printf("Message with delivery token %d delivered\n", token);
     return true;
@@ -386,12 +395,17 @@ int main() {
 
             // Check if MQTT is still open
             if(!(MQTTClient_isConnected(client))){
-                bool status = setup_MQTT();
-                if (status == true) {
-                    printf(" MQTT Client Status: ONLINE\n");
+                if(DEBUG == 1){
+                    printf("MQTT Client Status: OFFLINE\n");
                 }
-                else {
-                    printf(" MQTT Client Status: OFFLINE\n");
+                bool status = setup_MQTT();
+                if (status == true && DEBUG == 1) {
+                    printf("MQTT Restarted, Client Status: ONLINE\n");
+                }
+            }
+            else{
+                if(DEBUG == 1){
+                    printf(" MQTT Client Status: ONLINE\n");
                 }
             }
         }
