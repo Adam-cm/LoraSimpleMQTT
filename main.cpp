@@ -401,6 +401,7 @@ int main() {
                 if(DEBUG == 1){
                     printf(" {MQTT Client Status: OFFLINE}\n");
                 }
+                sleep(5000);
                 bool status = setup_MQTT();
                 if (status == true && DEBUG == 1) {
                     printf(" {MQTT Restarted, Client Status: ONLINE}\n");
