@@ -409,6 +409,7 @@ int main() {
             }
             if(DEBUG == 1){
                printf(" {MQTT Client Status: ONLINE}\n");
+            }
         }
     }
 }
