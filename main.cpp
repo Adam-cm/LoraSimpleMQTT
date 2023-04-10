@@ -241,7 +241,7 @@ bool send_MQTT(string payload, string ChannelID) {
     }
     else{
         printf("- Publication Succeeded!\n");
-        return true
+        return true;
     }
 
     // Print output
@@ -407,10 +407,10 @@ int main() {
                 if(DEBUG == 1){
                     printf(" {MQTT Client Status: OFFLINE}\n");
                     die_MQTT();
-                    sleep(5);
+                    usleep(10000L);
                 }
                 bool status = setup_MQTT();
-                sleep(5);
+                usleep(10000L);
                 if (status == true && DEBUG == 1) {
                     printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                 }
