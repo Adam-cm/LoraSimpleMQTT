@@ -282,7 +282,7 @@ string update_MQTT(string jsonString) {
         printf("\nMessage sent to MQTT Broker from Upstairs\n");
 
         if(DEBUG == 1){
-        printf("\nMessage sent to MQTT Broker from Upstairs\n");
+        printf("-- DEBUG --\n");
         cout << "- Message recieved: " << jsonString << "\n";
         cout << "- PAYLOAD: " << PAYLOAD << "\n";
         }
