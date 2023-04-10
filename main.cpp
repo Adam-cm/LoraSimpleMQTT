@@ -206,7 +206,7 @@ bool setup_MQTT() {
     // Create Client
     if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
         printf("Failed to create client, return code %d\n", rc);
-        sleep(5000);
+        sleep(5);
         return false;
     }
 
@@ -401,7 +401,7 @@ int main() {
                 if(DEBUG == 1){
                     printf(" {MQTT Client Status: OFFLINE}\n");
                 }
-                sleep(5000);
+                sleep(5);
                 bool status = setup_MQTT();
                 if (status == true && DEBUG == 1) {
                     printf(" {MQTT Restarted, Client Status: ONLINE}\n");
