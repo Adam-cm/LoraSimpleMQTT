@@ -212,7 +212,7 @@ bool setup_MQTT() {
 
     // Define connection variables
     conn_opts.keepAliveInterval = 20;
-    conn_opts.cleansession = 1;
+    conn_opts.cleansession = true;
 
     // Connect to MQTT Broker (Thingspeak)
     if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
@@ -381,6 +381,8 @@ int main() {
 
             string node = update_MQTT(jsonString);
 
+
+
             if (node == "1") {
                 // Send Message to Thingspeak 1
                 send_MQTT(PAYLOAD, ChannelID1);
@@ -400,9 +402,11 @@ int main() {
             while(!(MQTTClient_isConnected(client))){
                 if(DEBUG == 1){
                     printf(" {MQTT Client Status: OFFLINE}\n");
+                    die_MQTT();
+                    sleep(5);
                 }
-                sleep(5);
                 bool status = setup_MQTT();
+                sleep(5);
                 if (status == true && DEBUG == 1) {
                     printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                 }
