@@ -397,7 +397,7 @@ int main() {
             // lastCounter = counter;
 
             // Check if MQTT is still open
-            if(!(MQTTClient_isConnected(client))){
+            while(!(MQTTClient_isConnected(client))){
                 if(DEBUG == 1){
                     printf(" {MQTT Client Status: OFFLINE}\n");
                 }
@@ -407,11 +407,8 @@ int main() {
                     printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                 }
             }
-            else{
-                if(DEBUG == 1){
-                    printf(" {MQTT Client Status: ONLINE}\n");
-                }
-            }
+            if(DEBUG == 1){
+               printf(" {MQTT Client Status: ONLINE}\n");
         }
     }
 }
