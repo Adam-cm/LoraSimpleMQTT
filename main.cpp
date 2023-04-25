@@ -194,7 +194,8 @@ void sendAck(string message) {
     }
     else {
         // Unknown Message from Node Detected
-        printf("Unknown Node");
+        //printf("Unknown Node");
+        cout << "Unknown Node";
     }
 
     return;
@@ -206,7 +207,7 @@ bool setup_MQTT() {
     // Create Client
     if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
         printf("Failed to create client, return code %d\n", rc);
-        sleep(5);
+        //sleep(5);
         return false;
     }
 
@@ -283,7 +284,8 @@ string update_MQTT(string jsonString) {
 
         // Update Payload String
         PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
-        printf("\nMessage sent to MQTT Broker from Upstairs\n");
+        //printf("\nMessage sent to MQTT Broker from Upstairs\n");
+        cout << "\nMessage sent to MQTT Broker from Upstairs\n" << endl;
 
         if(DEBUG == 1){
         printf("-- DEBUG --\n");
