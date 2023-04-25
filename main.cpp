@@ -206,7 +206,8 @@ bool setup_MQTT() {
 
     // Create Client
     if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
-        printf("Failed to create client, return code %d\n", rc);
+        cout << "Failed to create client, return code " << rc << endl;
+        //printf("Failed to create client, return code %d\n", rc);
         //sleep(5);
         return false;
     }
@@ -217,7 +218,8 @@ bool setup_MQTT() {
 
     // Connect to MQTT Broker (Thingspeak)
     if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
-        printf("Failed to connect, return code %d\n", rc);
+        //printf("Failed to connect, return code %d\n", rc);
+        cout << "Failed to connect, return code " << rc << endl;
         return false;
     }
 
@@ -237,11 +239,13 @@ bool send_MQTT(string payload, string ChannelID) {
     pubmsg.retained = 0;
 
     if ((rc = MQTTClient_publishMessage(client, (char*)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS) {
-        printf("!! Failed to publish message, return code %d\n", rc);
+        //printf("!! Failed to publish message, return code %d\n", rc);
+        cout << "!! Failed to publish message, return code " << rc << endl;
         return false;
     }
     else{
-        printf("- Publication Succeeded!\n");
+        //printf("- Publication Succeeded!\n");
+        cout << "- Publication Succeeded!" << endl;
         return true;
     }
 
@@ -263,8 +267,10 @@ bool send_MQTT(string payload, string ChannelID) {
 }
 
 bool die_MQTT() {
-    if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS)
-        printf("Failed to disconnect, return code %d\n", rc);
+    if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS) {
+        //printf("Failed to disconnect, return code %d\n", rc);
+        cout << "Failed to disconnect, return code " << rc << endl;
+    }
     MQTTClient_destroy(&client);
     return true;
 }
@@ -285,12 +291,13 @@ string update_MQTT(string jsonString) {
         // Update Payload String
         PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
         //printf("\nMessage sent to MQTT Broker from Upstairs\n");
-        cout << "\nMessage sent to MQTT Broker from Upstairs\n" << endl;
+        cout << "\nMessage sent to MQTT Broker from Upstairs" << endl;
 
         if(DEBUG == 1){
-        printf("-- DEBUG --\n");
-        cout << "- Message recieved: " << jsonString << "\n";
-        cout << "- PAYLOAD: " << PAYLOAD << "\n";
+        //printf("-- DEBUG --\n");
+            cout << "-- DEBUG --" << endl;
+            cout << "- Message recieved: " << jsonString << "\n";
+            cout << "- PAYLOAD: " << PAYLOAD << "\n";
         }
     }
     else if (node == "2") {
@@ -305,12 +312,14 @@ string update_MQTT(string jsonString) {
 
         // Update Payload String
         PAYLOAD = "field1=" + Temp_DMQTT + "&field2=" + Humidity_DMQTT + "&field3=" + RaspiTempMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
-        printf("\nMessage sent to MQTT Broker from Downstairs\n");
+        //printf("\nMessage sent to MQTT Broker from Downstairs\n");
+        cout << "\nMessage sent to MQTT Broker from Downstairs" << endl;
 
         if(DEBUG == 1){
-        printf("-- DEBUG --\n");
-        cout << "- Message recieved: " << jsonString << "\n";
-        cout << "- PAYLOAD: " << PAYLOAD << "\n";
+        //printf("-- DEBUG --\n");
+            cout << "-- DEBUG --" << endl;
+            cout << "- Message recieved: " << jsonString << "\n";
+            cout << "- PAYLOAD: " << PAYLOAD << "\n";
         }
     }
 
@@ -326,39 +335,51 @@ int main() {
     *******************************************************************************/
 
     // Console Print
-    printf("\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
-    printf("\n======================================================\n\n");
+    //printf("\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
+    //printf("\n======================================================\n\n");
+    cout << "\n -  -  - -- IoT Control System: Wetlands -- -  -  - - " << endl;
+    cout << "\n======================================================\n" << endl;
 
     // Setup Wiring Pi
     wiringPiSetup();                      // Start wiring Pi
 
     // Setup MQTT
-    printf(" Starting MQTT Client \n");
+    //printf(" Starting MQTT Client \n");
+    cout << " Starting MQTT Client " << endl;
     bool status = setup_MQTT();
     if (status == true) {
-        printf(" MQTT Client Status: ONLINE\n");
+        //printf(" MQTT Client Status: ONLINE\n");
+        cout << " MQTT Client Status : ONLINE" << endl;
     }
     else {
-        printf(" MQTT Client Status: OFFLINE\n");
+        //printf(" MQTT Client Status: OFFLINE\n");
+        cout << " MQTT Client Status : OFFLINE" << endl;
     }
 
     // Setup LoRa Communications
     // Configure Gateway
-    printf("\n Starting LoRa Gateway\n");
+    //printf("\n Starting LoRa Gateway\n");
+    cout << "\n Starting LoRa Gateway" << endl;
     LoRa.setPins(ssPin, RST, dio0);             // Set module pins
     // Start LoRa with Freq
     if (!LoRa.begin(freq)) {
-        printf("\n Starting LoRa failed!\n");
+        //printf("\n Starting LoRa failed!\n");
+        cout << "\n Starting LoRa failed!" << endl;
         exit(EXIT_FAILURE);
     }
     LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
     // LoRa.setSignalBandwidth(bw);
 
     // Print Console, configuration successful
-    printf("\n - - LoRa Configuration - - \n");
-    printf("  Frequency: %li Hz\n", freq);
-    printf("  Bandwidth: %li\n", bw);
-    printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
+    //printf("\n - - LoRa Configuration - - \n");
+    //printf("  Frequency: %li Hz\n", freq);
+    //printf("  Bandwidth: %li\n", bw);
+    //printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
+
+    cout << "\n - - LoRa Configuration - - " << endl;
+    cout << "  Frequency: " << %li << " Hz" << endl;
+    cout << "  Bandwidth: " << bw << endl;
+    cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
     
     //System Configured
 
@@ -398,7 +419,8 @@ int main() {
                 send_MQTT(PAYLOAD, ChannelID2);
             }
             else {
-                printf("Error: Unknown node detected\n");
+                //printf("Error: Unknown node detected\n");
+                cout << "Error: Unknown node detected" << endl;
             }
 
             // Update Counter
@@ -407,18 +429,21 @@ int main() {
             // Check if MQTT is still open
             while(!(MQTTClient_isConnected(client))){
                 if(DEBUG == 1){
-                    printf(" {MQTT Client Status: OFFLINE}\n");
+                    //printf(" {MQTT Client Status: OFFLINE}\n");
+                    cout << " {MQTT Client Status: OFFLINE}" << endl;
                     die_MQTT();
                     usleep(10000L);
                 }
                 bool status = setup_MQTT();
                 usleep(10000L);
                 if (status == true && DEBUG == 1) {
-                    printf(" {MQTT Restarted, Client Status: ONLINE}\n");
+                    //printf(" {MQTT Restarted, Client Status: ONLINE}\n");
+                    cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
                 }
             }
             if(DEBUG == 1){
-               printf(" {MQTT Client Status: ONLINE}\n");
+               //printf(" {MQTT Client Status: ONLINE}\n");
+               cout << " {MQTT Client Status: ONLINE}" << endl;
             }
         }
     }
