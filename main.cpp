@@ -68,7 +68,7 @@ string TOPIC = "channels/" + ChannelID1 + "/publish";
 string PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
 // Connection Parameters
-#define QOS         0
+#define QOS         1
 #define TIMEOUT     10000L
 int rc;
 
@@ -236,25 +236,29 @@ bool send_MQTT(string payload, string ChannelID) {
     pubmsg.retained = 0;
 
     if ((rc = MQTTClient_publishMessage(client, (char*)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS) {
-        printf("Failed to publish message, return code %d\n", rc);
+        printf("!! Failed to publish message, return code %d\n", rc);
         return false;
+    }
+    else{
+        printf("- Publication Succeeded!\n");
+        return true;
     }
 
     // Print output
-    if(DEBUG == 1){
-        printf("- Waiting for up to %d seconds for publication of %s\n" "- Topic: %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
-    }
+    //if(DEBUG == 1){
+    //    printf("- Waiting for up to %d seconds for publication of %s\n" "- Topic: %s for client with ClientID: %s\n", (int)(TIMEOUT/1000), (char *)PAYLOAD.c_str(), (char *)TOPIC.c_str(), CLIENTID);
+    //}
     //
-    rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
-    if (rc == 0 && DEBUG == 1){
-        printf("- Publication Succeeded!\n");
-    }
-    else{
-        printf("- Publication Failed!\n");
-    }
+    //rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
+    //if (rc == 0 && DEBUG == 1){
+    //    printf("- Publication Succeeded!\n");
+    //}
+    //else{
+    //    printf("- Publication Failed!\n");
+    //}
     //printf("MQTT Message delivered\n");
     //printf("Message with delivery token %d delivered\n", token);
-    return true;
+    //return true;
 }
 
 bool die_MQTT() {
@@ -403,10 +407,10 @@ int main() {
                 if(DEBUG == 1){
                     printf(" {MQTT Client Status: OFFLINE}\n");
                     die_MQTT();
-                    sleep(5);
+                    usleep(10000L);
                 }
                 bool status = setup_MQTT();
-                sleep(5);
+                usleep(10000L);
                 if (status == true && DEBUG == 1) {
                     printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                 }
