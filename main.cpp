@@ -343,7 +343,7 @@ int main() {
     // Start LoRa with Freq
     if (!LoRa.begin(freq)) {
         printf("\n Starting LoRa failed!\n");
-        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
     }
     LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
     // LoRa.setSignalBandwidth(bw);
@@ -366,7 +366,7 @@ int main() {
             // received a packet
             string message = "";                              // Clear message string
             // Store Message in string Message
-            while (LoRa.available()) {
+            while(LoRa.available()>0) {
                 message = message + ((char)LoRa.read());
             }
             //printf("Message Received: %s\n", message.c_str());
@@ -399,7 +399,7 @@ int main() {
             // lastCounter = counter;
 
             // Check if MQTT is still open
-            while(!(MQTTClient_isConnected(client))){
+            if(!(MQTTClient_isConnected(client))){
                 if(DEBUG == 1){
                     printf(" {MQTT Client Status: OFFLINE}\n");
                     die_MQTT();
@@ -411,7 +411,7 @@ int main() {
                     printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                 }
             }
-            if(DEBUG == 1){
+            else if(DEBUG == 1){
                printf(" {MQTT Client Status: ONLINE}\n");
             }
         }
