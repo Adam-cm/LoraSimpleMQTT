@@ -366,7 +366,7 @@ int main() {
                 cout << "\n Starting LoRa failed!" << endl;
                 c_state = init;
                 sleep(60);
-                return(EXIT_FAILURE);
+                break;
             }
             LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
             // LoRa.setSignalBandwidth(bw);
@@ -421,7 +421,7 @@ int main() {
                 //printf("Error: Unknown node detected\n");
                 cout << "Error: Unknown node detected" << endl;
                 c_state = scan;
-                return;
+                break;
             }
 
             // Update Counter
@@ -442,19 +442,19 @@ int main() {
                     cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
                 }
                 else{
-                    c_State = scan;
-                    return;
+                    c_state = scan;
+                    break;
                 }
             }
             else if(DEBUG){
                //printf(" {MQTT Client Status: ONLINE}\n");
                cout << " {MQTT Client Status: ONLINE}" << endl;
-               return;
+               break;
             }
         }
         case slumber:{
             c_state = scan;
-            return
+            break;
         }
     }
 }
