@@ -393,7 +393,7 @@ int main() {
             // received a packet
             string message = "";                              // Clear message string
             // Store Message in string Message
-            while (LoRa.available()) {
+            while (LoRa.available() > 0) {
                 message = message + ((char)LoRa.read());
             }
             //printf("Message Received: %s\n", message.c_str());
