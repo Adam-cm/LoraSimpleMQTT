@@ -390,6 +390,9 @@ int main() {
     *******************************************************************************/
     while(1) {
         if (LoRa.parsePacket()) {
+            if(DEBUG){
+                cout << "\nPACKET RECIEVED!" << endl;
+            }
             // received a packet
             string message = "";                              // Clear message string
             // Store Message in string Message
