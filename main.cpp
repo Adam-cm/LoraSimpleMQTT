@@ -332,6 +332,7 @@ enum state{init,scan,respond,slumber};
 state c_state = init;
 
 int main() {
+    while(1){
     switch(c_state){
         case init:{
             /*******************************************************************************
@@ -459,4 +460,5 @@ int main() {
             break;
         }
     }
+}
 }
