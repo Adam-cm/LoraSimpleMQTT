@@ -427,21 +427,21 @@ int main() {
             // lastCounter = counter;
 
             // Check if MQTT is still open
-            while(!(MQTTClient_isConnected(client))){
+            if(!(MQTTClient_isConnected(client))){
                 if(DEBUG == 1){
                     //printf(" {MQTT Client Status: OFFLINE}\n");
                     cout << " {MQTT Client Status: OFFLINE}" << endl;
                     die_MQTT();
-                    usleep(10000L);
+                    sleep(10);
                 }
                 bool status = setup_MQTT();
-                usleep(10000L);
+                sleep(10);
                 if (status == true && DEBUG == 1) {
                     //printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                     cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
                 }
             }
-            if(DEBUG == 1){
+            else if(DEBUG == 1){
                //printf(" {MQTT Client Status: ONLINE}\n");
                cout << " {MQTT Client Status: ONLINE}" << endl;
             }
