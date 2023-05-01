@@ -379,10 +379,12 @@ int main() {
     
             //System Configured
             c_state = scan;
+            break;
         }
         case scan:{
             if (LoRa.parsePacket()) {
                 c_state = respond;
+                break;
             }
         }
         case respond:{
@@ -392,7 +394,7 @@ int main() {
             // received a packet
             string message = "";                              // Clear message string
             // Store Message in string Message
-            while (LoRa.available() > 0) {
+            while (LoRa.available()) {
                 message = message + ((char)LoRa.read());
             }
             //printf("Message Received: %s\n", message.c_str());
