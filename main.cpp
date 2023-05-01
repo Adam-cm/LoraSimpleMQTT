@@ -326,70 +326,66 @@ string update_MQTT(string jsonString) {
     return node;
 }
 
+
+// Prepare state machine
+enum state{init,scan,respond,slumber};
+state c_state = init;
+
 int main() {
+    switch(c_state){
+        case init:{
+            /*******************************************************************************
+             *
+             * Setup Variables
+             *
+            *******************************************************************************/
+            cout << "\n======================================================\n" << endl;
+            cout << "\n -  -  - -- IoT Control System: Wetlands -- -  -  - - " << endl;
+            cout << "\n======================================================\n" << endl;
 
-    /*******************************************************************************
-     *
-     * Setup Variables
-     *
-    *******************************************************************************/
+            // Setup Wiring Pi
+            wiringPiSetup();                      // Start wiring Pi
 
-    // Console Print
-    //printf("\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
-    //printf("\n======================================================\n\n");
-    cout << "\n -  -  - -- IoT Control System: Wetlands -- -  -  - - " << endl;
-    cout << "\n======================================================\n" << endl;
+            // Setup MQTT
+            cout << " Starting MQTT Client " << endl;
+            bool status = setup_MQTT();
+            if (status == true) {
+                cout << " MQTT Client Status : ONLINE" << endl;
+            }
+            else {
+                cout << " MQTT Client Status : OFFLINE" << endl;
+            }
 
-    // Setup Wiring Pi
-    wiringPiSetup();                      // Start wiring Pi
+            // Setup LoRa Communications
+            // Configure Gateway
+            cout << "\n Starting LoRa Gateway" << endl;
+            LoRa.setPins(ssPin, RST, dio0);             // Set module pins
 
-    // Setup MQTT
-    //printf(" Starting MQTT Client \n");
-    cout << " Starting MQTT Client " << endl;
-    bool status = setup_MQTT();
-    if (status == true) {
-        //printf(" MQTT Client Status: ONLINE\n");
-        cout << " MQTT Client Status : ONLINE" << endl;
-    }
-    else {
-        //printf(" MQTT Client Status: OFFLINE\n");
-        cout << " MQTT Client Status : OFFLINE" << endl;
-    }
+            // Start LoRa with Freq
+            if (!LoRa.begin(freq)) {
+                cout << "\n Starting LoRa failed!" << endl;
+                c_state = init;
+                sleep(60);
+                return(EXIT_FAILURE);
+            }
+            LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
+            // LoRa.setSignalBandwidth(bw);
 
-    // Setup LoRa Communications
-    // Configure Gateway
-    //printf("\n Starting LoRa Gateway\n");
-    cout << "\n Starting LoRa Gateway" << endl;
-    LoRa.setPins(ssPin, RST, dio0);             // Set module pins
-    // Start LoRa with Freq
-    if (!LoRa.begin(freq)) {
-        //printf("\n Starting LoRa failed!\n");
-        cout << "\n Starting LoRa failed!" << endl;
-        exit(EXIT_FAILURE);
-    }
-    LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
-    // LoRa.setSignalBandwidth(bw);
-
-    // Print Console, configuration successful
-    //printf("\n - - LoRa Configuration - - \n");
-    //printf("  Frequency: %li Hz\n", freq);
-    //printf("  Bandwidth: %li\n", bw);
-    //printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
-
-    cout << "\n - - LoRa Configuration - - " << endl;
-    cout << "  Frequency: " << freq << " Hz" << endl;
-    cout << "  Bandwidth: " << bw << endl;
-    cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
+            // Print Console, configuration successful
+            cout << "\n - - LoRa Configuration - - " << endl;
+            cout << "  Frequency: " << freq << " Hz" << endl;
+            cout << "  Bandwidth: " << bw << endl;
+            cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
     
-    //System Configured
-
-    /*******************************************************************************
-     *
-     * System Logic
-     *
-    *******************************************************************************/
-    while(1) {
-        if (LoRa.parsePacket()) {
+            //System Configured
+            c_state = scan;
+        }
+        case scan:{
+            if (LoRa.parsePacket()) {
+                c_state = respond;
+            }
+        }
+        case respond:{
             if(DEBUG){
                 cout << "\nPACKET RECIEVED!" << endl;
             }
@@ -424,6 +420,8 @@ int main() {
             else {
                 //printf("Error: Unknown node detected\n");
                 cout << "Error: Unknown node detected" << endl;
+                c_state = scan;
+                return;
             }
 
             // Update Counter
@@ -443,11 +441,20 @@ int main() {
                     //printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                     cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
                 }
+                else{
+                    c_State = scan;
+                    return;
+                }
             }
-            else if(DEBUG == 1){
+            else if(DEBUG){
                //printf(" {MQTT Client Status: ONLINE}\n");
                cout << " {MQTT Client Status: ONLINE}" << endl;
+               return;
             }
+        }
+        case slumber:{
+            c_state = scan;
+            return
         }
     }
 }
