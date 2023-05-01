@@ -333,132 +333,132 @@ state c_state = init;
 
 int main() {
     while(1){
-    switch(c_state){
-        case init:{
-            /*******************************************************************************
-             *
-             * Setup Variables
-             *
-            *******************************************************************************/
-            cout << "\n======================================================\n" << endl;
-            cout << "\n -  -  - -- IoT Control System: Wetlands -- -  -  - - " << endl;
-            cout << "\n======================================================\n" << endl;
+        switch(c_state){
+            case init:{
+                /*******************************************************************************
+                 *
+                 * Setup Variables
+                 *
+                *******************************************************************************/
+                cout << "\n======================================================\n" << endl;
+                cout << "\n -  -  - -- IoT Control System: Wetlands -- -  -  - - " << endl;
+                cout << "\n======================================================\n" << endl;
 
-            // Setup Wiring Pi
-            wiringPiSetup();                      // Start wiring Pi
+                // Setup Wiring Pi
+                wiringPiSetup();                      // Start wiring Pi
 
-            // Setup MQTT
-            cout << " Starting MQTT Client " << endl;
-            bool status = setup_MQTT();
-            if (status == true) {
-                cout << " MQTT Client Status : ONLINE" << endl;
-            }
-            else {
-                cout << " MQTT Client Status : OFFLINE" << endl;
-            }
+                // Setup MQTT
+                cout << " Starting MQTT Client " << endl;
+                bool status = setup_MQTT();
+                if (status == true) {
+                    cout << " MQTT Client Status : ONLINE" << endl;
+                }
+                else {
+                    cout << " MQTT Client Status : OFFLINE" << endl;
+                }
 
-            // Setup LoRa Communications
-            // Configure Gateway
-            cout << "\n Starting LoRa Gateway" << endl;
-            LoRa.setPins(ssPin, RST, dio0);             // Set module pins
+                // Setup LoRa Communications
+                // Configure Gateway
+                cout << "\n Starting LoRa Gateway" << endl;
+                LoRa.setPins(ssPin, RST, dio0);             // Set module pins
 
-            // Start LoRa with Freq
-            if (!LoRa.begin(freq)) {
-                cout << "\n Starting LoRa failed!" << endl;
-                c_state = init;
-                sleep(60);
-                break;
-            }
-            LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
-            // LoRa.setSignalBandwidth(bw);
+                // Start LoRa with Freq
+                if (!LoRa.begin(freq)) {
+                    cout << "\n Starting LoRa failed!" << endl;
+                    c_state = init;
+                    sleep(60);
+                    break;
+                }
+                LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
+                // LoRa.setSignalBandwidth(bw);
 
-            // Print Console, configuration successful
-            cout << "\n - - LoRa Configuration - - " << endl;
-            cout << "  Frequency: " << freq << " Hz" << endl;
-            cout << "  Bandwidth: " << bw << endl;
-            cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
-    
-            //System Configured
-            c_state = scan;
-            break;
-        }
-        case scan:{
-            if (LoRa.parsePacket()) {
-                c_state = respond;
-                break;
-            }
-        }
-        case respond:{
-            if(DEBUG){
-                cout << "\nPACKET RECIEVED!" << endl;
-            }
-            // received a packet
-            string message = "";                              // Clear message string
-            // Store Message in string Message
-            while (LoRa.available()) {
-                message = message + ((char)LoRa.read());
-            }
-            //printf("Message Received: %s\n", message.c_str());
-            // Reply to Node with Ack
-            sendAck(message);
-
-            // Present Message
-            string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
-            string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
-            string jsonString = message;                      // Store message in jsonString
-            replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
-
-            string node = update_MQTT(jsonString);
-
-
-
-            if (node == "1") {
-                // Send Message to Thingspeak 1
-                send_MQTT(PAYLOAD, ChannelID1);
-            }
-            else if (node == "2") {
-                // Send Message to Thingspeak 2
-                send_MQTT(PAYLOAD, ChannelID2);
-            }
-            else {
-                //printf("Error: Unknown node detected\n");
-                cout << "Error: Unknown node detected" << endl;
+                // Print Console, configuration successful
+                cout << "\n - - LoRa Configuration - - " << endl;
+                cout << "  Frequency: " << freq << " Hz" << endl;
+                cout << "  Bandwidth: " << bw << endl;
+                cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
+        
+                //System Configured
                 c_state = scan;
                 break;
             }
-
-            // Update Counter
-            // lastCounter = counter;
-
-            // Check if MQTT is still open
-            if(!(MQTTClient_isConnected(client))){
-                if(DEBUG == 1){
-                    //printf(" {MQTT Client Status: OFFLINE}\n");
-                    cout << " {MQTT Client Status: OFFLINE}" << endl;
-                    die_MQTT();
-                    sleep(10);
-                }
-                bool status = setup_MQTT();
-                sleep(10);
-                if (status == true && DEBUG == 1) {
-                    //printf(" {MQTT Restarted, Client Status: ONLINE}\n");
-                    cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
-                }
-                else{
-                    c_state = scan;
+            case scan:{
+                if (LoRa.parsePacket()) {
+                    c_state = respond;
                     break;
                 }
             }
-            else if(DEBUG){
-               //printf(" {MQTT Client Status: ONLINE}\n");
-               cout << " {MQTT Client Status: ONLINE}" << endl;
-               break;
+            case respond:{
+                if(DEBUG){
+                    cout << "\nPACKET RECIEVED!" << endl;
+                }
+                // received a packet
+                string message = "";                              // Clear message string
+                // Store Message in string Message
+                while (LoRa.available()) {
+                    message = message + ((char)LoRa.read());
+                }
+                //printf("Message Received: %s\n", message.c_str());
+                // Reply to Node with Ack
+                sendAck(message);
+
+                // Present Message
+                string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
+                string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
+                string jsonString = message;                      // Store message in jsonString
+                replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
+
+                string node = update_MQTT(jsonString);
+
+
+
+                if (node == "1") {
+                    // Send Message to Thingspeak 1
+                    send_MQTT(PAYLOAD, ChannelID1);
+                }
+                else if (node == "2") {
+                    // Send Message to Thingspeak 2
+                    send_MQTT(PAYLOAD, ChannelID2);
+                }
+                else {
+                    //printf("Error: Unknown node detected\n");
+                    cout << "Error: Unknown node detected" << endl;
+                    c_state = scan;
+                    break;
+                }
+
+                // Update Counter
+                // lastCounter = counter;
+
+                // Check if MQTT is still open
+                if(!(MQTTClient_isConnected(client))){
+                    if(DEBUG == 1){
+                        //printf(" {MQTT Client Status: OFFLINE}\n");
+                        cout << " {MQTT Client Status: OFFLINE}" << endl;
+                        die_MQTT();
+                        sleep(10);
+                    }
+                    bool status = setup_MQTT();
+                    sleep(10);
+                    if (status == true && DEBUG == 1) {
+                        //printf(" {MQTT Restarted, Client Status: ONLINE}\n");
+                        cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
+                    }
+                    else{
+                        c_state = scan;
+                        break;
+                    }
+                }
+                else if(DEBUG){
+                   //printf(" {MQTT Client Status: ONLINE}\n");
+                   cout << " {MQTT Client Status: ONLINE}" << endl;
+                   break;
+                }
+            }
+            case slumber:{
+                c_state = scan;
+                break;
             }
         }
-        case slumber:{
-            c_state = scan;
-            break;
-        }
     }
-}
 }
