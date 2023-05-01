@@ -377,7 +377,7 @@ int main() {
     //printf("  Spreading Factor: %i\n\n======================================================\n\n", SF);
 
     cout << "\n - - LoRa Configuration - - " << endl;
-    cout << "  Frequency: " << %li << " Hz" << endl;
+    cout << "  Frequency: " << li << " Hz" << endl;
     cout << "  Bandwidth: " << bw << endl;
     cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
     
