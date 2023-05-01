@@ -363,9 +363,14 @@ int main() {
     LoRa.setPins(ssPin, RST, dio0);             // Set module pins
     // Start LoRa with Freq
     if (!LoRa.begin(freq)) {
+<<<<<<< HEAD
         //printf("\n Starting LoRa failed!\n");
         cout << "\n Starting LoRa failed!" << endl;
         exit(EXIT_FAILURE);
+=======
+        printf("\n Starting LoRa failed!\n");
+        //exit(EXIT_FAILURE);
+>>>>>>> 381f831d60778c5b6c4a16171361555ca28dec27
     }
     LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
     // LoRa.setSignalBandwidth(bw);
@@ -393,7 +398,7 @@ int main() {
             // received a packet
             string message = "";                              // Clear message string
             // Store Message in string Message
-            while (LoRa.available()) {
+            while(LoRa.available()>0) {
                 message = message + ((char)LoRa.read());
             }
             //printf("Message Received: %s\n", message.c_str());
@@ -442,8 +447,12 @@ int main() {
                 }
             }
             else if(DEBUG == 1){
+<<<<<<< HEAD
                //printf(" {MQTT Client Status: ONLINE}\n");
                cout << " {MQTT Client Status: ONLINE}" << endl;
+=======
+               printf(" {MQTT Client Status: ONLINE}\n");
+>>>>>>> 381f831d60778c5b6c4a16171361555ca28dec27
             }
         }
     }
