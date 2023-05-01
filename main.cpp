@@ -387,6 +387,8 @@ int main() {
                     c_state = respond;
                     break;
                 }
+                c_state = scan;
+                break;
             }
             case respond:{
                 if(DEBUG){
@@ -452,8 +454,9 @@ int main() {
                 else if(DEBUG){
                    //printf(" {MQTT Client Status: ONLINE}\n");
                    cout << " {MQTT Client Status: ONLINE}" << endl;
-                   break;
                 }
+                c_state = scan;
+                break;
             }
             case slumber:{
                 c_state = scan;
