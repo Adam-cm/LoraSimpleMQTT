@@ -139,7 +139,7 @@ float updateCPUTEMP(void){
   FILE* thermal;
   int n;
   thermal = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
-  n = fscanf(thermal, "%.2f", &millideg);
+  n = fscanf(thermal, "%f", &millideg);
   fclose(thermal);
   systemp = millideg / 1000;
   return systemp;
@@ -394,6 +394,13 @@ static void skeleton_daemon()
     openlog ("LoraSimpleMQTT", LOG_PID, LOG_DAEMON);
 }
 
+// Prepare state machine
+enum state{init,scan,respond,slumber};
+state c_state = init;
+
+void onReceive(int packetSize) {
+ c_state = respond;
+}
 
 int main() {
 
@@ -473,9 +480,13 @@ int main() {
                     cout << "  Bandwidth: " << bw << endl;
                     cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
                 }
+
+                LoRa.receive();
+
+                LoRa.onReceive(onReceive);
         
                 //System Configured
-                c_state = scan;
+                c_state = slumber;
                 break;
             }
             case scan:{
@@ -554,12 +565,11 @@ int main() {
                    //syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
                 }
 
-                c_state = scan;
+                c_state = slumber;
                 break;
             }
             case slumber:{
                 sleep(120);
-                c_state = scan;
                 break;
             }
         }
