@@ -398,8 +398,6 @@ static void skeleton_daemon()
 enum state{init,scan,respond,slumber};
 state c_state = init;
 
-
-
 void onReceive(int packetSize) {
     if(DEBUG){
         cout << "Packet Detected!" << endl;
@@ -408,9 +406,6 @@ void onReceive(int packetSize) {
 }
 
 int main() {
-
-    LoRa.onReceive(onReceive);
-    LoRa.receive();
 
     //skeleton_daemon();
 
@@ -484,7 +479,10 @@ int main() {
                     cout << "  Bandwidth: " << bw << endl;
                     cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
                 }
-        
+                
+                LoRa.onReceive(onReceive);
+                LoRa.receive();
+
                 //System Configured
                 c_state = slumber;
                 break;
