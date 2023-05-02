@@ -407,10 +407,6 @@ void onReceive(int packetSize) {
 
 int main() {
 
-    // Prepare state machine
-    enum state{init,scan,respond,slumber};
-    state c_state = init;
-
     //skeleton_daemon();
 
     //syslog (LOG_NOTICE, "LoraSimpleMQTT daemon started.");
