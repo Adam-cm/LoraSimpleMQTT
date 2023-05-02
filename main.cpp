@@ -407,7 +407,7 @@ void onReceive(int packetSize) {
     c_state = respond;
 }
 
-void main() {
+int main() {
 
     LoRa.onReceive(onReceive);
     LoRa.receive();
