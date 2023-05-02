@@ -399,9 +399,9 @@ int main() {
     enum state{init,scan,respond,slumber};
     state c_state = init;
 
-    skeleton_daemon();
+    //skeleton_daemon();
 
-    syslog (LOG_NOTICE, "LoraSimpleMQTT daemon started.");
+    //syslog (LOG_NOTICE, "LoraSimpleMQTT daemon started.");
 
     while(1){
         switch(c_state){
