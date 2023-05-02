@@ -399,7 +399,10 @@ enum state{init,scan,respond,slumber};
 state c_state = init;
 
 void onReceive(int packetSize) {
- c_state = respond;
+    if(DEBUG){
+        cout << "Packet Detected!" << endl;
+    }
+    c_state = respond;
 }
 
 int main() {
