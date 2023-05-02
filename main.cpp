@@ -36,7 +36,7 @@ using namespace std;
 
 #include "base64.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 /*******************************************************************************
  *
