@@ -399,6 +399,8 @@ int main() {
 
     skeleton_daemon();
 
+    syslog (LOG_NOTICE, "LoraSimpleMQTT daemon started.");
+
     while(1){
         switch(c_state){
             case init:{
