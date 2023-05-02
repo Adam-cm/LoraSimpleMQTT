@@ -410,9 +410,9 @@ void onReceive(int packetSize) {
 
 int main() {
 
-    skeleton_daemon();
+    //skeleton_daemon();
 
-    syslog (LOG_NOTICE, "LoraSimpleMQTT daemon started.");
+    //syslog (LOG_NOTICE, "LoraSimpleMQTT daemon started.");
 
     while(1){
         switch(c_state){
@@ -483,11 +483,11 @@ int main() {
                     cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
                 }
 
-                //LoRa.onReceive(onReceive);
+                LoRa.onReceive(onReceive);
                 LoRa.receive();
 
                 //System Configured
-                c_state = scan;
+                c_state = slumber;
                 break;
             }
             case scan:{
@@ -535,7 +535,7 @@ int main() {
                         cout << "Error: Unknown node detected" << endl;
                     }
                     //syslog(LOG_NOTICE,"Error: Unknown node detected\n");
-                    c_state = scan;
+                    c_state = slumber;
                     break;
                 }
 
@@ -565,11 +565,12 @@ int main() {
                    //syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
                 }
 
-                c_state = scan;
+                c_state = slumber;
                 break;
             }
             case slumber:{
                 //sleep(120);
+                LoRa.receive();
                 break;
             }
         }
