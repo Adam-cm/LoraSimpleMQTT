@@ -568,7 +568,7 @@ int main() {
                 break;
             }
             case slumber:{
-                //sleep(120);
+                sleep(120);
                 break;
             }
         }
