@@ -423,7 +423,7 @@ int main() {
                  *
                 *******************************************************************************/
                 if(DEBUG){
-                    cout << "\n======================================================\n" << endl;
+                    cout << "\n======================================================" << endl;
                     cout << "\n -  -  - -- IoT Control System: Wetlands -- -  -  - - " << endl;
                     cout << "\n======================================================\n" << endl;
 
@@ -483,7 +483,7 @@ int main() {
                     cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
                 }
 
-                LoRa.onReceive(onReceive);
+                //LoRa.onReceive(onReceive);
                 LoRa.receive();
 
                 //System Configured
