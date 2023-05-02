@@ -139,7 +139,7 @@ float updateCPUTEMP(void){
   FILE* thermal;
   int n;
   thermal = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
-  n = fscanf(thermal, "%f", &millideg);
+  n = fscanf(thermal, "%.2f", &millideg);
   fclose(thermal);
   systemp = millideg / 1000;
   return systemp;
