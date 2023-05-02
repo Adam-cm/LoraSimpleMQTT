@@ -72,7 +72,7 @@ string TOPIC = "channels/" + ChannelID1 + "/publish";
 string PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
 // Connection Parameters
-#define QOS         1
+#define QOS         0
 #define TIMEOUT     10000L
 int rc;
 
@@ -224,8 +224,9 @@ bool setup_MQTT() {
     }
 
     // Define connection variables
-    conn_opts.keepAliveInterval = 20;
+    conn_opts.keepAliveInterval = 120;
     conn_opts.cleansession = true;
+    conn_opts.connectTimeout = 30;
 
     // Connect to MQTT Broker (Thingspeak)
     if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
@@ -378,7 +379,7 @@ static void skeleton_daemon()
     
     /* Change the working directory to the root directory */
     /* or another appropriated directory */
-    chdir("/");
+    chdir("/usr/sbin");
     
     /* Close all open file descriptors */
     int x;
@@ -538,7 +539,7 @@ int main() {
 
                     bool status = setup_MQTT();
                     sleep(10);
-                    
+
                     if (status == true && DEBUG == 1) {
                         //printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                         cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
