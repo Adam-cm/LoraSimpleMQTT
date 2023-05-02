@@ -295,7 +295,8 @@ string update_MQTT(string jsonString) {
         // Update Control System Variables
         Temp_UMQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 5);
         Humidity_UMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
-        FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
+        //FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
+        FrameCountMQTT = 0;
         RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
 
         // Update Payload String
@@ -310,7 +311,8 @@ string update_MQTT(string jsonString) {
         // Update Weather Station Variables
         Temp_DMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 10, 5);
         Humidity_DMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 4);
-        FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 4);
+        //FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 4);
+        FrameCountMQTT = 0;
         RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
 
         // Sending CPU Temp as AMBIENT
