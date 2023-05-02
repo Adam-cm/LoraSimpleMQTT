@@ -509,7 +509,7 @@ int main() {
                 }
                 //printf("Message Received: %s\n", message.c_str());
                 // Reply to Node with Ack
-                //sendAck(message);
+                sendAck(message);
 
                 // Present Message
                 string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
