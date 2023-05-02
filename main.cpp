@@ -11,6 +11,11 @@
  *
  *******************************************************************************/
 
+#include <stdlib.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <syslog.h>
+
 #include <string>
 #include <stdio.h>
 #include <sys/types.h>
