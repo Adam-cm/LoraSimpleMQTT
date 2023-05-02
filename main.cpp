@@ -402,7 +402,10 @@ void onReceive(int packetSize) {
     if(DEBUG){
         //cout << "Packet Detected!" << endl;
     }
-    c_state = respond;
+    if(c_state != respond){
+        c_state = respond;
+    }
+    
 }
 
 int main() {
