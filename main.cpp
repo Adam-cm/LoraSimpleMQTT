@@ -487,7 +487,7 @@ int main() {
                 LoRa.receive();
 
                 //System Configured
-                c_state = slumber;
+                c_state = scan;
                 break;
             }
             case scan:{
@@ -535,7 +535,7 @@ int main() {
                         cout << "Error: Unknown node detected" << endl;
                     }
                     //syslog(LOG_NOTICE,"Error: Unknown node detected\n");
-                    c_state = slumber;
+                    c_state = scan;
                     break;
                 }
 
@@ -565,7 +565,7 @@ int main() {
                    //syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
                 }
 
-                c_state = slumber;
+                c_state = scan;
                 break;
             }
             case slumber:{
