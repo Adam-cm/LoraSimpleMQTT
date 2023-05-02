@@ -491,7 +491,6 @@ int main() {
             case scan:{
                 if (LoRa.parsePacket()) {
                     c_state = respond;
-                    break;
                 }
                 break;
             }
@@ -534,7 +533,7 @@ int main() {
                         cout << "Error: Unknown node detected" << endl;
                     }
                     //syslog(LOG_NOTICE,"Error: Unknown node detected\n");
-                    c_state = scan;
+                    c_state = slumber;
                     break;
                 }
 
@@ -568,7 +567,7 @@ int main() {
                 break;
             }
             case slumber:{
-                sleep(120);
+                //sleep(120);
                 break;
             }
         }
