@@ -402,16 +402,16 @@ void onReceive(int packetSize) {
   
   if (packetSize) {
     // received a packet
-    Serial.print("Received packet '");
+    cout << ("Received packet '");
 
     // read packet
     while (LoRa.available()) {
-      Serial.print((char)LoRa.read());
+      cout << ((char)LoRa.read());
     }
 
     // print RSSI of packet
-    Serial.print("' with RSSI ");
-    Serial.println(LoRa.packetRssi());
+    cout << ("' with RSSI ");
+    cout << (LoRa.packetRssi()) << endl;
   }
 }
 
