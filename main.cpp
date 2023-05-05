@@ -399,14 +399,20 @@ enum state{init,scan,respond,slumber};
 state c_state = init;
 
 void onReceive(int packetSize) {
-    if(DEBUG){
-        cout << "Packet Detected!" << endl;
-    }
-    if(c_state != respond){
-        c_state = respond;
+  
+  if (packetSize) {
+    // received a packet
+    Serial.print("Received packet '");
+
+    // read packet
+    while (LoRa.available()) {
+      Serial.print((char)LoRa.read());
     }
 
-    return;
+    // print RSSI of packet
+    Serial.print("' with RSSI ");
+    Serial.println(LoRa.packetRssi());
+  }
 }
 
 int main() {
