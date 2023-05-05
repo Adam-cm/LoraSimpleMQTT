@@ -400,7 +400,7 @@ state c_state = init;
 
 void onReceive(int packetSize) {
     if(DEBUG){
-        //cout << "Packet Detected!" << endl;
+        cout << "Packet Detected!" << endl;
     }
     if(c_state != respond){
         c_state = respond;
