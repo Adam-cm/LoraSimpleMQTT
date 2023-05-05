@@ -405,7 +405,8 @@ void onReceive(int packetSize) {
     if(c_state != respond){
         c_state = respond;
     }
-    
+
+    return;
 }
 
 int main() {
