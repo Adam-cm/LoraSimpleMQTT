@@ -519,8 +519,6 @@ int main() {
 
                 string node = update_MQTT(jsonString);
 
-
-
                 if (node == "1") {
                     // Send Message to Thingspeak 1
                     send_MQTT(PAYLOAD, ChannelID1);
@@ -574,7 +572,8 @@ int main() {
                 break;
             }
             default:{
-                c_state = init;
+                c_state = slumber;
+                break;
             }
         }
     }
