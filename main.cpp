@@ -468,7 +468,6 @@ if(DEBUG){
                 c_state = slumber;
                 return;
             }
-}
 
 int main() {
 
