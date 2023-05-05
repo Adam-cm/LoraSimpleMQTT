@@ -399,8 +399,7 @@ enum state{init,scan,respond,slumber};
 state c_state = init;
 
 void onReceive(int packetSize) {
-  
-  if(DEBUG){
+if(DEBUG){
                     cout << "\nPACKET RECIEVED!" << endl;
                     //syslog(LOG_NOTICE,"\nPACKET RECIEVED!\n");
                 }
@@ -437,7 +436,7 @@ void onReceive(int packetSize) {
                     }
                     //syslog(LOG_NOTICE,"Error: Unknown node detected\n");
                     c_state = slumber;
-                    break;
+                    return;
                 }
 
                 // Check if MQTT is still open
@@ -465,7 +464,9 @@ void onReceive(int packetSize) {
                    cout << " {MQTT Client Status: ONLINE}" << endl;
                    //syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
                 }
-  }
+
+                c_state = slumber;
+                return;
 }
 
 int main() {
