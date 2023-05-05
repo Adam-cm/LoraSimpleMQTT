@@ -204,7 +204,7 @@ void sendAck(string message) {
         }
         //syslog(LOG_NOTICE,"Unknown Node");
     }
-
+    LoRa.receive();
     return;
 }
 
