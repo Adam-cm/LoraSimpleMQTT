@@ -400,18 +400,71 @@ state c_state = init;
 
 void onReceive(int packetSize) {
   
-  if (packetSize) {
-    // received a packet
-    cout << ("Received packet '");
+  if(DEBUG){
+                    cout << "\nPACKET RECIEVED!" << endl;
+                    //syslog(LOG_NOTICE,"\nPACKET RECIEVED!\n");
+                }
+                // received a packet
+                string message = "";                              // Clear message string
+                // Store Message in string Message
+                while (LoRa.available()) {
+                    message = message + ((char)LoRa.read());
+                }
+                //printf("Message Received: %s\n", message.c_str());
+                // Reply to Node with Ack
+                sendAck(message);
 
-    // read packet
-    while (LoRa.available()) {
-      cout << ((char)LoRa.read());
-    }
+                // Present Message
+                string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
+                string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
+                string jsonString = message;                      // Store message in jsonString
+                replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
 
-    // print RSSI of packet
-    cout << ("' with RSSI ");
-    cout << (LoRa.packetRssi()) << endl;
+                string node = update_MQTT(jsonString);
+
+                if (node == "1") {
+                    // Send Message to Thingspeak 1
+                    send_MQTT(PAYLOAD, ChannelID1);
+                }
+                else if (node == "2") {
+                    // Send Message to Thingspeak 2
+                    send_MQTT(PAYLOAD, ChannelID2);
+                }
+                else {
+                    //printf("Error: Unknown node detected\n");
+                    if(DEBUG){
+                        cout << "Error: Unknown node detected" << endl;
+                    }
+                    //syslog(LOG_NOTICE,"Error: Unknown node detected\n");
+                    c_state = slumber;
+                    break;
+                }
+
+                // Check if MQTT is still open
+                if(!(MQTTClient_isConnected(client))){
+                    if(DEBUG == 1){
+                        //printf(" {MQTT Client Status: OFFLINE}\n");
+                        cout << " {MQTT Client Status: OFFLINE}" << endl;
+                        //syslog(LOG_NOTICE," {MQTT Client Status: OFFLINE}\n");
+                    }
+
+                    die_MQTT();
+                    sleep(10);
+
+                    bool status = setup_MQTT();
+                    sleep(10);
+
+                    if (status == true && DEBUG == 1) {
+                        //printf(" {MQTT Restarted, Client Status: ONLINE}\n");
+                        cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
+                        //syslog(LOG_NOTICE," {MQTT Restarted, Client Status: ONLINE}\n");
+                    }
+                }
+                else if(DEBUG){
+                   //printf(" {MQTT Client Status: ONLINE}\n");
+                   cout << " {MQTT Client Status: ONLINE}" << endl;
+                   //syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
+                }
   }
 }
 
