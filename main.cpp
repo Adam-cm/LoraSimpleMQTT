@@ -410,6 +410,10 @@ if(DEBUG){
                     message = message + ((char)LoRa.read());
                 }
 
+                //printf("Message Received: %s\n", message.c_str());
+                // Reply to Node with Ack
+                sendAck(message);
+
                 c_state = slumber;
                 return;
 }
