@@ -564,6 +564,7 @@ int main() {
             case slumber:{
                 //sleep(120);
                 //LoRa.receive();
+                LoRa.receive();
                 break;
             }
             default:{
