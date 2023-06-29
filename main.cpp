@@ -308,7 +308,6 @@ string update_MQTT(string jsonString) {
 
     if(DEBUG == 1){
         cout << "\n\nNode: " << node;
-        //syslog(LOG_NOTICE,"\n\nNode: %s", node);
     }
 
     if (node == "1") {
