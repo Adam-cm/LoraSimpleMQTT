@@ -284,8 +284,28 @@ bool die_MQTT() {
     return true;
 }
 
+string extract_between(string jsonString,string start_str,string end_str){
+    
+    string mid = "\":\"";
+    string beg = "\"";
+    string end = "\"";
+    
+    start_str = beg + start_str + mid;
+    end_str = end + end_str;
+    
+    size_t first = jsonString.find(start_str) + start_str.length();
+    size_t last = jsonString.find(end_str);
+    
+    string value = jsonString.substr(first,last-first);
+    
+    return value;
+}
+
 string update_MQTT(string jsonString) {
-    string node = jsonString.substr(jsonString.find("N", 0) + 4, 1);
+
+    string node = extract_between(jsonString,"Temp_U",",\"Humidity");
+    //string node = jsonString.substr(jsonString.find("N", 0) + 4, 1);
+
     if(DEBUG == 1){
         cout << "\n\nNode: " << node;
         //syslog(LOG_NOTICE,"\n\nNode: %s", node);
@@ -294,39 +314,43 @@ string update_MQTT(string jsonString) {
     if (node == "1") {
         // Update Control System Variables
         //Temp_UMQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 5);
-        Temp_UMQTT = jsonString.getString("Temp_U")
-        Humidity_UMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
-        //FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 3);
-        FrameCountMQTT = "0";
-        RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
+        //Humidity_UMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
+        //FrameCountMQTT = "0";
+        //RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
+
+        Temp_UMQTT = extract_between(jsonString,"Temp_U",",\"Humidity_U");
+        Humidity_UMQTT = extract_between(jsonString,"Humidity_U",",\"Count");
+        FrameCountMQTT = extract_between(jsonString,"Count",",\"Lost");
+        RSSIMQTT = extract_between(jsonString,"RSSI","}");
 
         // Update Payload String
         PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
-        //printf("\nMessage sent to MQTT Broker from Upstairs\n");
+
         if(DEBUG){
             cout << "\nMessage sent to MQTT Broker from Upstairs" << endl;
         }
-        //syslog(LOG_NOTICE,"\nMessage sent to MQTT Broker from Upstairs\n");
     }
     else if (node == "2") {
         // Update Weather Station Variables
-        Temp_DMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 10, 5);
-        Humidity_DMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 4);
-        //FrameCountMQTT = jsonString.substr(jsonString.find(field5, 1) + field5.length() + 3, 4);
-        FrameCountMQTT = "0";
-        RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
+        //Temp_DMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 10, 5);
+        //Humidity_DMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 4);
+        //FrameCountMQTT = "0";
+        //RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
+
+        Temp_DMQTT = extract_between(jsonString,"Temp_D",",\"Humidity_D");
+        Humidity_DMQTT = extract_between(jsonString,"Humidity_D",",\"Count");
+        FrameCountMQTT = extract_between(jsonString,"Count",",\"Lost");
+        RSSIMQTT = extract_between(jsonString,"RSSI","}");
 
         // Sending CPU Temp as AMBIENT
         RaspiTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
 
         // Update Payload String
         PAYLOAD = "field1=" + Temp_DMQTT + "&field2=" + Humidity_DMQTT + "&field3=" + RaspiTempMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
-        //printf("\nMessage sent to MQTT Broker from Downstairs\n");
+
         if(DEBUG){
             cout << "\nMessage sent to MQTT Broker from Downstairs" << endl;
         }
-        //syslog(LOG_NOTICE,"\nMessage sent to MQTT Broker from Downstairs\n");
-
         
     }
     if(DEBUG == 1){
