@@ -284,6 +284,17 @@ bool die_MQTT() {
     return true;
 }
 
+int c4letters(string data){
+    for(int i = 0; i < data.length(); i++){
+        if(!isdigit(data[i])){
+            if(!(data[i] == '.')){
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
 string extract_between(string jsonString,string start_str,string end_str){
     
     string mid = "\":\"";
@@ -322,6 +333,15 @@ string update_MQTT(string jsonString) {
         FrameCountMQTT = extract_between(jsonString,"Count",",\"Lost");
         RSSIMQTT = extract_between(jsonString,"RSSI","}");
 
+        // Check for errors
+        int err = c4letters(Temp_UMQTT) + c4letters(Humidity_UMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
+        if(err == 1){
+            if(DEBUG == 1){
+                    cout << "Error: Invalid data format detected! Message not sent!" << endl;
+                    return 100;
+            }
+        }
+
         // Update Payload String
         PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
@@ -340,6 +360,15 @@ string update_MQTT(string jsonString) {
         Humidity_DMQTT = extract_between(jsonString,"Humidity_D",",\"Count");
         FrameCountMQTT = extract_between(jsonString,"Count",",\"Lost");
         RSSIMQTT = extract_between(jsonString,"RSSI","}");
+
+        // Check for errors
+        int err = c4letters(Temp_DMQTT) + c4letters(Humidity_DMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
+        if(err == 1){
+            if(DEBUG == 1){
+                    cout << "Error: Invalid data format detected! Message not sent!" << endl;
+                    return 100;
+            }
+        }
 
         // Sending CPU Temp as AMBIENT
         RaspiTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
