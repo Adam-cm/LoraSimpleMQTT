@@ -338,7 +338,7 @@ string update_MQTT(string jsonString) {
         if(err == 1){
             if(DEBUG == 1){
                     cout << "Error: Invalid data format detected! Message not sent!" << endl;
-                    return 100;
+                    return "100";
             }
         }
 
@@ -366,7 +366,7 @@ string update_MQTT(string jsonString) {
         if(err == 1){
             if(DEBUG == 1){
                     cout << "Error: Invalid data format detected! Message not sent!" << endl;
-                    return 100;
+                    return "100";
             }
         }
 
