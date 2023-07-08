@@ -287,7 +287,7 @@ bool die_MQTT() {
 int c4letters(string data){
     for(int i = 0; i < data.length(); i++){
         if(!isdigit(data[i])){
-            if(!((data[i] == '.')&&(data[i] == '-'))){
+            if(!((data[i] == '.')||(data[i] == '-'))){
                 cout << "Error:" << data[i]  << endl;
                 return 1;
             }
