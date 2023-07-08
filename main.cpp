@@ -288,6 +288,7 @@ int c4letters(string data){
     for(int i = 0; i < data.length(); i++){
         if(!isdigit(data[i])){
             if(!(data[i] == '.')){
+                cout << "Error:" << data[i]  << endl;
                 return 1;
             }
         }
@@ -338,7 +339,8 @@ string update_MQTT(string jsonString) {
         err = c4letters(Temp_UMQTT) + c4letters(Humidity_UMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
         if(err >= 1){
             if(DEBUG == 1){
-                    cout << "Error: Invalid data format detected! Message not sent!" << endl;
+                cout << "\nMessage:" << jsonString << endl;
+                cout << "Error: Invalid data format detected! Message not sent!" << endl;
             }
             return "100";
         }
@@ -367,7 +369,8 @@ string update_MQTT(string jsonString) {
         err = c4letters(Temp_DMQTT) + c4letters(Humidity_DMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
         if(err >= 1){
             if(DEBUG == 1){
-                    cout << "Error: Invalid data format detected! Message not sent!" << endl;
+                cout << "\nMessage:" << jsonString << endl;
+                cout << "Error: Invalid data format detected! Message not sent!" << endl;
             }
             return "100";
         }
