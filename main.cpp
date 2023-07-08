@@ -334,12 +334,13 @@ string update_MQTT(string jsonString) {
         RSSIMQTT = extract_between(jsonString,"RSSI","}");
 
         // Check for errors
-        int err = c4letters(Temp_UMQTT) + c4letters(Humidity_UMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
-        if(err == 1){
+        int err = 0;
+        err = c4letters(Temp_UMQTT) + c4letters(Humidity_UMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
+        if(err >= 1){
             if(DEBUG == 1){
                     cout << "Error: Invalid data format detected! Message not sent!" << endl;
-                    return "100";
             }
+            return "100";
         }
 
         // Update Payload String
@@ -362,12 +363,13 @@ string update_MQTT(string jsonString) {
         RSSIMQTT = extract_between(jsonString,"RSSI","}");
 
         // Check for errors
-        int err = c4letters(Temp_DMQTT) + c4letters(Humidity_DMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
-        if(err == 1){
+        int err = 0;
+        err = c4letters(Temp_DMQTT) + c4letters(Humidity_DMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
+        if(err >= 1){
             if(DEBUG == 1){
                     cout << "Error: Invalid data format detected! Message not sent!" << endl;
-                    return "100";
             }
+            return "100";
         }
 
         // Sending CPU Temp as AMBIENT
