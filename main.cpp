@@ -22,7 +22,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <stdint.h>
-//#include <string.h>
+
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
@@ -36,7 +36,7 @@ using namespace std;
 
 #include "base64.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 /*******************************************************************************
  *
@@ -46,50 +46,20 @@ using namespace std;
 
 #include "MQTTClient.h"
 
- // MQTT Connection definitions
-#define ADDRESS     "tcp://mqtt3.thingspeak.com:1883"
-#define CLIENTID    "JC0zDR4uMTgkNDEPLxUnGgM"
+// MQTT Connection definitions
+#define ADDRESS "tcp://mqtt3.thingspeak.com:1883"
+#define CLIENTID "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
-string ChannelID1 = "1488787";
-string ChannelID2 = "1490440";
-
-// Control System variables
-string Temp_UMQTT = "ERR";
-string Temp_DMQTT = "ERR";
-string Humidity_UMQTT = "ERR";
-string Humidity_DMQTT = "ERR";
-string FrameCountMQTT = "ERR";
-string RSSIMQTT = "ERR";
-
-// Weather System variables
-string AmbientTempMQTT = "ERR";
-string RaspiTempMQTT = "ERR";
-string WindSpeedMQTT = "ERR";
-
-// Topic and Payload Structure
-string TOPIC = "channels/" + ChannelID1 + "/publish";
-string PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
 
 // Connection Parameters
-#define QOS         0
-#define TIMEOUT     10000L
+#define QOS 0
+#define TIMEOUT 10000L
 int rc;
-
-// Number of Fields and Names
-string field1 = "Temp_U";
-string field2 = "Temp_D";
-string field3 = "Humidity_U";
-string field4 = "Humidity_D";
-string field5 = "Count";
-string field6 = "RSSI";
-
-// Number of Fields and Names
-string field7 = "HumidityW";
 
 // MQTT Client Variables
 MQTTClient client;
-MQTTClient_connectOptions conn_opts = { {'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char*)MQTTUSERNAME, (char*)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0 };
+MQTTClient_connectOptions conn_opts = {{'M', 'Q', 'T', 'C'}, 6, 60, 1, 1, NULL, (char *)MQTTUSERNAME, (char *)MQTTPASSWORD, 30, 0, NULL, 0, NULL, MQTTVERSION_DEFAULT, {NULL, 0, 0}, {0, NULL}, -1, 0};
 
 /*******************************************************************************
  *
@@ -112,7 +82,7 @@ int counter, lastCounter;
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
- // SX1272 - Raspberry connections Wiring Pi Connections
+// SX1272 - Raspberry connections Wiring Pi Connections
 int ssPin = 6;
 int dio0 = 0;
 int RST = 3;
@@ -124,8 +94,9 @@ static const int CHANNEL = 0;
  *
  *******************************************************************************/
 
- // Replace string values
-bool replace(string& str, const string& from, const string& to) {
+// Replace string values
+bool replace(string &str, const string &from, const string &to)
+{
     size_t start_pos = str.find(from);
     if (start_pos == string::npos)
         return false;
@@ -134,92 +105,33 @@ bool replace(string& str, const string& from, const string& to) {
 }
 
 // Get and Return CPU_TEMP
-float updateCPUTEMP(void){
-  float systemp, millideg;
-  FILE* thermal;
-  int n;
-  thermal = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
-  n = fscanf(thermal, "%f", &millideg);
-  fclose(thermal);
-  systemp = millideg / 1000;
-  return systemp;
+float updateCPUTEMP(void)
+{
+    float systemp, millideg;
+    FILE *thermal;
+    int n;
+    thermal = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
+    n = fscanf(thermal, "%f", &millideg);
+    fclose(thermal);
+    systemp = millideg / 1000;
+    return systemp;
 }
 
-// Message Reply
-void sendAck(string message) {
-    
-    // Local Variables
-    string node = message.substr(message.find("N", 0) + 4, 1);  // Identify Node Number
-    int check = 0;                                              // Int to store CheckSUM
-    string reply = "";                                          // String to store reply message
-    ostringstream oss;                                          // String stream to prepare messages
-
-    // Calculate Check Sum from message received
-    for (int i = 0; i < message.length(); i++) {
-        check += message[i];
-    }
-
-    // Handle Situation according to node number
-    if (node == "1") {
-        // Store Check Sum received
-        reply = to_string(check); 
-
-        //#ifdef REPLY_NODE1
-        // Update variable to transmit
-        AmbientTempMQTT = to_string(updateCPUTEMP()); 
-        // Prepare reply message (Send most recent WindSpeed and AmbientTEMP)
-        oss.precision(4);                             // Set string stream precision to 4
-        oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
-        reply = oss.str();  // Store string stream
-        //#endif
-
-        // Send Packet Reply
-        LoRa.beginPacket();                                       // Setup LoRa CHIP
-        LoRa.write(reply.c_str(),strlen((char *)reply.c_str()));  // Send Reply String
-        LoRa.endPacket();                                         // Finish LoRa Transmit
-    }
-    else if (node == "2"){
-        // Store Check Sum received
-        reply = to_string(check);       
-        
-        //#ifdef REPLY_NODE1
-        // Update variable to transmit
-        AmbientTempMQTT = to_string(updateCPUTEMP()); 
-        // Prepare reply message (Send most recent WindSpeed and AmbientTEMP)
-        oss.precision(4);                             // Set string stream precision to 4
-        oss << "{\"N\":\"G\",\"CheckSum\":\"" << check << "\",\"TempW\":\"" << AmbientTempMQTT << "\",\"Wind\":\"" << WindSpeedMQTT << "\"}";
-        reply = oss.str();  // Store string stream
-        //#endif
-
-        // Send Packet Reply
-        LoRa.beginPacket();                                         // Setup LoRa CHIP
-        LoRa.write(reply.c_str(),strlen((char *)reply.c_str()));    // Send Check Sum
-        LoRa.endPacket();                                           // Finish LoRa Transmit
-    }
-    else {
-        // Unknown Message from Node Detected
-        //printf("Unknown Node");
-        if(DEBUG){
-            cout << "Unknown Node";
-        }
-        //syslog(LOG_NOTICE,"Unknown Node");
-    }
-    LoRa.receive();
-    return;
-}
-
-bool setup_MQTT() {
+bool setup_MQTT()
+{
     // Create MQTT Client variables
 
     // Create Client
-    if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
+    if ((rc = MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS)
+    {
 
-        if(DEBUG){
+        if (DEBUG)
+        {
             cout << "Failed to create client, return code " << rc << endl;
         }
         //(LOG_NOTICE,"Failed to create client, return code %d\n", rc);
-        //printf("Failed to create client, return code %d\n", rc);
-        //sleep(5);
+        // printf("Failed to create client, return code %d\n", rc);
+        // sleep(5);
         return false;
     }
 
@@ -229,66 +141,45 @@ bool setup_MQTT() {
     conn_opts.connectTimeout = 30;
 
     // Connect to MQTT Broker (Thingspeak)
-    if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
-        //printf("Failed to connect, return code %d\n", rc);
-        if(DEBUG){
+    if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
+    {
+        // printf("Failed to connect, return code %d\n", rc);
+        if (DEBUG)
+        {
             cout << "Failed to connect, return code " << rc << endl;
         }
-        //syslog(LOG_NOTICE,"Failed to connect, return code %d\n", rc);
+        // syslog(LOG_NOTICE,"Failed to connect, return code %d\n", rc);
         return false;
     }
 
     return true;
 }
 
-bool send_MQTT(string payload, string ChannelID) {
-    MQTTClient_message pubmsg = MQTTClient_message_initializer;
-    MQTTClient_deliveryToken token;
-
-    TOPIC = "channels/" + ChannelID + "/publish";
-
-    // Format Payload
-    pubmsg.payload = (char*)PAYLOAD.c_str();
-    pubmsg.payloadlen = (int)strlen((char*)PAYLOAD.c_str());
-    pubmsg.qos = QOS;
-    pubmsg.retained = 0;
-
-    if ((rc = MQTTClient_publishMessage(client, (char*)TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS) {
-        //printf("!! Failed to publish message, return code %d\n", rc);
-        if(DEBUG){
-            cout << "!! Failed to publish message, return code " << rc << endl;
-        }
-        //syslog(LOG_NOTICE,"!! Failed to publish message, return code %d\n", rc);
-        return false;
-    }
-    else{
-        //printf("- Publication Succeeded!\n");
-        if(DEBUG){
-            cout << "- Publication Succeeded!" << endl;
-        }
-        //syslog(LOG_NOTICE,"- Publication Succeeded!\n");
-        return true;
-    }
-}
-
-bool die_MQTT() {
-    if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS) {
-        //printf("Failed to disconnect, return code %d\n", rc);
-        if(DEBUG){
+bool die_MQTT()
+{
+    if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS)
+    {
+        // printf("Failed to disconnect, return code %d\n", rc);
+        if (DEBUG)
+        {
             cout << "Failed to disconnect, return code " << rc << endl;
         }
-        //syslog(LOG_NOTICE,"Failed to disconnect, return code %d\n", rc);
+        // syslog(LOG_NOTICE,"Failed to disconnect, return code %d\n", rc);
         return false;
     }
     MQTTClient_destroy(&client);
     return true;
 }
 
-int c4letters(string data){
-    for(int i = 0; i < data.length(); i++){
-        if(!isdigit(data[i])){
-            if(!((data[i] == '.')||(data[i] == '-'))){
-                cout << "Error:" << data[i]  << endl;
+int c4letters(string data)
+{
+    for (int i = 0; i < data.length(); i++)
+    {
+        if (!isdigit(data[i]))
+        {
+            if (!((data[i] == '.') || (data[i] == '-')))
+            {
+                cout << "Error:" << data[i] << endl;
                 return 1;
             }
         }
@@ -296,337 +187,435 @@ int c4letters(string data){
     return 0;
 }
 
-string extract_between(string jsonString,string start_str,string end_str){
-    
+string extract_between(string jsonString, string start_str, string end_str)
+{
+
     string mid = "\":\"";
     string beg = "\"";
     string end = "\"";
-    
+
     start_str = beg + start_str + mid;
     end_str = end + end_str;
-    
+
     size_t first = jsonString.find(start_str) + start_str.length();
     size_t last = jsonString.find(end_str);
-    
-    string value = jsonString.substr(first,last-first);
-    
+
+    string value = jsonString.substr(first, last - first);
+
     return value;
-}
-
-string update_MQTT(string jsonString) {
-
-    string node = extract_between(jsonString,"N",",\"Temp");
-    //string node = jsonString.substr(jsonString.find("N", 0) + 4, 1);
-
-    if(DEBUG == 1){
-        cout << "\n\nNode: " << node;
-    }
-
-    if (node == "1") {
-        // Update Control System Variables
-        //Temp_UMQTT = jsonString.substr(jsonString.find(field1, 1) + field1.length() + 3, 5);
-        //Humidity_UMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 3, 4);
-        //FrameCountMQTT = "0";
-        //RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
-
-        Temp_UMQTT = extract_between(jsonString,"Temp_U",",\"Humidity_U");
-        Humidity_UMQTT = extract_between(jsonString,"Humidity_U",",\"Count");
-        FrameCountMQTT = extract_between(jsonString,"Count",",\"Lost");
-        RSSIMQTT = extract_between(jsonString,"RSSI","}");
-
-        // Check for errors
-        int err = 0;
-        err = c4letters(Temp_UMQTT) + c4letters(Humidity_UMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
-        if(err >= 1){
-            if(DEBUG == 1){
-                cout << "\nMessage:" << jsonString << endl;
-                cout << "Error: Invalid data format detected! Message not sent!" << endl;
-            }
-            return "100";
-        }
-
-        // Update Payload String
-        PAYLOAD = "field1=" + Temp_UMQTT + "&field2=" + Humidity_UMQTT + "&field3=" + FrameCountMQTT + "&field4=" + RSSIMQTT;
-
-        if(DEBUG){
-            cout << "\nMessage sent to MQTT Broker from Upstairs" << endl;
-        }
-    }
-    else if (node == "2") {
-        // Update Weather Station Variables
-        //Temp_DMQTT = jsonString.substr(jsonString.find(field3, 1) + field3.length() + 10, 5);
-        //Humidity_DMQTT = jsonString.substr(jsonString.find(field4, 1) + field4.length() + 3, 4);
-        //FrameCountMQTT = "0";
-        //RSSIMQTT = jsonString.substr(jsonString.find(field6, 1) + field6.length() + 3, 3);
-
-        Temp_DMQTT = extract_between(jsonString,"Temp_D",",\"Humidity_D");
-        Humidity_DMQTT = extract_between(jsonString,"Humidity_D",",\"Count");
-        FrameCountMQTT = extract_between(jsonString,"Count",",\"Lost");
-        RSSIMQTT = extract_between(jsonString,"RSSI","}");
-
-        // Check for errors
-        int err = 0;
-        err = c4letters(Temp_DMQTT) + c4letters(Humidity_DMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
-        if(err >= 1){
-            if(DEBUG == 1){
-                cout << "\nMessage:" << jsonString << endl;
-                cout << "Error: Invalid data format detected! Message not sent!" << endl;
-            }
-            return "100";
-        }
-
-        // Sending CPU Temp as AMBIENT
-        RaspiTempMQTT = to_string(updateCPUTEMP()); // Update variable to transmit
-
-        // Update Payload String
-        PAYLOAD = "field1=" + Temp_DMQTT + "&field2=" + Humidity_DMQTT + "&field3=" + RaspiTempMQTT + "&field4=" + FrameCountMQTT + "&field5=" + RSSIMQTT;
-
-        if(DEBUG){
-            cout << "\nMessage sent to MQTT Broker from Downstairs" << endl;
-        }
-        
-    }
-    if(DEBUG == 1){
-        //printf("-- DEBUG --\n");
-        cout << "-- DEBUG --" << endl;
-        cout << "- Message recieved: " << jsonString << "\n";
-        cout << "- PAYLOAD: " << PAYLOAD << "\n";
-        //syslog(LOG_NOTICE,"-- DEBUG --\n");
-        //syslog(LOG_NOTICE,"- Message recieved: %s\n",jsonString);
-        //syslog(LOG_NOTICE,"- PAYLOAD: %s\n",PAYLOAD);
-    }
-
-    return node;
 }
 
 static void skeleton_daemon()
 {
     pid_t pid;
-    
+
     /* Fork off the parent process */
     pid = fork();
-    
+
     /* An error occurred */
     if (pid < 0)
         exit(EXIT_FAILURE);
-    
-     /* Success: Let the parent terminate */
+
+    /* Success: Let the parent terminate */
     if (pid > 0)
         exit(EXIT_SUCCESS);
-    
+
     /* On success: The child process becomes session leader */
     if (setsid() < 0)
         exit(EXIT_FAILURE);
-    
+
     /* Catch, ignore and handle signals */
     /*TODO: Implement a working signal handler */
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
-    
+
     /* Fork off for the second time*/
     pid = fork();
-    
+
     /* An error occurred */
     if (pid < 0)
         exit(EXIT_FAILURE);
-    
+
     /* Success: Let the parent terminate */
     if (pid > 0)
         exit(EXIT_SUCCESS);
-    
+
     /* Set new file permissions */
     umask(0);
-    
+
     /* Change the working directory to the root directory */
     /* or another appropriated directory */
     chdir("/usr/sbin");
-    
+
     /* Close all open file descriptors */
     int x;
-    for (x = sysconf(_SC_OPEN_MAX); x>=0; x--)
+    for (x = sysconf(_SC_OPEN_MAX); x >= 0; x--)
     {
-        close (x);
+        close(x);
     }
-    
+
     /* Open the log file */
-    openlog ("LoraSimpleMQTT", LOG_PID, LOG_DAEMON);
+    openlog("LoraSimpleMQTT", LOG_PID, LOG_DAEMON);
 }
 
+class Node
+{
+private:
+    // Node variables
+    string ChannelID = "Not Defined";
+    string Temperature = "Not Defined";
+    string Humidity = "Not Defiend";
+    string Frame_Count = "Not Defined";
+    string RSSI = "Not Defined";
+
+    int Check_sum = "Not Defined";
+    int Node_number = "Not Defined";
+    // Message variables
+    string TOPIC = "Not Defined";
+    string PAYLOAD = "Nor Defined";
+
+public:
+    void set_ChannelID(string ID)
+    {
+        this->TOPIC = "channels/" + ID + "/publish";
+        return;
+    }
+    void update_packet(string Temperature, string Humidity, string Frame_Count, string RSSI)
+    {
+        this->PAYLOAD = "field1=" + Temperature + "&field2=" + Humidity + "&field3=" + Frame_Count + "&field4=" + RSSI;
+        return;
+    }
+    void update_packet(void)
+    {
+        this->PAYLOAD = "field1=" + this->Temperature + "&field2=" + this->Humidity + "&field3=" + this->Frame_Count + "&field4=" + this->RSSI;
+        return;
+    }
+    int get_nodenumber(void)
+    {
+        return this->Node_number;
+    }
+
+    // Message Reply
+    void sendAck(string message)
+    {
+        // Variables
+        int check = 0;     // Int to store CheckSUM
+        string reply = ""; // String to store reply message
+
+        // Calculate Check Sum from message received
+        for (int i = 0; i < message.length(); i++)
+        {
+            this->Check_sum += message[i];
+        }
+
+        // Prepare reply (just prepares to send checksum)
+        reply = "{\"N\":\"G\",\"CheckSum\":\"" + this->Check_sum + "\"}";
+
+        // Send Packet Reply
+        LoRa.beginPacket();                                       // Setup LoRa CHIP
+        LoRa.write(reply.c_str(), strlen((char *)reply.c_str())); // Send Reply String
+        LoRa.endPacket();                                         // Finish LoRa Transmit
+
+        LoRa.receive();
+        return;
+    }
+
+    string update_MQTT(string message)
+    {
+        // Present Message
+        string pktrssi = to_string(LoRa.packetRssi());  // Store RSSI Value
+        string rssi = ("\"RSSI\":\"" + pktrssi + "\""); // Construct RSSI String with metadata
+        string jsonString = message;                    // Store message in jsonString
+        replace(jsonString, "xxx", rssi);               // Replace xxx with RSSI value and metadata
+
+        if (DEBUG == 1)
+        {
+            cout << "\n\nNode: " << this->Node_number;
+        }
+
+        // Update variables
+        this->Temperature = extract_between(jsonString, "Temperature", ",\"Humidity");
+        this->Humidity = extract_between(jsonString, "Humidity", ",\"Count");
+        this->Frame_Count = extract_between(jsonString, "Count", ",\"Lost");
+        this->RSSI = extract_between(jsonString, "RSSI", "}");
+
+        // Error checking
+        int err = 0;
+        err = c4letters(Temp_UMQTT) + c4letters(Humidity_UMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
+        if (err >= 1)
+        {
+            if (DEBUG == 1)
+            {
+                cout << "\nMessage:" << jsonString << endl;
+                cout << "Error: Invalid data format detected! Message not sent!" << endl;
+            }
+            return "100";
+        }
+
+        // Update Payload String
+        void update_packet();
+
+        if (DEBUG)
+        {
+            cout << "\nMessage sent to MQTT Broker from Upstairs" << endl;
+            cout << "-- DEBUG --" << endl;
+            cout << "- Message recieved: " << jsonString << "\n";
+            cout << "- PAYLOAD: " << PAYLOAD << "\n";
+        }
+        send_MQTT();
+        return node;
+    }
+
+    bool send_MQTT(MQTTClient client)
+    {
+        MQTTClient_message pubmsg = MQTTClient_message_initializer;
+        MQTTClient_deliveryToken token;
+
+        TOPIC = "channels/" + this->ChannelID + "/publish";
+
+        // Format Payload
+        pubmsg.payload = (char *)this->PAYLOAD.c_str();
+        pubmsg.payloadlen = (int)strlen((char *)this->PAYLOAD.c_str());
+        pubmsg.qos = QOS;
+        pubmsg.retained = 0;
+
+        if ((rc = MQTTClient_publishMessage(client, (char *)this->TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
+        {
+            // printf("!! Failed to publish message, return code %d\n", rc);
+            if (DEBUG)
+            {
+                cout << "!! Failed to publish message, return code " << rc << endl;
+            }
+            // syslog(LOG_NOTICE,"!! Failed to publish message, return code %d\n", rc);
+            return false;
+        }
+        else
+        {
+            // printf("- Publication Succeeded!\n");
+            if (DEBUG)
+            {
+                cout << "- Publication Succeeded!" << endl;
+            }
+            // syslog(LOG_NOTICE,"- Publication Succeeded!\n");
+            return true;
+        }
+    }
+
+    Node(string ID, int num)
+    {
+        set_ChannelID(ID);
+        this->Node_number = num;
+        return;
+    }
+};
+
+Node N1("1488787", 1);
+Node N2("1490440", 2);
+
 // Prepare state machine
-enum state{init,scan,respond,slumber};
+enum state
+{
+    init,
+    scan,
+    respond,
+    slumber
+};
 state c_state = init;
 
-void onReceive(int packetSize) {
+void onReceive(int packetSize)
+{
     c_state = respond;
     return;
 }
 
-int main() {
+int main()
+{
 
     skeleton_daemon();
 
-    syslog (LOG_NOTICE, "LoraSimpleMQTT daemon started.");
+    syslog(LOG_NOTICE, "LoraSimpleMQTT daemon started.");
 
-    while(1){
-        switch(c_state){
-            case init:{
-                /*******************************************************************************
-                 *
-                 * Setup Variables
-                 *
-                *******************************************************************************/
-                if(DEBUG){
-                    cout << "\n======================================================" << endl;
-                    cout << "\n -  -  - -- IoT Control System: Wetlands -- -  -  - - " << endl;
-                    cout << "\n======================================================\n" << endl;
+    while (1)
+    {
+        switch (c_state)
+        {
+        case init:
+        {
+            /*******************************************************************************
+             *
+             * Setup Variables
+             *
+             *******************************************************************************/
+            if (DEBUG)
+            {
+                cout << "\n======================================================" << endl;
+                cout << "\n -  -  - -- IoT Control System: Wetlands -- -  -  - - " << endl;
+                cout << "\n======================================================\n"
+                     << endl;
 
-                    // Setup MQTT
-                    cout << " Starting MQTT Client " << endl;
+                // Setup MQTT
+                cout << " Starting MQTT Client " << endl;
+            }
+            // syslog(LOG_NOTICE,"\n======================================================\n\n");
+            // syslog(LOG_NOTICE,"\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
+            // syslog(LOG_NOTICE,"\n======================================================\n\n");
+
+            // Setup Wiring Pi
+            wiringPiSetup(); // Start wiring Pi
+
+            // Start MQTT Client
+            bool status = setup_MQTT();
+
+            if (status == true)
+            {
+                // syslog(LOG_NOTICE," MQTT Client Status : ONLINE");
+                if (DEBUG)
+                {
+                    cout << " MQTT Client Status : ONLINE" << endl;
                 }
-                //syslog(LOG_NOTICE,"\n======================================================\n\n");
-                //syslog(LOG_NOTICE,"\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
-                //syslog(LOG_NOTICE,"\n======================================================\n\n");
+            }
+            else
+            {
+                // syslog(LOG_NOTICE," MQTT Client Status : OFFLINE");
+                if (DEBUG)
+                {
+                    cout << " MQTT Client Status : OFFLINE" << endl;
+                }
+                break;
+            }
 
-                // Setup Wiring Pi
-                wiringPiSetup();                      // Start wiring Pi
+            // Setup LoRa Communications
+            // Configure Gateway
+            if (DEBUG)
+            {
+                cout << "\n Starting LoRa Gateway" << endl;
+            }
+            // syslog(LOG_NOTICE,"\n Starting LoRa Gateway\n");
+            LoRa.setPins(ssPin, RST, dio0); // Set module pins
 
-                // Start MQTT Client
+            // Start LoRa with Freq
+            if (!LoRa.begin(freq))
+            {
+                if (DEBUG)
+                {
+                    cout << "\n Starting LoRa failed!" << endl;
+                }
+                // syslog(LOG_NOTICE,"\n Starting LoRa failed!\n");
+                c_state = init;
+                sleep(60);
+                break;
+            }
+            LoRa.setSpreadingFactor(SF); // Set Spreading Factor
+            // LoRa.setSignalBandwidth(bw);
+
+            // Print Console, configuration successful
+            if (DEBUG)
+            {
+                cout << "\n - - LoRa Configuration - - " << endl;
+                cout << "  Frequency: " << freq << " Hz" << endl;
+                cout << "  Bandwidth: " << bw << endl;
+                cout << "  Spreading Factor : " << SF << "\n\n======================================================\n"
+                     << endl;
+            }
+
+            LoRa.onReceive(onReceive);
+            LoRa.receive();
+
+            // System Configured
+            c_state = slumber;
+            break;
+        }
+        case scan:
+        {
+            if (LoRa.parsePacket())
+            {
+                c_state = respond;
+            }
+            break;
+        }
+        case respond:
+        {
+            if (DEBUG)
+            {
+                // cout << "\nPACKET RECIEVED!" << endl;
+                // syslog(LOG_NOTICE,"\nPACKET RECIEVED!\n");
+            }
+            // received a packet
+            string message = ""; // Clear message string
+            // Store Message in string Message
+            while (LoRa.available())
+            {
+                message = message + ((char)LoRa.read());
+            }
+            // printf("Message Received: %s\n", message.c_str());
+            //  Reply to Node with Ack
+
+            // Local Variables
+            string node = message.substr(message.find("N", 0) + 4, 1); // Identify Node Number
+
+            if (node == "1")
+            {
+                N1.sendAck(message);
+                N1.update_MQTT(message);
+                N1.send_MQTT(client);
+            }
+            else if (node == "2")
+            {
+                N2.sendACK(message);
+                N2.update_MQTT(message);
+                N2.send_MQTT(client);
+            }
+            else
+            {
+                if (DEBUG)
+                {
+                    cout << "Error: Unknown node detected" << endl;
+                }
+                c_state = slumber;
+                break;
+            }
+
+            // Check if MQTT is still open
+            if (!(MQTTClient_isConnected(client)))
+            {
+                if (DEBUG == 1)
+                {
+                    cout << " {MQTT Client Status: OFFLINE}" << endl;
+                }
+
+                die_MQTT();
+                sleep(30);
+
                 bool status = setup_MQTT();
+                sleep(30);
 
-                if (status == true) {
-                    //syslog(LOG_NOTICE," MQTT Client Status : ONLINE");
-                    if(DEBUG){
-                        cout << " MQTT Client Status : ONLINE" << endl;
-                    }
+                if (status == true && DEBUG == 1)
+                {
+                    // printf(" {MQTT Restarted, Client Status: ONLINE}\n");
+                    cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
+                    // syslog(LOG_NOTICE," {MQTT Restarted, Client Status: ONLINE}\n");
                 }
-                else {
-                    //syslog(LOG_NOTICE," MQTT Client Status : OFFLINE");
-                    if(DEBUG){
-                        cout << " MQTT Client Status : OFFLINE" << endl;
-                    }
-                    break;
-                }
-
-                // Setup LoRa Communications
-                // Configure Gateway
-                if(DEBUG){
-                    cout << "\n Starting LoRa Gateway" << endl;
-                }
-                //syslog(LOG_NOTICE,"\n Starting LoRa Gateway\n");
-                LoRa.setPins(ssPin, RST, dio0);             // Set module pins
-
-                // Start LoRa with Freq
-                if (!LoRa.begin(freq)) {
-                    if(DEBUG){
-                        cout << "\n Starting LoRa failed!" << endl;
-                    }
-                    //syslog(LOG_NOTICE,"\n Starting LoRa failed!\n");
-                    c_state = init;
-                    sleep(60);
-                    break;
-                }
-                LoRa.setSpreadingFactor(SF);                // Set Spreading Factor
-                // LoRa.setSignalBandwidth(bw);
-
-                // Print Console, configuration successful
-                if(DEBUG){
-                    cout << "\n - - LoRa Configuration - - " << endl;
-                    cout << "  Frequency: " << freq << " Hz" << endl;
-                    cout << "  Bandwidth: " << bw << endl;
-                    cout << "  Spreading Factor : " << SF << "\n\n======================================================\n" << endl;
-                }
-
-                LoRa.onReceive(onReceive);
-                LoRa.receive();
-
-                //System Configured
-                c_state = slumber;
-                break;
             }
-            case scan:{
-                if (LoRa.parsePacket()) {
-                    c_state = respond;
-                }
-                break;
+            else if (DEBUG)
+            {
+                // printf(" {MQTT Client Status: ONLINE}\n");
+                cout << " {MQTT Client Status: ONLINE}" << endl;
+                // syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
             }
-            case respond:{
-                if(DEBUG){
-                    //cout << "\nPACKET RECIEVED!" << endl;
-                    //syslog(LOG_NOTICE,"\nPACKET RECIEVED!\n");
-                }
-                // received a packet
-                string message = "";                              // Clear message string
-                // Store Message in string Message
-                while (LoRa.available()) {
-                    message = message + ((char)LoRa.read());
-                }
-                //printf("Message Received: %s\n", message.c_str());
-                // Reply to Node with Ack
-                sendAck(message);
 
-                // Present Message
-                string pktrssi = to_string(LoRa.packetRssi());    // Store RSSI Value
-                string rssi = ("\"RSSI\":\"" + pktrssi + "\"");   // Construct RSSI String with metadata
-                string jsonString = message;                      // Store message in jsonString
-                replace(jsonString, "xxx", rssi);                 // Replace xxx with RSSI value and metadata
-
-                string node = update_MQTT(jsonString);
-
-                if (node == "1") {
-                    // Send Message to Thingspeak 1
-                    send_MQTT(PAYLOAD, ChannelID1);
-                }
-                else if (node == "2") {
-                    // Send Message to Thingspeak 2
-                    send_MQTT(PAYLOAD, ChannelID2);
-                }
-                else {
-                    //printf("Error: Unknown node detected\n");
-                    if(DEBUG){
-                        cout << "Error: Unknown node detected" << endl;
-                    }
-                    //syslog(LOG_NOTICE,"Error: Unknown node detected\n");
-                    c_state = slumber;
-                    break;
-                }
-
-                // Check if MQTT is still open
-                if(!(MQTTClient_isConnected(client))){
-                    if(DEBUG == 1){
-                        //printf(" {MQTT Client Status: OFFLINE}\n");
-                        cout << " {MQTT Client Status: OFFLINE}" << endl;
-                        //syslog(LOG_NOTICE," {MQTT Client Status: OFFLINE}\n");
-                    }
-
-                    die_MQTT();
-                    sleep(10);
-
-                    bool status = setup_MQTT();
-                    sleep(10);
-
-                    if (status == true && DEBUG == 1) {
-                        //printf(" {MQTT Restarted, Client Status: ONLINE}\n");
-                        cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
-                        //syslog(LOG_NOTICE," {MQTT Restarted, Client Status: ONLINE}\n");
-                    }
-                }
-                else if(DEBUG){
-                   //printf(" {MQTT Client Status: ONLINE}\n");
-                   cout << " {MQTT Client Status: ONLINE}" << endl;
-                   //syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
-                }
-
-                c_state = slumber;
-                break;
-            }
-            case slumber:{
-                sleep(10);
-                break;
-            }
-            default:{
-                c_state = slumber;
-                break;
-            }
+            c_state = slumber;
+            break;
+        }
+        case slumber:
+        {
+            sleep(10);
+            break;
+        }
+        default:
+        {
+            c_state = slumber;
+            break;
+        }
         }
     }
 }
