@@ -179,7 +179,9 @@ int c4letters(string data)
         {
             if (!((data[i] == '.') || (data[i] == '-')))
             {
-                cout << "Error:" << data[i] << endl;
+                if(DEBUG){
+                cout << "Error! Non-number value of: '" << data[i] << "' found" << endl;
+                }
                 return 1;
             }
         }
@@ -342,6 +344,7 @@ public:
         // Error checking
         int err = 0;
         err = c4letters(this->Temperature) + c4letters(this->Humidity) + c4letters(this->Frame_Count) + c4letters(this->RSSI);
+
         if (err >= 1)
         {
             if (DEBUG == 1)
