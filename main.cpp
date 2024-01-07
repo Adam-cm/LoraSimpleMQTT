@@ -307,7 +307,7 @@ public:
         // Calculate Check Sum from message received
         for (int i = 0; i < message.length(); i++)
         {
-            checkm += message[i];
+            check += message[i];
         }
 
         this->Check_sum = check;
