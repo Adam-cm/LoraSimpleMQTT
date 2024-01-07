@@ -268,8 +268,8 @@ private:
     string Frame_Count = "Not Defined";
     string RSSI = "Not Defined";
 
-    int Check_sum = "Not Defined";
-    int Node_number = "Not Defined";
+    int Check_sum =     0;
+    int Node_number =   0;
     // Message variables
     string TOPIC = "Not Defined";
     string PAYLOAD = "Nor Defined";
