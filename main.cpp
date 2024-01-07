@@ -179,8 +179,9 @@ int c4letters(string data)
         {
             if (!((data[i] == '.') || (data[i] == '-')))
             {
-                if(DEBUG){
-                cout << "Error! Non-number value of: '" << data[i] << "' found" << endl;
+                if (DEBUG)
+                {
+                    cout << "Error! Non-number value of: '" << data[i] << "' found" << endl;
                 }
                 return 1;
             }
@@ -270,8 +271,8 @@ private:
     string Frame_Count = "Not Defined";
     string RSSI = "Not Defined";
 
-    int Check_sum =     0;
-    int Node_number =   0;
+    int Check_sum = 0;
+    int Node_number = 0;
     // Message variables
     string TOPIC = "Not Defined";
     string PAYLOAD = "Not Defined";
@@ -315,6 +316,10 @@ public:
         // Prepare reply (just prepares to send checksum)
         reply = "{\"N\":\"G\",\"CheckSum\":\"" + to_string(this->Check_sum) + "\"}";
 
+        if (DEBUG == 1)
+        {
+            cout << "Responding with: " << reply << endl;
+        }
         // Send Packet Reply
         LoRa.beginPacket();                                       // Setup LoRa CHIP
         LoRa.write(reply.c_str(), strlen((char *)reply.c_str())); // Send Reply String
@@ -435,9 +440,9 @@ void onReceive(int packetSize)
 int main()
 {
 
-    //skeleton_daemon();
+    // skeleton_daemon();
 
-    //syslog(LOG_NOTICE, "LoraSimpleMQTT daemon started.");
+    // syslog(LOG_NOTICE, "LoraSimpleMQTT daemon started.");
 
     while (1)
     {
