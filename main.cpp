@@ -560,7 +560,7 @@ int main()
             }
             else if (node == "2")
             {
-                N2.sendACK(message);
+                N2.sendAck(message);
                 N2.update_MQTT(message);
                 N2.send_MQTT(client);
             }
