@@ -307,8 +307,10 @@ public:
         // Calculate Check Sum from message received
         for (int i = 0; i < message.length(); i++)
         {
-            this->Check_sum += message[i];
+            checkm += message[i];
         }
+
+        this->Check_sum = check;
 
         // Prepare reply (just prepares to send checksum)
         reply = "{\"N\":\"G\",\"CheckSum\":\"" + to_string(this->Check_sum) + "\"}";
