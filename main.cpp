@@ -341,7 +341,7 @@ public:
 
         // Error checking
         int err = 0;
-        err = c4letters(Temp_UMQTT) + c4letters(Humidity_UMQTT) + c4letters(FrameCountMQTT) + c4letters(RSSIMQTT);
+        err = c4letters(this->Temperature) + c4letters(this->Humidity) + c4letters(this->Frame_Count) + c4letters(this->RSSI);
         if (err >= 1)
         {
             if (DEBUG == 1)
