@@ -362,8 +362,7 @@ public:
             cout << "- Message recieved: " << jsonString << "\n";
             cout << "- PAYLOAD: " << PAYLOAD << "\n";
         }
-        send_MQTT();
-        return node;
+        return this->Node_number;
     }
 
     bool send_MQTT(MQTTClient client)
