@@ -322,7 +322,7 @@ public:
         }
         // Send Packet Reply
         while(!LoRa.beginPacket());                                 // Setup LoRa CHIP
-        LoRa.print(reply);   // Send Reply String
+        LoRa.write(reply.c_str(), strlen((char *)reply.c_str()));   // Send Reply String
         LoRa.endPacket();                                           // Finish LoRa Transmit
         LoRa.receive();
         return;
