@@ -309,7 +309,7 @@ public:
         }
 
         // Prepare reply (just prepares to send checksum)
-        reply = "{\"N\":\"G\",\"CheckSum\":\"" + this->Check_sum + "\"}";
+        reply = "{\"N\":\"G\",\"CheckSum\":\"" + to_string(this->Check_sum) + "\"}";
 
         // Send Packet Reply
         LoRa.beginPacket();                                       // Setup LoRa CHIP
