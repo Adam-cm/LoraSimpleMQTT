@@ -274,7 +274,7 @@ private:
     int Node_number =   0;
     // Message variables
     string TOPIC = "Not Defined";
-    string PAYLOAD = "Nor Defined";
+    string PAYLOAD = "Not Defined";
 
 public:
     void set_ChannelID(string ID)
@@ -360,10 +360,10 @@ public:
 
         if (DEBUG)
         {
-            cout << "\nMessage sent to MQTT Broker from Upstairs" << endl;
+            cout << "\nMessage sent to MQTT Broker from Node" << this->Node_number << endl;
             cout << "-- DEBUG --" << endl;
             cout << "- Message recieved: " << jsonString << "\n";
-            cout << "- PAYLOAD: " << PAYLOAD << "\n";
+            cout << "- PAYLOAD: " << this->PAYLOAD << "\n";
         }
         return to_string(this->Node_number);
     }
