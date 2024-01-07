@@ -430,9 +430,9 @@ void onReceive(int packetSize)
 int main()
 {
 
-    skeleton_daemon();
+    //skeleton_daemon();
 
-    syslog(LOG_NOTICE, "LoraSimpleMQTT daemon started.");
+    //syslog(LOG_NOTICE, "LoraSimpleMQTT daemon started.");
 
     while (1)
     {
