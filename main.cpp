@@ -380,8 +380,6 @@ public:
         MQTTClient_message pubmsg = MQTTClient_message_initializer;
         MQTTClient_deliveryToken token;
 
-        TOPIC = "channels/UOZR9WFXASRWX68Y/publish";
-
         // Format Payload
         pubmsg.payload = (char *)this->PAYLOAD.c_str();
         pubmsg.payloadlen = (int)strlen((char *)this->PAYLOAD.c_str());
