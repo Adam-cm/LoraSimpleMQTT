@@ -386,7 +386,6 @@ public:
         pubmsg.payloadlen = (int)strlen((char *)this->PAYLOAD.c_str());
         pubmsg.qos = QOS;
         pubmsg.retained = 0;
-        deliveredtoken = 0;
 
         if ((rc = MQTTClient_publishMessage(client, (const char *)this->TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
         {
