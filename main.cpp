@@ -55,6 +55,7 @@ using namespace std;
 // Connection Parameters
 #define QOS 1
 #define TIMEOUT 10000L
+
 int rc;
 
 // MQTT Client Variables
