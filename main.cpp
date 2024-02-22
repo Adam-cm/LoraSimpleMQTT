@@ -402,6 +402,9 @@ public:
             // printf("- Publication Succeeded!\n");
             if (DEBUG)
             {
+                cout << "- MQTT TOPIC " << (char *)this->TOPIC.c_str() << endl ;
+                cout << "- MQTT Payload " << (char *)this->PAYLOAD.c_str() << endl;
+                cout << "- MQTT Payload Length " << (int)strlen((char *)this->PAYLOAD.c_str()) << endl;
                 cout << "- Publication Succeeded!" << endl;
             }
             // syslog(LOG_NOTICE,"- Publication Succeeded!\n");
