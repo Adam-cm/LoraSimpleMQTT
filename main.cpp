@@ -379,7 +379,7 @@ public:
         MQTTClient_message pubmsg = MQTTClient_message_initializer;
         MQTTClient_deliveryToken token;
 
-        TOPIC = "channels/" + this->ChannelID + "/publish";
+        TOPIC = "channels/" + CLIENTID + "/publish";
 
         // Format Payload
         pubmsg.payload = (char *)this->PAYLOAD.c_str();
