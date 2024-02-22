@@ -50,7 +50,7 @@ using namespace std;
 #define ADDRESS "tcp://mqtt3.thingspeak.com:1883"
 #define CLIENTID "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
-#define MQTTPASSWORD "xI+jK1cSqSbFwUcLLcMTZJEu"
+#define MQTTPASSWORD "ZkTS9ofR8tBvBxihOcfLjxbJ"
 
 // Connection Parameters
 #define QOS 0
