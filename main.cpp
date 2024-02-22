@@ -362,7 +362,7 @@ public:
         }
 
         // Update Payload String
-        void update_packet();
+        update_packet();
 
         if (DEBUG)
         {
