@@ -53,7 +53,7 @@ using namespace std;
 #define MQTTPASSWORD "ZkTS9ofR8tBvBxihOcfLjxbJ"
 
 // Connection Parameters
-#define QOS 0
+#define QOS 1
 #define TIMEOUT 10000L
 int rc;
 
@@ -386,8 +386,9 @@ public:
         pubmsg.payloadlen = (int)strlen((char *)this->PAYLOAD.c_str());
         pubmsg.qos = QOS;
         pubmsg.retained = 0;
+        deliveredtoken = 0;
 
-        if ((rc = MQTTClient_publishMessage(client, (char *)this->TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
+        if ((rc = MQTTClient_publishMessage(client, (const char *)this->TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
         {
             // printf("!! Failed to publish message, return code %d\n", rc);
             if (DEBUG)
