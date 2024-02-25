@@ -193,7 +193,6 @@ int c4letters(string data)
 
 string extract_between(string jsonString, string start_str, string end_str)
 {
-
     string mid = "\":\"";
     string beg = "\"";
     string end = "\"";
@@ -203,6 +202,10 @@ string extract_between(string jsonString, string start_str, string end_str)
 
     size_t first = jsonString.find(start_str) + start_str.length();
     size_t last = jsonString.find(end_str);
+
+    if((last-first > 8)){
+        return "ERROR!!";
+    }
 
     string value = jsonString.substr(first, last - first);
 
