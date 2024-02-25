@@ -590,7 +590,7 @@ int main()
             {
                 if (DEBUG == 1)
                 {
-                    cout << " {MQTT Client Status: OFFLINE}" << endl;
+                    cout << "- {MQTT Client Status: OFFLINE}" << endl;
                 }
 
                 die_MQTT();
@@ -602,14 +602,14 @@ int main()
                 if (status == true && DEBUG == 1)
                 {
                     // printf(" {MQTT Restarted, Client Status: ONLINE}\n");
-                    cout << " {MQTT Restarted, Client Status: ONLINE}" << endl;
+                    cout << "- {MQTT Restarted, Client Status: ONLINE}" << endl;
                     // syslog(LOG_NOTICE," {MQTT Restarted, Client Status: ONLINE}\n");
                 }
             }
             else if (DEBUG)
             {
                 // printf(" {MQTT Client Status: ONLINE}\n");
-                cout << " {MQTT Client Status: ONLINE}" << endl;
+                cout << "- {MQTT Client Status: ONLINE}" << endl;
                 // syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
             }
 
