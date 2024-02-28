@@ -564,7 +564,16 @@ int main()
             //  Reply to Node with Ack
 
             // Local Variables
-            string node = message.substr(message.find("N", 0) + 4, 1); // Identify Node Number
+
+            string node = "";
+
+            for (int position = 0; position < (message.length()-1); position++) {
+                if (message[position] == 'N') {
+                    node = message[position+4];
+                }
+            }
+
+            //string node = message.substr(message.find("N", 0) + 4, 1); // Identify Node Number
 
             if (node == "1")
             {
