@@ -205,11 +205,13 @@ string extract_between(string jsonString, string start_str, string end_str)
 
     string value = "ERROR";
 
-    if((last-first > 8)){
+    if ((last - first > 8))
+    {
         return value;
     }
-   
-    if(first != NULL && last != NULL){
+
+    if (first != NULL && last != NULL)
+    {
         value = jsonString.substr(first, last - first);
     }
 
@@ -329,9 +331,10 @@ public:
             cout << "Responding with: " << reply << endl;
         }
         // Send Packet Reply
-        while(!LoRa.beginPacket());                                 // Setup LoRa CHIP
-        LoRa.write(reply.c_str(), strlen((char *)reply.c_str()));   // Send Reply String
-        LoRa.endPacket();                                           // Finish LoRa Transmit
+        while (!LoRa.beginPacket())
+            ;                                                     // Setup LoRa CHIP
+        LoRa.write(reply.c_str(), strlen((char *)reply.c_str())); // Send Reply String
+        LoRa.endPacket();                                         // Finish LoRa Transmit
         LoRa.receive();
         return;
     }
@@ -408,7 +411,7 @@ public:
             // printf("- Publication Succeeded!\n");
             if (DEBUG)
             {
-                cout << "- MQTT TOPIC " << (char *)this->TOPIC.c_str() << endl ;
+                cout << "- MQTT TOPIC " << (char *)this->TOPIC.c_str() << endl;
                 cout << "- MQTT Payload " << (char *)this->PAYLOAD.c_str() << endl;
                 cout << "- MQTT Payload Length " << (int)strlen((char *)this->PAYLOAD.c_str()) << endl;
                 cout << "- Publication Succeeded!" << endl;
@@ -450,8 +453,6 @@ int main()
 
     // skeleton_daemon();
 
-    // syslog(LOG_NOTICE, "LoraSimpleMQTT daemon started.");
-
     while (1)
     {
         switch (c_state)
@@ -473,9 +474,6 @@ int main()
                 // Setup MQTT
                 cout << " Starting MQTT Client " << endl;
             }
-            // syslog(LOG_NOTICE,"\n======================================================\n\n");
-            // syslog(LOG_NOTICE,"\n -  -  - -- IoT Control System: Wetlands -- -  -  - - \n");
-            // syslog(LOG_NOTICE,"\n======================================================\n\n");
 
             // Setup Wiring Pi
             wiringPiSetup(); // Start wiring Pi
@@ -485,7 +483,6 @@ int main()
 
             if (status == true)
             {
-                // syslog(LOG_NOTICE," MQTT Client Status : ONLINE");
                 if (DEBUG)
                 {
                     cout << " MQTT Client Status : ONLINE" << endl;
@@ -493,7 +490,6 @@ int main()
             }
             else
             {
-                // syslog(LOG_NOTICE," MQTT Client Status : OFFLINE");
                 if (DEBUG)
                 {
                     cout << " MQTT Client Status : OFFLINE" << endl;
@@ -507,7 +503,6 @@ int main()
             {
                 cout << "\n Starting LoRa Gateway" << endl;
             }
-            // syslog(LOG_NOTICE,"\n Starting LoRa Gateway\n");
             LoRa.setPins(ssPin, RST, dio0); // Set module pins
 
             // Start LoRa with Freq
@@ -517,7 +512,6 @@ int main()
                 {
                     cout << "\n Starting LoRa failed!" << endl;
                 }
-                // syslog(LOG_NOTICE,"\n Starting LoRa failed!\n");
                 c_state = init;
                 sleep(60);
                 break;
@@ -552,11 +546,6 @@ int main()
         }
         case respond:
         {
-            if (DEBUG)
-            {
-                // cout << "\nPACKET RECIEVED!" << endl;
-                // syslog(LOG_NOTICE,"\nPACKET RECIEVED!\n");
-            }
             // received a packet
             string message = ""; // Clear message string
             // Store Message in string Message
@@ -564,22 +553,20 @@ int main()
             {
                 message = message + ((char)LoRa.read());
             }
-            // printf("Message Received: %s\n", message.c_str());
-            //  Reply to Node with Ack
 
-            // Local Variables
-
+            // Store Node Value
             string node = "Error";
 
-            for (int position = 0; position < (message.length()); position++) {
-                if (message[position] == 'N') {
-                    if(!(position+4 > message.length())){
-                        node = message[position+4];
+            for (int position = 0; position < (message.length()); position++)
+            {
+                if (message[position] == 'N')
+                {
+                    if (!(position + 4 > message.length()))
+                    {
+                        node = message[position + 4];
                     }
                 }
             }
-
-            //string node = message.substr(message.find("N", 0) + 4, 1); // Identify Node Number
 
             if (node == "1")
             {
@@ -619,16 +606,12 @@ int main()
 
                 if (status == true && DEBUG == 1)
                 {
-                    // printf(" {MQTT Restarted, Client Status: ONLINE}\n");
                     cout << "- {MQTT Restarted, Client Status: ONLINE}" << endl;
-                    // syslog(LOG_NOTICE," {MQTT Restarted, Client Status: ONLINE}\n");
                 }
             }
-            else if (DEBUG)
+            else
             {
-                // printf(" {MQTT Client Status: ONLINE}\n");
                 cout << "- {MQTT Client Status: ONLINE}" << endl;
-                // syslog(LOG_NOTICE," {MQTT Client Status: ONLINE}\n");
             }
 
             c_state = slumber;
