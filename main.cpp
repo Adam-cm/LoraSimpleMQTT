@@ -203,11 +203,15 @@ string extract_between(string jsonString, string start_str, string end_str)
     size_t first = jsonString.find(start_str) + start_str.length();
     size_t last = jsonString.find(end_str);
 
-    if((last-first > 8)){
-        return "ERROR!!";
-    }
+    string value = "ERROR";
 
-    string value = jsonString.substr(first, last - first);
+    if((last-first > 8)){
+        return value;
+    }
+   
+    if(first != NULL && last != NULL){
+        value = jsonString.substr(first, last - first);
+    }
 
     return value;
 }
@@ -565,11 +569,13 @@ int main()
 
             // Local Variables
 
-            string node = "";
+            string node = "Error";
 
-            for (int position = 0; position < (message.length()-1); position++) {
+            for (int position = 0; position < (message.length()); position++) {
                 if (message[position] == 'N') {
-                    node = message[position+4];
+                    if(!(position+4 > message.length())){
+                        node = message[position+4];
+                    }
                 }
             }
 
