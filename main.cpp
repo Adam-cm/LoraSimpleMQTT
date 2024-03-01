@@ -200,18 +200,26 @@ string extract_between(string jsonString, string start_str, string end_str)
     start_str = beg + start_str + mid;
     end_str = end + end_str;
 
-    size_t first = jsonString.find(start_str) + start_str.length();
-    size_t last = jsonString.find(end_str);
+    size_t first;
+    size_t last;
+    int error = 0;
 
     string value = "ERROR";
 
-    if ((last - first > 8))
-    {
-        return value;
+    if(jsonString.find(start_str) != std::string::npos){
+        first = jsonString.find(start_str) + start_str.length();
+    }
+    else{
+        error += 1;
     }
 
-    if (first != NULL && last != NULL)
-    {
+    if(jsonString.find(end_str) != std::string::npos){
+        last = jsonString.find(end_str);
+    }else{
+        error += 1;
+    }
+
+    if (error == 0){
         value = jsonString.substr(first, last - first);
     }
 
