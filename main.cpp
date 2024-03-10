@@ -52,6 +52,10 @@ using namespace std;
 #define MQTTUSERNAME "JC0zDR4uMTgkNDEPLxUnGgM"
 #define MQTTPASSWORD "ZkTS9ofR8tBvBxihOcfLjxbJ"
 
+#define ID_NODE1 "1488787"
+#define ID_NODE2 "1490440"
+#define ID_RASPI "2463425"
+
 // Connection Parameters
 #define QOS 1
 #define TIMEOUT 10000L
@@ -315,6 +319,10 @@ public:
     {
         return this->Node_number;
     }
+    void set_payload(string Payload){
+        this->PAYLOAD = Payload;
+        return;
+    }
 
     // Message Reply
     void sendAck(string message)
@@ -437,8 +445,9 @@ public:
     }
 };
 
-Node N1("1488787", 1);
-Node N2("1490440", 2);
+Node N1(ID_NODE1, 1);
+Node N2(ID_NODE2, 2);
+Node N4(ID_RASPI, 3);
 
 // Prepare state machine
 enum state
@@ -461,8 +470,18 @@ int main()
 
     // skeleton_daemon();
 
+    unsigned int start = millis();
+
     while (1)
     {
+        // Update CPUtemp every minute
+        if((millis() - start) >= 60000){
+            string payload = "field1=" + 1 + "&field2=" + updateCPUTEMP();
+            N3.set_payload(payload);
+            N3.send_MQTT(client);
+            start = millis();
+        }
+
         switch (c_state)
         {
         case init:
