@@ -478,7 +478,7 @@ int main()
         if((millis() - start) >= 60000){
             float temp = updateCPUTEMP();
 
-            string payload = "field1=1" + "&field2=" + to_string(temp);
+            string payload = "field1=1&field2=" + to_string(temp);
             N3.set_payload(payload);
             N3.send_MQTT(client);
             start = millis();
