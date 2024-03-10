@@ -477,13 +477,10 @@ int main()
         // Update CPUtemp every minute
         if((millis() - start) >= 60000){
             float temp = updateCPUTEMP();
-            int len = snprintf(NULL,"%f",temp);
-            char *result = malloc(len+1);
-            snprintf(result, len+1, "%f", temp);
-            string payload = "field1=" + "1" + "&field2=" + result;
+
+            string payload = "field1=1" + "&field2=" + to_string(temp);
             N3.set_payload(payload);
             N3.send_MQTT(client);
-            free(result);
             start = millis();
         }
 
