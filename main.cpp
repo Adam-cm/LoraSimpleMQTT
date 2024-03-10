@@ -447,7 +447,7 @@ public:
 
 Node N1(ID_NODE1, 1);
 Node N2(ID_NODE2, 2);
-Node N4(ID_RASPI, 3);
+Node N3(ID_RASPI, 3);
 
 // Prepare state machine
 enum state
@@ -476,9 +476,14 @@ int main()
     {
         // Update CPUtemp every minute
         if((millis() - start) >= 60000){
-            string payload = "field1=" + 1 + "&field2=" + updateCPUTEMP();
+            float temp = updateCPUTEMP();
+            int len = snprintf(NULL,"%f",temp);
+            char *result = malloc(len+1);
+            snprintf(result, len+1, "%f", temp);
+            string payload = "field1=" + "1" + "&field2=" + result;
             N3.set_payload(payload);
             N3.send_MQTT(client);
+            free(result);
             start = millis();
         }
 
