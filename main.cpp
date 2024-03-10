@@ -412,6 +412,34 @@ public:
         pubmsg.qos = QOS;
         pubmsg.retained = 0;
 
+        // Check if MQTT is still open
+            if (!(MQTTClient_isConnected(client)))
+            {
+                if (DEBUG == 1)
+                {
+                    cout << "- {MQTT Client Status: OFFLINE}" << endl;
+                }
+
+                die_MQTT();
+                sleep(30);
+
+                bool status = setup_MQTT();
+                sleep(30);
+
+                if (status == true && DEBUG == 1)
+                {
+                    cout << "- {MQTT Restarted, Client Status: ONLINE}" << endl;
+                }
+                else{
+                    cout << "- {MQTT failed to restarted, Client Status: OFFLINE}" << endl;
+                    return false;
+                }
+            }
+            else
+            {
+                cout << "- {MQTT Client Status: ONLINE}" << endl;
+            }
+
         if ((rc = MQTTClient_publishMessage(client, (const char *)this->TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
         {
             // printf("!! Failed to publish message, return code %d\n", rc);
@@ -609,30 +637,6 @@ int main()
                 break;
             }
 
-            // Check if MQTT is still open
-            if (!(MQTTClient_isConnected(client)))
-            {
-                if (DEBUG == 1)
-                {
-                    cout << "- {MQTT Client Status: OFFLINE}" << endl;
-                }
-
-                die_MQTT();
-                sleep(30);
-
-                bool status = setup_MQTT();
-                sleep(30);
-
-                if (status == true && DEBUG == 1)
-                {
-                    cout << "- {MQTT Restarted, Client Status: ONLINE}" << endl;
-                }
-            }
-            else
-            {
-                cout << "- {MQTT Client Status: ONLINE}" << endl;
-            }
-
             c_state = slumber;
             break;
         }
@@ -650,7 +654,6 @@ int main()
         // Update CPUtemp every minute
         if((millis() - start) >= 60000){
             float temp = updateCPUTEMP();
-
             string payload = "field1=1&field2=" + to_string(temp);
             N3.set_payload(payload);
             N3.send_MQTT(client);
