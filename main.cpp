@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <signal.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <syslog.h>
 
@@ -27,6 +28,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <sys/time.h>
+
 #include <cstring>
 #include <sys/ioctl.h>
 #include <net/if.h>
@@ -36,7 +38,7 @@ using namespace std;
 
 #include "base64.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 /*******************************************************************************
  *
@@ -496,7 +498,7 @@ void onReceive(int packetSize)
 int main()
 {
 
-    // skeleton_daemon();
+    skeleton_daemon();
 
     unsigned int start = millis();
 
@@ -660,4 +662,8 @@ int main()
             start = millis();
         }
     }
+    syslog (LOG_NOTICE, "LoraSimpleMQTT terminated.");
+    closelog();
+    
+    return EXIT_SUCCESS;
 }
