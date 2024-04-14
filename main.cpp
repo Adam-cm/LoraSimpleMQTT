@@ -35,6 +35,8 @@
 
 using namespace std;
 
+#include <base64.h>
+
 #define DEBUG 0
 
 /*******************************************************************************
@@ -495,7 +497,7 @@ void onReceive(int packetSize)
 int main()
 {
 
-    skeleton_daemon();
+    //skeleton_daemon();
 
     unsigned int start = millis();
 
@@ -659,8 +661,8 @@ int main()
             start = millis();
         }
     }
-    syslog (LOG_NOTICE, "LoraSimpleMQTT terminated.");
-    closelog();
+    //syslog (LOG_NOTICE, "LoraSimpleMQTT terminated.");
+    //closelog();
     
-    return EXIT_SUCCESS;
+    //return EXIT_SUCCESS;
 }
