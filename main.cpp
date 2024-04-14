@@ -11,15 +11,15 @@
  *
  *******************************************************************************/
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <syslog.h>
 
 #include <string>
-#include <stdio.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <stdint.h>
@@ -32,11 +32,8 @@
 #include <cstring>
 #include <sys/ioctl.h>
 #include <net/if.h>
-#include <unistd.h>
 
 using namespace std;
-
-#include "base64.h"
 
 #define DEBUG 0
 
@@ -344,7 +341,7 @@ public:
         // Prepare reply (just prepares to send checksum)
         reply = "{\"N\":\"G\",\"CheckSum\":\"" + to_string(this->Check_sum) + "\"}";
 
-        if (DEBUG == 1)
+        if (DEBUG)
         {
             cout << "Responding with: " << reply << endl;
         }
@@ -365,7 +362,7 @@ public:
         string jsonString = message;                    // Store message in jsonString
         replace(jsonString, "xxx", rssi);               // Replace xxx with RSSI value and metadata
 
-        if (DEBUG == 1)
+        if (DEBUG)
         {
             cout << "\n\nNode: " << this->Node_number;
         }
@@ -382,7 +379,7 @@ public:
 
         if (err >= 1)
         {
-            if (DEBUG == 1)
+            if (DEBUG)
             {
                 cout << "\nMessage:" << jsonString << endl;
                 cout << "Error: Invalid data format detected! Message not sent!" << endl;
@@ -417,7 +414,7 @@ public:
         // Check if MQTT is still open
             if (!(MQTTClient_isConnected(client)))
             {
-                if (DEBUG == 1)
+                if (DEBUG)
                 {
                     cout << "- {MQTT Client Status: OFFLINE}" << endl;
                 }
