@@ -500,7 +500,7 @@ void onReceive(int packetSize)
 int main()
 {
 
-    skeleton_daemon();
+    //skeleton_daemon();
 
     unsigned int start = millis();
 
