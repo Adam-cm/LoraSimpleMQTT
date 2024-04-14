@@ -438,7 +438,10 @@ public:
             }
             else
             {
-                cout << "- {MQTT Client Status: ONLINE}" << endl;
+                if (DEBUG)
+                {
+                    cout << "- {MQTT Client Status: ONLINE}" << endl;
+                }
             }
 
         if ((rc = MQTTClient_publishMessage(client, (const char *)this->TOPIC.c_str(), &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
@@ -497,7 +500,7 @@ void onReceive(int packetSize)
 int main()
 {
 
-    //skeleton_daemon();
+    skeleton_daemon();
 
     unsigned int start = millis();
 
@@ -661,8 +664,8 @@ int main()
             start = millis();
         }
     }
-    //syslog (LOG_NOTICE, "LoraSimpleMQTT terminated.");
-    //closelog();
+    syslog (LOG_NOTICE, "LoraSimpleMQTT terminated.");
+    closelog();
     
-    //return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

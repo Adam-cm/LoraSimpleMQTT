@@ -129,11 +129,11 @@ int LoRaClass::begin(long frequency)
   //printf("Version: %i", version);
 
   if (version != 0x12) {
-    printf("\nUnknown LoRa Module\n");
+    //printf("\nUnknown LoRa Module\n");
     return 0;
   }
   else{
-    printf(" SX1276 Detected and Configured\n");
+    //printf(" SX1276 Detected and Configured\n");
 
     // put in sleep mode
     sleep();
